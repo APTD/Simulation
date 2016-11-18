@@ -1,3 +1,24 @@
+<!--
+
+    ######################################################################################
+    # LGPL License                                                                       #
+    #                                                                                    #
+    # This file is part of the Asimov - Agentbased Passenger Train Delay                 #
+    # This program is free software: you can redistribute it and/or modify               #
+    # it under the terms of the GNU Lesser General Public License as                     #
+    # published by the Free Software Foundation, either version 3 of the                 #
+    # License, or (at your option) any later version.                                    #
+    #                                                                                    #
+    # This program is distributed in the hope that it will be useful,                    #
+    # but WITHOUT ANY WARRANTY; without even the implied warranty of                     #
+    # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                      #
+    # GNU Lesser General Public License for more details.                                #
+    #                                                                                    #
+    # You should have received a copy of the GNU Lesser General Public License           #
+    # along with this program. If not, see http://www.gnu.org/licenses/                  #
+    ######################################################################################
+
+-->
 <project xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -6,6 +27,26 @@
     <groupId>com.github.aptd</groupId>
     <artifactId>simulation</artifactId>
     <version>0.1-SNAPSHOT</version>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License 3</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.en.html</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/APTD/Simulation/issues</url>
+    </issueManagement>
+
+    <scm>
+        <url>https://github.com/APTD/Simulation</url>
+        <connection>scm:git:git://github.com:APTD/Simulation.git</connection>
+        <developerConnection>scm:git:git@github.com:APTD/Simulation.git</developerConnection>
+    </scm>
+
+
     
     <!-- project build configuration -->
     <prerequisites>
@@ -39,12 +80,6 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.2.12</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.17</version>
         </dependency>
 
         <dependency>
@@ -313,7 +348,7 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <!-- here is the class defined, which has got the "public static coid main( final String[] p_args )" class -->
-                                        <Main-Class>org.lightjason.examples.pokemon.CMain</Main-Class>
+                                        <Main-Class>com.github.aptd.simulation.CMain</Main-Class>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
@@ -336,6 +371,33 @@
                             </includes>
                         </fileset>
                     </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- License -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0.rc1</version>
+                <configuration>
+                    <header>src/analysis/license/licensetemplate.txt</header>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <headerDefinitions>
+                        <headerDefinition>src/analysis/license/style.xml</headerDefinition>
+                    </headerDefinitions>
+                    <excludes>
+                        <exclude>**/*.tokens</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.yml</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.htm</exclude>
+                        <exclude>**/*.doxyfile</exclude>
+                        <exclude>target/**</exclude>
+                    </excludes>
+                    <mapping>
+                        <g4>javadoc_style</g4>
+                        <asl>javadoc_style</asl>
+                    </mapping>
                 </configuration>
             </plugin>
             
