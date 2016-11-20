@@ -20,26 +20,13 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.object.train;
+package com.github.aptd.simulation.simulation.graph.network;
+
 
 /**
- * wagon interface
+ * interface of an tracking node to generate events
+ * @tparam T node identifier type
  */
-public interface IWagon
+public interface IVirtualNode<T> extends INetworkNode<T>
 {
-
-    /**
-     * wagon idenitifer
-     *
-     * @return id
-     */
-    int id();
-
-    /**
-     * unused places
-     *
-     * @return places
-     */
-    int place();
-
 }

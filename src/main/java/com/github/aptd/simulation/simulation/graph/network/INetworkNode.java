@@ -20,10 +20,11 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.network;
+package com.github.aptd.simulation.simulation.graph.network;
 
-import com.github.aptd.simulation.graph.INode;
-import com.github.aptd.simulation.object.train.ITrain;
+import com.github.aptd.simulation.simulation.graph.INode;
+import com.github.aptd.simulation.simulation.train.ITrain;
+import org.lightjason.agentspeak.agent.IAgent;
 
 
 /**
@@ -31,7 +32,7 @@ import com.github.aptd.simulation.object.train.ITrain;
  *
  * @tparam T node identifier
  */
-public interface INetworkNode<T> extends INode<T>
+public interface INetworkNode<T> extends INode<T>, IAgent<INetworkNode<T>>
 {
 
     /**

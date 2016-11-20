@@ -20,87 +20,50 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.local;
+package com.github.aptd.simulation.simulation.graph;
 
-import com.github.aptd.simulation.graph.INode;
-import com.github.aptd.simulation.graph.network.IVirtualNode;
-import com.github.aptd.simulation.object.train.ITrain;
-
-import java.text.MessageFormat;
-
+import java.util.Collection;
+import java.util.List;
 
 /**
- * virtual node
+ * interface of graphs
+ * @tparam T node identifier type
  */
-public final class CVirtualNode<T> implements IVirtualNode<T>
+public interface IGraph<T, N extends INode<T>, E extends IEdge<T>>
 {
-    /**
-     * node identifier
-     */
-    private final T m_id;
-    /**
-     * longitude
-     */
-    private final double m_longitude;
-    /**
-     * latitude
-     */
-    private final double m_latitude;
-
 
     /**
-     * ctor
+     * calculate a route
+     *
+     * @param p_start start node identifier
+     * @param p_end end node identifier
+     * @return list of edges to represent the route
+     */
+    List<E> route( final T p_start, final T p_end );
+
+    /**
+     * returns a node from the graph
+     *
+     * @param p_id identifier of the node
+     * @return null or node object
+     */
+    N node( final T p_id );
+
+    /**
+     * returns an edge
+     *
+     * @param p_start source node identifier
+     * @param p_end target node identifier
+     * @return edge or null if edge not exists
+     */
+    E edge( final T p_start, final T p_end );
+
+    /**
+     * returns the neighbours of a node
+     *
      * @param p_id node identifier
-     * @param p_longitude longitude
-     * @param p_latitude latitude
+     * @return collection of neighbour nodes
      */
-    public CVirtualNode( final T p_id, final double p_longitude, final double p_latitude )
-    {
-        m_latitude = p_latitude;
-        m_longitude = p_longitude;
-        m_id = p_id;
-    }
+    Collection<N> neighbours( final T p_id );
 
-
-    @Override
-    public final T id()
-    {
-        return m_id;
-    }
-
-    @Override
-    public final double longitude()
-    {
-        return m_longitude;
-    }
-
-    @Override
-    public final double latitude()
-    {
-        return m_latitude;
-    }
-
-    @Override
-    public final int hashCode()
-    {
-        return m_id.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof INode<?> ) && ( this.hashCode() == p_object.hashCode() );
-    }
-
-    @Override
-    public final String toString()
-    {
-        return MessageFormat.format( "{0}({1} / {2})", m_id, m_longitude, m_latitude );
-    }
-
-    @Override
-    public final ITrain apply( final ITrain p_train )
-    {
-        return p_train;
-    }
 }

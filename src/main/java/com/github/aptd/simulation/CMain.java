@@ -51,8 +51,7 @@ public final class CMain
 
         final Options l_clioptions = new Options();
         l_clioptions.addOption( "help", false, "shows this information" );
-        l_clioptions.addOption( "generate", true, "generates an example configuration within the current directory" );
-        l_clioptions.addOption( "configuration", true, "defines the simulation configuration" );
+        l_clioptions.addOption( "scenario", true, "scenario configuration" );
 
         final CommandLine l_cli;
         try

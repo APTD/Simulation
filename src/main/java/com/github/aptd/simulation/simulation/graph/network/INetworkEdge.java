@@ -20,20 +20,33 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph;
+package com.github.aptd.simulation.simulation.graph.network;
+
+import com.github.aptd.simulation.simulation.graph.IEdge;
+
 
 /**
- * interface of graph nodes to create different types of nodes
- * @tparam T any type of the identifier
+ * interface of network edge
+ *
+ * @tparam T identifier type
  */
-public interface INode<T>
+public interface INetworkEdge<T> extends IEdge<T>
 {
 
     /**
-     * returns the identifier of the node
+     * returns the maximum speed of the edge
      *
-     * @return identifier
+     * @return speed
      */
-    T id();
+    double maximumspeed();
+
+    /**
+     * checks if the edge is empty
+     *
+     * @return boolean emtpy flag
+     */
+    boolean empty();
+
+
 
 }

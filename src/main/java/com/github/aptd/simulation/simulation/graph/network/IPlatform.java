@@ -20,11 +20,14 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.object;
+package com.github.aptd.simulation.simulation.graph.network;
+
 
 /**
- * simulation object interface
+ * platform interface
+ * @tparam T node identifier
  */
-public interface IElement
+public interface IPlatform<T> extends IStation<T>
 {
+
 }

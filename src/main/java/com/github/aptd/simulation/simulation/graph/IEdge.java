@@ -20,24 +20,44 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.object.train;
-
-import com.github.aptd.simulation.object.IElement;
-import org.lightjason.agentspeak.agent.IAgent;
+package com.github.aptd.simulation.simulation.graph;
 
 
 /**
- * interface of train
+ * interface of edges
  */
-public interface ITrain extends IElement, IAgent<ITrain>
+public interface IEdge<T>
 {
 
     /**
-     * unique identifier of the train
+     * returns the identifier of the source / start node
+     * on which the edge starts
      *
-     * @return identifier
+     * @return node identifier
      */
-    String id();
+    T from();
 
+    /**
+     * return the identifier of the target / end node
+     * on which the edge points to
+     *
+     * @return node identifier
+     */
+    T to();
+
+    /**
+     * returns the weight of the edge
+     *
+     * @return weight
+     */
+    double weight();
+
+    /**
+     * sets the weight
+     *
+     * @param p_weight new weight of the edge
+     * @return self reference
+     */
+    IEdge<T> weight( final double p_weight );
 
 }

@@ -20,14 +20,23 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.network;
+package com.github.aptd.simulation.simulation.graph;
 
+import org.lightjason.agentspeak.agent.IAgent;
 
 
 /**
- * interface of a node, which is a train station
- * @tparam T node identifier type
+ * interface of graph nodes to create different types of nodes
+ * @tparam T any type of the identifier
  */
-public interface IStation<T> extends INetworkNode<T>
+public interface INode<T>
 {
+
+    /**
+     * returns the identifier of the node
+     *
+     * @return identifier
+     */
+    T id();
+
 }

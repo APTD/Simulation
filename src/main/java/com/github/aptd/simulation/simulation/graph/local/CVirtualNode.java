@@ -20,14 +20,38 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.network;
+package com.github.aptd.simulation.simulation.graph.local;
+
+
+
+import com.github.aptd.simulation.simulation.graph.INode;
+import com.github.aptd.simulation.simulation.train.ITrain;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
 /**
- * platform interface
- * @tparam T node identifier
+ * virtual node
  */
-public interface IPlatform<T> extends IStation<T>
+public final class CVirtualNode<T> extends IBaseNode<T>
 {
 
+    /**
+     * ctor
+     *
+     * @param p_configuration agent configuration
+     * @param p_id node identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
+     */
+    public CVirtualNode( final IAgentConfiguration<INode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
+    {
+        super( p_configuration, p_id, p_longitude, p_latitude );
+    }
+
+
+    @Override
+    public final ITrain apply( final ITrain p_train )
+    {
+        return p_train;
+    }
 }

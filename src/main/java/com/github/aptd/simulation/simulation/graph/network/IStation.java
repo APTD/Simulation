@@ -20,13 +20,14 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.network;
+package com.github.aptd.simulation.simulation.graph.network;
+
 
 
 /**
- * interface of an tracking node to generate events
+ * interface of a node, which is a train station
  * @tparam T node identifier type
  */
-public interface IVirtualNode<T> extends INetworkNode<T>
+public interface IStation<T> extends INetworkNode<T>
 {
 }

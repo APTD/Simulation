@@ -20,83 +20,35 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph;
+package com.github.aptd.simulation.simulation.graph.local;
 
-import java.text.MessageFormat;
+import com.github.aptd.simulation.simulation.graph.INode;
+import com.github.aptd.simulation.simulation.train.ITrain;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
 /**
- * edge class
- *
- * @tparam T node type
+ * full station with different tracks and building
  */
-public abstract class IBaseEdge<T> implements IEdge<T>
+public final class CStation<T> extends IBaseNode<T>
 {
-    /**
-     * identifier (source of the edge)
-     */
-    private final T m_sourceidentifier;
-    /**
-     * identifier (target of the edge)
-     */
-    private final T m_targetidentifier;
-    /**
-     * weight of the edge
-     */
-    private double m_weight;
 
     /**
      * ctor
      *
-     * @param p_sourceidentifier source identifier of the edge
-     * @param p_targetidentifier target identifiers of the edge
+     * @param p_configuration agent configuration
+     * @param p_id node identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
      */
-    public IBaseEdge( final T p_sourceidentifier, final T p_targetidentifier )
+    public CStation( final IAgentConfiguration<INode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
     {
-        m_sourceidentifier = p_sourceidentifier;
-        m_targetidentifier = p_targetidentifier;
+        super( p_configuration, p_id, p_longitude, p_latitude );
     }
 
     @Override
-    public final T from()
+    public final ITrain apply( final ITrain p_train )
     {
-        return m_sourceidentifier;
-    }
-
-    @Override
-    public final double weight()
-    {
-        return m_weight;
-    }
-
-    @Override
-    public final IEdge<T> weight( final double p_weight )
-    {
-        m_weight = p_weight;
-        return this;
-    }
-
-    @Override
-    public final T to()
-    {
-        return m_targetidentifier;
-    }
-
-    @Override
-    public String toString()
-    {
-        return MessageFormat.format( "{0} --{1}--> {2}", m_sourceidentifier, m_weight, m_targetidentifier );
-    }
-
-    @Override
-    public final int hashCode()
-    {
-        return 911 * m_sourceidentifier.hashCode() + 313 * m_targetidentifier.hashCode();
-    }
-
-    @Override
-    public boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof IEdge<?> ) && ( p_object.hashCode() == this.hashCode() );
+        return p_train;
     }
 }

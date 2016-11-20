@@ -20,7 +20,7 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph;
+package com.github.aptd.simulation.simulation.graph;
 
 import com.github.aptd.simulation.common.CCommon;
 
@@ -29,7 +29,9 @@ import java.text.MessageFormat;
 /**
  * define a graph node
  * @tparam T any typo of the node identifier to get a more flexible structure
+ * @deprecated
  */
+@Deprecated
 public abstract class IBaseNode<T> implements INode<T>
 {
     /**

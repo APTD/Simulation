@@ -20,50 +20,39 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph;
 
-import java.util.Collection;
-import java.util.List;
+package com.github.aptd.simulation.simulation.graph.local;
+
+import com.github.aptd.simulation.simulation.graph.INode;
+import com.github.aptd.simulation.simulation.train.ITrain;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+
 
 /**
- * interface of graphs
- * @tparam T node identifier type
+ * transit station class to define a station without details of tracks
+ *
+ * @tparam T identifier type
  */
-public interface IGraph<T, N extends INode<T>, E extends IEdge<T>>
+public final class CTransitStation<T> extends IBaseNode<T>
 {
 
     /**
-     * calculate a route
+     * ctor
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
-     */
-    List<E> route( final T p_start, final T p_end );
-
-    /**
-     * returns a node from the graph
-     *
-     * @param p_id identifier of the node
-     * @return null or node object
-     */
-    N node( final T p_id );
-
-    /**
-     * returns an edge
-     *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
-     */
-    E edge( final T p_start, final T p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
+     * @param p_configuration agent configuration
      * @param p_id node identifier
-     * @return collection of neighbour nodes
+     * @param p_longitude longitude
+     * @param p_latitude latitude
      */
-    Collection<N> neighbours( final T p_id );
+    public CTransitStation( final IAgentConfiguration<INode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
+    {
+        super( p_configuration, p_id, p_longitude, p_latitude );
+    }
+
+    @Override
+    public final ITrain apply( final ITrain p_train )
+    {
+        return p_train;
+    }
 
 }

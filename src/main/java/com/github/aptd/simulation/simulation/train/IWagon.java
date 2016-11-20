@@ -20,29 +20,26 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.local;
-
-import com.github.aptd.simulation.graph.IEdge;
-import com.github.aptd.simulation.graph.IFactory;
-import com.github.aptd.simulation.graph.IGraph;
-import com.github.aptd.simulation.graph.INode;
-import com.github.aptd.simulation.graph.network.INetworkNode;
-
+package com.github.aptd.simulation.simulation.train;
 
 /**
- * factory class of the local graph
+ * wagon interface
  */
-public final class CLocalFactory implements IFactory
+public interface IWagon
 {
-    @Override
-    public final <T, N extends INode<T>, E extends IEdge<T>> IGraph<T, N, E> graph()
-    {
-        return null;
-    }
 
-    @Override
-    public final <T> INetworkNode<T> networkvirtualnode( final T p_id, final double p_longitude, final double p_latitude )
-    {
-        return new CVirtualNode<T>( p_id, p_longitude, p_latitude );
-    }
+    /**
+     * wagon idenitifer
+     *
+     * @return id
+     */
+    int id();
+
+    /**
+     * unused places
+     *
+     * @return places
+     */
+    int place();
+
 }

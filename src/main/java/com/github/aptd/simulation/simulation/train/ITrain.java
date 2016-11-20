@@ -20,73 +20,24 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph;
+package com.github.aptd.simulation.simulation.train;
 
-import com.github.aptd.simulation.graph.local.CLocalFactory;
-import com.github.aptd.simulation.graph.network.INetworkNode;
+import com.github.aptd.simulation.simulation.IElement;
+import org.lightjason.agentspeak.agent.IAgent;
 
 
 /**
- * interface of a graph factory
+ * interface of train
  */
-public interface IFactory
+public interface ITrain extends IElement, IAgent<ITrain>
 {
 
     /**
-     * generates a graph instance
+     * unique identifier of the train
      *
-     * @tparam T node identifier type
-     * @tparam N node type
-     * @tparam E edge type
-     * @return graph instance
+     * @return identifier
      */
-    <T, N extends INode<T>, E extends IEdge<T>> IGraph<T, N, E> graph();
-
-    /**
-     * generates virtual network node
-     *
-     * @param p_id node identifier
-     * @param p_longitude longitude
-     * @param p_latitude latitude
-     */
-    <T> INetworkNode<T> networkvirtualnode( final T p_id, final double p_longitude, final double p_latitude );
+    String id();
 
 
-
-
-
-    /**
-     * factory
-     */
-    enum EFactory
-    {
-        LOCAL( new CLocalFactory() );
-
-        /**
-         * factory instance
-         */
-        private final IFactory m_factory;
-
-        /**
-         * ctor
-         *
-         * @param p_factory factory object
-         */
-        EFactory( final IFactory p_factory )
-        {
-            m_factory = p_factory;
-        }
-
-        /**
-         * returns the factory
-         *
-         * @return factory
-         */
-        IFactory factory()
-        {
-            return m_factory;
-        }
-
-
-    }
 }

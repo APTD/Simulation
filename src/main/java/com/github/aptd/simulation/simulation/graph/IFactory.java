@@ -20,33 +20,73 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.graph.network;
+package com.github.aptd.simulation.simulation.graph;
 
-import com.github.aptd.simulation.graph.IEdge;
+import com.github.aptd.simulation.simulation.graph.local.CFactory;
+import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
 
 
 /**
- * interface of network edge
- *
- * @tparam T identifier type
+ * interface of a graph factory
  */
-public interface INetworkEdge<T> extends IEdge<T>
+public interface IFactory
 {
 
     /**
-     * returns the maximum speed of the edge
+     * generates a graph instance
      *
-     * @return speed
+     * @tparam T node identifier type
+     * @tparam N node type
+     * @tparam E edge type
+     * @return graph instance
      */
-    double maximumspeed();
+    <T, N extends INode<T>, E extends IEdge<T>> IGraph<T, N, E> graph();
 
     /**
-     * checks if the edge is empty
+     * generates virtual network node
      *
-     * @return boolean emtpy flag
+     * @param p_id node identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
      */
-    boolean empty();
+    <T> INetworkNode<T> networkvirtualnode( final T p_id, final double p_longitude, final double p_latitude );
 
 
 
+
+
+    /**
+     * factory
+     */
+    enum EFactory
+    {
+        LOCAL( new CFactory() );
+
+        /**
+         * factory instance
+         */
+        private final IFactory m_factory;
+
+        /**
+         * ctor
+         *
+         * @param p_factory factory object
+         */
+        EFactory( final IFactory p_factory )
+        {
+            m_factory = p_factory;
+        }
+
+        /**
+         * returns the factory
+         *
+         * @return factory
+         */
+        IFactory factory()
+        {
+            return m_factory;
+        }
+
+
+    }
 }

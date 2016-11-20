@@ -20,9 +20,9 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.object.dispatcher;
+package com.github.aptd.simulation.simulation.dispatcher;
 
-import com.github.aptd.simulation.object.IElement;
+import com.github.aptd.simulation.simulation.IElement;
 import org.lightjason.agentspeak.agent.IAgent;
 
 
