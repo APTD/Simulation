@@ -20,34 +20,35 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.train;
+package com.github.aptd.simulation.graph;
+
+import org.junit.Test;
+
 
 /**
- * wagon interface
+ * network test
  */
-public interface IWagon
+public final class TestCNetwork
 {
 
     /**
-     * anouncement for all agents within the wagon
-     *
-     * @param p_any any object
-     * @return self reference
+     * network design test
      */
-    IWagon announcement( final Object p_any );
+    @Test
+    public void networkbuild()
+    {
+
+    }
+
 
     /**
-     * unused places
+     * main method to run test manual
      *
-     * @return places
+     * @param p_args command-line arguments
      */
-    int free();
-
-    /**
-     * number of free placeses
-     *
-     * @return size
-     */
-    int size();
+    public static void main( final String[] p_args )
+    {
+        new TestCNetwork().networkbuild();
+    }
 
 }

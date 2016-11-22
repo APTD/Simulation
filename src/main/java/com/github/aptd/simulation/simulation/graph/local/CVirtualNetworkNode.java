@@ -26,7 +26,6 @@ package com.github.aptd.simulation.simulation.graph.local;
 
 import com.github.aptd.simulation.simulation.graph.network.IBaseNetworkNode;
 import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
-import com.github.aptd.simulation.simulation.train.ITrain;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
@@ -50,9 +49,4 @@ public final class CVirtualNetworkNode<T> extends IBaseNetworkNode<T>
     }
 
 
-    @Override
-    public final ITrain apply( final ITrain p_train )
-    {
-        return p_train;
-    }
 }

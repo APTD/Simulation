@@ -29,7 +29,7 @@ import org.lightjason.agentspeak.agent.IAgent;
 /**
  * interface of train
  */
-public interface ITrain extends IElement, IAgent<ITrain>
+public interface ITrain<T> extends IElement, IAgent<ITrain<T>>
 {
 
     /**
@@ -37,7 +37,29 @@ public interface ITrain extends IElement, IAgent<ITrain>
      *
      * @return identifier
      */
-    String id();
+    T id();
+
+    /**
+     * wagon number
+     *
+     * @return wagon number
+     */
+    int wagon();
+
+    /**
+     * adds a new wagon
+     *
+     * @param p_wagon wagon
+     * @return self reference
+     */
+    ITrain addwagon( final IWagon p_wagon );
+
+    /**
+     * removes the last wagon
+     *
+     * @return last wagon
+     */
+    IWagon removewagon();
 
 
 }

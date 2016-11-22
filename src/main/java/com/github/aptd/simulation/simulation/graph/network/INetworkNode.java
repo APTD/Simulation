@@ -23,7 +23,6 @@
 package com.github.aptd.simulation.simulation.graph.network;
 
 import com.github.aptd.simulation.simulation.graph.INode;
-import com.github.aptd.simulation.simulation.train.ITrain;
 import org.lightjason.agentspeak.agent.IAgent;
 
 
@@ -48,13 +47,5 @@ public interface INetworkNode<T> extends INode<T>, IAgent<INetworkNode<T>>
      * @return latitude
      */
     double latitude();
-
-    /**
-     * apply function to update the agent
-     *
-     * @param p_train train agent
-     * @return train agent
-     */
-    ITrain apply( final ITrain p_train );
 
 }

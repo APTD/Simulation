@@ -24,12 +24,14 @@ package com.github.aptd.simulation.simulation.graph;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+
 
 /**
  * interface of graphs
  * @tparam T node identifier type
  */
-public interface IGraph<T, N extends INode<T>, E extends IEdge<T>>
+public interface IGraph<T, N extends INode<T>, E extends IEdge<T>> extends Callable<IGraph<T, N, E>>
 {
 
     /**

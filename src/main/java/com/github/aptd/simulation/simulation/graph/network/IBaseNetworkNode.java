@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.simulation.graph.network;
 
+import com.github.aptd.simulation.simulation.graph.INode;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
@@ -30,6 +31,7 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
  * abstract class of a network node
  *
  * @tparam T node type
+ * @todo remove print stacktrace
  */
 public abstract class IBaseNetworkNode<T> extends IBaseAgent<INetworkNode<T>> implements INetworkNode<T>
 {
@@ -92,4 +94,17 @@ public abstract class IBaseNetworkNode<T> extends IBaseAgent<INetworkNode<T>> im
         return m_id.equals( p_object );
     }
 
+    @Override
+    public final INode<T> execute()
+    {
+        try
+        {
+            this.call();
+        }
+        catch ( final Exception l_exception )
+        {
+            l_exception.printStackTrace();
+        }
+        return this;
+    }
 }

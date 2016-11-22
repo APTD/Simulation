@@ -47,6 +47,4 @@ public interface INetworkEdge<T> extends IEdge<T>
      */
     boolean empty();
 
-
-
 }

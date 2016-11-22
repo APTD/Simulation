@@ -20,34 +20,44 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.train;
+package com.github.aptd.simulation.simulation.error;
+
+import java.text.MessageFormat;
+
 
 /**
- * wagon interface
+ * semantic exception to define internal errors
+ *
+ * @warning exception will not properagte outside
  */
-public interface IWagon
+public final class CSemanticException extends RuntimeException
 {
 
     /**
-     * anouncement for all agents within the wagon
-     *
-     * @param p_any any object
-     * @return self reference
+     * ctor
      */
-    IWagon announcement( final Object p_any );
+    public CSemanticException()
+    {
+        super();
+    }
 
     /**
-     * unused places
+     * ctor
      *
-     * @return places
+     * @param p_message any message
      */
-    int free();
+    public CSemanticException( final String p_message, final Object... p_values )
+    {
+        super( MessageFormat.format( p_message, p_values ) );
+    }
 
     /**
-     * number of free placeses
+     * ctor
      *
-     * @return size
+     * @param p_cause any throwable
      */
-    int size();
-
+    public CSemanticException( final Throwable p_cause )
+    {
+        super( p_cause );
+    }
 }

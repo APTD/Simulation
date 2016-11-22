@@ -137,4 +137,13 @@ public class CSparseGraph<T, N extends INode<T>, E extends IEdge<T>> implements 
         return m_graph.toString();
     }
 
+    @Override
+    public final IGraph<T, N, E> call() throws Exception
+    {
+        m_nodemap.values()
+                 .parallelStream()
+                 .forEach( INode::execute );
+
+        return this;
+    }
 }
