@@ -35,6 +35,7 @@ import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Collectors;
 
@@ -115,16 +116,12 @@ public final class TestCNetwork
      * s
      * @tparam T node identifier
      */
-    private static class CStationGenerator<T, G extends INetworkNode<T>> extends IBaseAgentGenerator<INetworkNode<T>>
+    private static final class CStationGenerator<T, G extends INetworkNode<T>> extends IBaseAgentGenerator<INetworkNode<T>>
     {
         /**
-         * class of template parameter
+         * ctor reference
          */
-        private final Class<T> m_classid;
-        /**
-         * generator class
-         */
-        private final Class<G> m_classgenerator;
+        private final Constructor<G> m_ctor;
 
         /**
          * ctor
@@ -137,20 +134,17 @@ public final class TestCNetwork
         public CStationGenerator( final InputStream p_stream, final Class<G> p_classgenerator, final Class<T> p_classid ) throws Exception
         {
             super( p_stream, CCommon.actionsFromPackage().collect( Collectors.toSet() ), IAggregation.EMPTY );
-            m_classgenerator = p_classgenerator;
-            m_classid = p_classid;
+            m_ctor = p_classgenerator.getConstructor( IAgentConfiguration.class, p_classid, Double.class, Double.class );
         }
 
         @Override
-        public INetworkNode<T> generatesingle( final Object... p_data )
+        public final INetworkNode<T> generatesingle( final Object... p_data )
         {
             try
             {
-                return m_classgenerator
-                    .getConstructor( IAgentConfiguration.class, m_classid, Double.class, Double.class )
-                    .newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
+                return m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
             }
-            catch ( final NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException l_exception )
+            catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )
             {
                 throw new CSemanticException( l_exception );
             }
