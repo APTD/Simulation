@@ -27,7 +27,7 @@ machine:
 dependencies:
     pre:
         - sudo apt-get install doxygen graphviz
-        - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install
+        - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
 
 test:
     override:
@@ -41,6 +41,8 @@ test:
         - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
         # Documentation Build with Update to GH-Pages Branch
+        - git checkout master
+        - mv -f target/site /tmp
         - git checkout gh-pages
         - mv -f circle.yml /tmp
         - mv -f .gitignore /tmp
