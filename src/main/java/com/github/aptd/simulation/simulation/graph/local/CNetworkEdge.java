@@ -37,7 +37,7 @@ public final class CNetworkEdge<T> extends IBaseEdge<T> implements INetworkEdge<
      * @param p_sourceidentifier source identifier of the edge
      * @param p_targetidentifier target identifiers of the edge
      */
-    protected CNetworkEdge( final T p_sourceidentifier, final T p_targetidentifier )
+    private CNetworkEdge( final T p_sourceidentifier, final T p_targetidentifier )
     {
         super( p_sourceidentifier, p_targetidentifier );
     }
@@ -46,6 +46,18 @@ public final class CNetworkEdge<T> extends IBaseEdge<T> implements INetworkEdge<
     public final double maximumspeed()
     {
         return 0;
+    }
+
+    /**
+     * factory
+     * @param p_sourceidentifier source identifier
+     * @param p_targetidentifier target identifiers
+     * @tparam U identifier type
+     * @return edge instance
+     */
+    public static <U> INetworkEdge<U> from( final U p_sourceidentifier, final U p_targetidentifier )
+    {
+        return new CNetworkEdge<U>( p_sourceidentifier, p_targetidentifier );
     }
 
 }

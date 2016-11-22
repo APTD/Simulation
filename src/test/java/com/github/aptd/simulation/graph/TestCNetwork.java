@@ -23,7 +23,10 @@
 package com.github.aptd.simulation.graph;
 
 import com.github.aptd.simulation.simulation.error.CSemanticException;
+import com.github.aptd.simulation.simulation.graph.local.CNetworkEdge;
+import com.github.aptd.simulation.simulation.graph.local.CSparseGraph;
 import com.github.aptd.simulation.simulation.graph.local.CStation;
+import com.github.aptd.simulation.simulation.graph.network.INetworkEdge;
 import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
 import org.junit.Assume;
 import org.junit.Before;
@@ -38,6 +41,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -54,7 +58,7 @@ public final class TestCNetwork
      * initialize test
      */
     @Before
-    //@SuppressWarnings( "unchecked" )
+    @SuppressWarnings( "unchecked" )
     public void ininitialize()
     {
         try
@@ -78,27 +82,39 @@ public final class TestCNetwork
     {
         Assume.assumeNotNull( m_station );
 
-        m_station.generatesingle( "Göttingen", 51.536777, 9.926074 );
-
-
         // build 8 node mini scenario, one full-qualified station with
         // different platforms and levels all other only transit station
+        System.out.println(
+            new CSparseGraph<String, INetworkNode<String>, INetworkEdge<String>>(
 
-        /*
-        new CSparseGraph<String, INetworkNode<String>, INetworkEdge<String>>(
-            Stream.of(
-            Göttingen 51.536777, 9.926074 -> Heilbad Heiligenstadt 51.377105, 10.123940
-            Kreiensen 51.850591, 9.969346  -> Herzberg Harz 51.644046, 10.329508
+                Stream.of(
+                    m_station.generatesingle( "Göttingen", 51.536777, 9.926074 ),
+                    m_station.generatesingle( "Kreiensen", 51.850591, 9.969346 ),
+                    m_station.generatesingle( "Herzberg Harz", 51.644046, 10.329508 ),
+                    m_station.generatesingle( "Heilbad Heiligenstadt", 51.377105, 10.123940 ),
 
-            Goslar 51.911861, 10.420842
-            Alfred (Leine) 51.984547, 9.812833
+                    m_station.generatesingle( "Alfred (Leine)", 51.984547, 9.812833 ),
+                    m_station.generatesingle( "Goslar", 51.911861, 10.420842 ),
 
-            Hann Münden 51.412148, 9.657186
-            Witzenhausen 51.351333, 9.860542
-            ).collect( Collectors.toSet() ),
-            Stream.of().collect( Collectors.toSet() )
+                    m_station.generatesingle( "Hann Münden", 51.412148, 9.657186 ),
+                    m_station.generatesingle( "Witzenhausen", 51.351333, 9.860542 )
+                ).collect( Collectors.toSet() ),
+
+                Stream.of(
+
+                    CNetworkEdge.from( "Göttingen", "Kreiensen" ),
+                    CNetworkEdge.from( "Kreiensen", "Herzberg Harz" ),
+                    CNetworkEdge.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
+
+                    CNetworkEdge.from( "Kreiensen", "Alfred (Leine)" ),
+                    CNetworkEdge.from( "Kreiensen", "Goslar" ),
+
+                    CNetworkEdge.from( "Göttingen", "Hann Münden" ),
+                    CNetworkEdge.from( "Göttingen", "Witzenhausen" )
+
+                ).collect( Collectors.toSet() )
+            )
         );
-        */
     }
 
     /**

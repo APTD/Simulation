@@ -1,1 +1,1 @@
-+!foo() <- generic/print( "station" ).
++!train/arrive(T) <- generic/print( "train arrives", T ).
