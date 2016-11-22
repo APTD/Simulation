@@ -23,7 +23,8 @@
 
 package com.github.aptd.simulation.simulation.graph.local;
 
-import com.github.aptd.simulation.simulation.graph.INode;
+import com.github.aptd.simulation.simulation.graph.network.IBaseNetworkNode;
+import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
 import com.github.aptd.simulation.simulation.train.ITrain;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
@@ -33,7 +34,7 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
  *
  * @tparam T identifier type
  */
-public final class CTransitStation<T> extends IBaseNode<T>
+public final class CTransitStation<T> extends IBaseNetworkNode<T>
 {
 
     /**
@@ -44,7 +45,7 @@ public final class CTransitStation<T> extends IBaseNode<T>
      * @param p_longitude longitude
      * @param p_latitude latitude
      */
-    public CTransitStation( final IAgentConfiguration<INode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
+    public CTransitStation( final IAgentConfiguration<INetworkNode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
     {
         super( p_configuration, p_id, p_longitude, p_latitude );
     }

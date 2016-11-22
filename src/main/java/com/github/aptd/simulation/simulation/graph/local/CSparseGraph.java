@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @tparam T node identifier type
  * @see http://jung.sourceforge.net/doc/api/edu/uci/ics/jung/graph/package-summary.html
  */
-public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph<T, N, E>
+public class CSparseGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph<T, N, E>
 {
     /**
      * graph data structure
@@ -63,7 +63,7 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
      * @param p_nodes nodes elements
      * @param p_edges edge elements
      */
-    public CGraph( final Collection<N> p_nodes, final Collection<E> p_edges )
+    public CSparseGraph( final Collection<N> p_nodes, final Collection<E> p_edges )
     {
         this( p_nodes, p_edges, IEdge::weight );
     }
@@ -75,7 +75,7 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
      * @param p_edges edge elements
      * @param p_weightfunction weight function
      */
-    public CGraph( final Collection<N> p_nodes, final Collection<E> p_edges, final Function<E, ? extends Number> p_weightfunction )
+    public CSparseGraph( final Collection<N> p_nodes, final Collection<E> p_edges, final Function<E, ? extends Number> p_weightfunction )
     {
         p_nodes.forEach( m_graph::addVertex );
 
@@ -95,7 +95,7 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
     @Override
     public final List<E> route( final T p_start, final T p_end )
     {
-        return m_dijekstra.getPath( new CHelperNode( p_start ), new CHelperNode( p_end ) );
+        return m_dijekstra.getPath( this.node( p_start ), this.node( p_end ) );
     }
 
     @Override
@@ -107,14 +107,14 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
     @Override
     public final E edge( final T p_start, final T p_end )
     {
-        return m_graph.findEdge( new CHelperNode( p_start ), new CHelperNode( p_end ) );
+        return m_graph.findEdge( this.node( p_start ), this.node( p_end ) );
     }
 
     @Override
     public final Collection<N> neighbours( final T p_id )
     {
-        final N l_node = new CHelperNode( p_id );
-        return m_graph.containsVertex( l_node )
+        final N l_node = this.node( p_id );
+        return ( l_node != null ) && ( m_graph.containsVertex( l_node ) )
                 ? m_graph.getNeighbors( l_node )
                 : Collections.<N>emptySet();
     }
@@ -137,33 +137,4 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
         return m_graph.toString();
     }
 
-
-    /**
-     * helping node for searching
-     *
-     * @tparam L
-     */
-    private final class CHelperNode implements INode<T>
-    {
-        /**
-         * node identifier
-         */
-        private final T m_id;
-
-        /**
-         * ctor
-         *
-         * @param p_id identifier
-         */
-        private CHelperNode( final T p_id )
-        {
-            m_id = p_id;
-        }
-
-        @Override
-        public final T id()
-        {
-            return m_id;
-        }
-    }
 }

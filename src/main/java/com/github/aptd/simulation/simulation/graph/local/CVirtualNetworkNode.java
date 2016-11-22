@@ -20,60 +20,39 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.graph;
+package com.github.aptd.simulation.simulation.graph.local;
 
-import com.github.aptd.simulation.common.CCommon;
 
-import java.text.MessageFormat;
+
+import com.github.aptd.simulation.simulation.graph.network.IBaseNetworkNode;
+import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
+import com.github.aptd.simulation.simulation.train.ITrain;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+
 
 /**
- * define a graph node
- * @tparam T any typo of the node identifier to get a more flexible structure
- * @deprecated
+ * virtual node
  */
-@Deprecated
-public abstract class IBaseNode<T> implements INode<T>
+public final class CVirtualNetworkNode<T> extends IBaseNetworkNode<T>
 {
-    /**
-     * unique node identifier
-     */
-    private final T m_id;
-
 
     /**
      * ctor
      *
-     * @param p_id unique identifier
+     * @param p_configuration agent configuration
+     * @param p_id node identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
      */
-    public IBaseNode( final T p_id )
+    public CVirtualNetworkNode( final IAgentConfiguration<INetworkNode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
     {
-        if ( p_id == null )
-            throw new IllegalArgumentException( CCommon.languagestring( IBaseNode.class, "nodeid" ) );
-        m_id = p_id;
+        super( p_configuration, p_id, p_longitude, p_latitude );
     }
 
 
     @Override
-    public final T id()
+    public final ITrain apply( final ITrain p_train )
     {
-        return m_id;
-    }
-
-    @Override
-    public final int hashCode()
-    {
-        return m_id.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof INode<?> ) && ( this.hashCode() == p_object.hashCode() );
-    }
-
-    @Override
-    public String toString()
-    {
-        return MessageFormat.format( "(id: {0})", m_id );
+        return p_train;
     }
 }

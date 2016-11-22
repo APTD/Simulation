@@ -27,6 +27,7 @@ import com.github.aptd.simulation.simulation.graph.IFactory;
 import com.github.aptd.simulation.simulation.graph.IGraph;
 import com.github.aptd.simulation.simulation.graph.INode;
 import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
 /**
@@ -41,8 +42,8 @@ public final class CFactory implements IFactory
     }
 
     @Override
-    public final <T> INetworkNode<T> networkvirtualnode( final T p_id, final double p_longitude, final double p_latitude )
+    public final <T> INetworkNode<T> networkvirtualnode( final IAgentConfiguration<INetworkNode<T>> p_agent, final T p_id, final double p_longitude, final double p_latitude )
     {
-        return new CVirtualNode<T>( p_id, p_longitude, p_latitude );
+        return new CVirtualNetworkNode<T>( p_agent, p_id, p_longitude, p_latitude );
     }
 }

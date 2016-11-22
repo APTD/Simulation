@@ -28,10 +28,8 @@ import java.text.MessageFormat;
 /**
  * edge class
  *
- * @tparam T node type
- * @deprecated
+ * @tparam T node identifier type
  */
-@Deprecated
 public abstract class IBaseEdge<T> implements IEdge<T>
 {
     /**
@@ -53,7 +51,7 @@ public abstract class IBaseEdge<T> implements IEdge<T>
      * @param p_sourceidentifier source identifier of the edge
      * @param p_targetidentifier target identifiers of the edge
      */
-    public IBaseEdge( final T p_sourceidentifier, final T p_targetidentifier )
+    protected IBaseEdge( final T p_sourceidentifier, final T p_targetidentifier )
     {
         m_sourceidentifier = p_sourceidentifier;
         m_targetidentifier = p_targetidentifier;

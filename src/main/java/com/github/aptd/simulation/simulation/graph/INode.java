@@ -22,8 +22,6 @@
 
 package com.github.aptd.simulation.simulation.graph;
 
-import org.lightjason.agentspeak.agent.IAgent;
-
 
 /**
  * interface of graph nodes to create different types of nodes

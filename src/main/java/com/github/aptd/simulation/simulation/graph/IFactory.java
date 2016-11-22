@@ -24,6 +24,7 @@ package com.github.aptd.simulation.simulation.graph;
 
 import com.github.aptd.simulation.simulation.graph.local.CFactory;
 import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
 /**
@@ -45,11 +46,12 @@ public interface IFactory
     /**
      * generates virtual network node
      *
+     * @param p_agent agent configuration
      * @param p_id node identifier
      * @param p_longitude longitude
      * @param p_latitude latitude
      */
-    <T> INetworkNode<T> networkvirtualnode( final T p_id, final double p_longitude, final double p_latitude );
+    <T> INetworkNode<T> networkvirtualnode( final IAgentConfiguration<INetworkNode<T>> p_agent, final T p_id, final double p_longitude, final double p_latitude );
 
 
 
