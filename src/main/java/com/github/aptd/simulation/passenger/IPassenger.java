@@ -20,24 +20,15 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.graph.network;
+package com.github.aptd.simulation.passenger;
 
-import com.github.aptd.simulation.simulation.graph.IEdge;
+import com.github.aptd.simulation.simulation.IElement;
+import org.lightjason.agentspeak.agent.IAgent;
 
 
 /**
- * interface of network edge
- *
- * @tparam T identifier type
+ * passenger interface
  */
-public interface INetworkEdge<T> extends IEdge<T>
+public interface IPassenger<T> extends IElement, IAgent<IPassenger<T>>
 {
-
-    /**
-     * returns the maximum speed of the edge
-     *
-     * @return speed
-     */
-    double maximumspeed();
-
 }

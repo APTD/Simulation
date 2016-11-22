@@ -20,24 +20,32 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.graph.network;
+package com.github.aptd.simulation.simulation.graph.local;
 
-import com.github.aptd.simulation.simulation.graph.IEdge;
+import com.github.aptd.simulation.simulation.graph.IBaseEdge;
+import com.github.aptd.simulation.simulation.graph.network.INetworkEdge;
 
 
 /**
- * interface of network edge
- *
- * @tparam T identifier type
+ * network edge class to link to nodes
  */
-public interface INetworkEdge<T> extends IEdge<T>
+public final class CNetworkEdge<T> extends IBaseEdge<T> implements INetworkEdge<T>
 {
-
     /**
-     * returns the maximum speed of the edge
+     * ctor
      *
-     * @return speed
+     * @param p_sourceidentifier source identifier of the edge
+     * @param p_targetidentifier target identifiers of the edge
      */
-    double maximumspeed();
+    protected CNetworkEdge( final T p_sourceidentifier, final T p_targetidentifier )
+    {
+        super( p_sourceidentifier, p_targetidentifier );
+    }
+
+    @Override
+    public final double maximumspeed()
+    {
+        return 0;
+    }
 
 }

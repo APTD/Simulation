@@ -22,6 +22,12 @@
 
 package com.github.aptd.simulation.simulation.train;
 
+import com.github.aptd.simulation.passenger.IPassenger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+
+import java.util.stream.Stream;
+
+
 /**
  * wagon interface
  */
@@ -31,10 +37,10 @@ public interface IWagon
     /**
      * anouncement for all agents within the wagon
      *
-     * @param p_any any object
+     * @param p_trigger announcement trigger
      * @return self reference
      */
-    IWagon announcement( final Object p_any );
+    IWagon announcement( final ITrigger p_trigger );
 
     /**
      * unused places
@@ -49,5 +55,27 @@ public interface IWagon
      * @return size
      */
     int size();
+
+    /**
+     * adds a passenger to the wagon
+     *
+     * @param p_passenger passanger agent
+     * @return self reference
+     */
+    IWagon add( final IPassenger<?> p_passenger );
+
+    /**
+     * removes a passenger from the wagon
+     * @param p_passenger passenger
+     * @return self reference
+     */
+    IWagon remove( final IPassenger<?> p_passenger );
+
+    /**
+     * stream over all passenger
+     *
+     * @return passenger stream
+     */
+    Stream<IPassenger<?>> stream();
 
 }

@@ -22,12 +22,14 @@
 
 package com.github.aptd.simulation.simulation.train;
 
+import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.simulation.error.CSemanticException;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +43,7 @@ import java.util.stream.Stream;
  * base train class
  */
 @IAgentAction
-public abstract class IBaseTrain<T> extends IBaseAgent<ITrain<T>> implements ITrain<T>
+public final class CTrain<T> extends IBaseAgent<ITrain<T>> implements ITrain<T>
 {
     /**
      * train identifier
@@ -60,7 +62,7 @@ public abstract class IBaseTrain<T> extends IBaseAgent<ITrain<T>> implements ITr
      * @param p_id train identifier
      * @param p_wagon wagon definition
      */
-    protected IBaseTrain( final IAgentConfiguration<ITrain<T>> p_agent, final T p_id, final IWagon... p_wagon )
+    protected CTrain( final IAgentConfiguration<ITrain<T>> p_agent, final T p_id, final IWagon... p_wagon )
     {
         this( p_agent, p_id, Arrays.stream( p_wagon ) );
     }
@@ -73,7 +75,7 @@ public abstract class IBaseTrain<T> extends IBaseAgent<ITrain<T>> implements ITr
      * @param p_id train identifier
      * @param p_wagon wagon definition
      */
-    protected IBaseTrain( final IAgentConfiguration<ITrain<T>> p_agent, final T p_id, final Stream<IWagon> p_wagon )
+    protected CTrain( final IAgentConfiguration<ITrain<T>> p_agent, final T p_id, final Stream<IWagon> p_wagon )
     {
         super( p_agent );
         m_id = p_id;
@@ -125,10 +127,8 @@ public abstract class IBaseTrain<T> extends IBaseAgent<ITrain<T>> implements ITr
     @IAgentActionName( name = "train/announcement" )
     private void announcement( final Object p_any )
     {
-        m_wagon.parallelStream().forEach( i -> i.announcement( p_any ) );
+        final ITrigger l_trigger = CAgentTrigger.wagonannouncement( p_any );
+        m_wagon.parallelStream().forEach( i -> i.announcement( l_trigger ) );
     }
-
-
-
 
 }

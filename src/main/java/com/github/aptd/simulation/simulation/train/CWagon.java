@@ -20,24 +20,74 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.graph.network;
+package com.github.aptd.simulation.simulation.train;
 
-import com.github.aptd.simulation.simulation.graph.IEdge;
+import com.github.aptd.simulation.passenger.IPassenger;
+import com.google.common.collect.Sets;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
+
+import java.util.Set;
+import java.util.stream.Stream;
 
 
 /**
- * interface of network edge
- *
- * @tparam T identifier type
+ * wagon class
  */
-public interface INetworkEdge<T> extends IEdge<T>
+public final class CWagon implements IWagon
 {
+    /**
+     * set with agents
+     */
+    private Set<IPassenger<?>> m_passanger = Sets.newConcurrentHashSet();
+    /**
+     * maximum passanger
+     */
+    private final int m_maximum;
 
     /**
-     * returns the maximum speed of the edge
+     * passanger
      *
-     * @return speed
+     * @param p_maximum maximum
      */
-    double maximumspeed();
+    public CWagon( final int p_maximum )
+    {
+        m_maximum = p_maximum;
+    }
 
+    @Override
+    public IWagon announcement( final ITrigger p_trigger )
+    {
+        m_passanger.parallelStream().forEach( i -> i.trigger( p_trigger ) );
+        return this;
+    }
+
+    @Override
+    public int free()
+    {
+        return m_maximum - m_passanger.size();
+    }
+
+    @Override
+    public int size()
+    {
+        return m_passanger.size();
+    }
+
+    @Override
+    public final IWagon add( final IPassenger<?> p_passenger )
+    {
+        return null;
+    }
+
+    @Override
+    public final IWagon remove( final IPassenger<?> p_passenger )
+    {
+        return null;
+    }
+
+    @Override
+    public final Stream<IPassenger<?>> stream()
+    {
+        return null;
+    }
 }

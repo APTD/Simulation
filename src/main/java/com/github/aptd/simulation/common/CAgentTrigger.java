@@ -20,24 +20,36 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.simulation.graph.network;
+package com.github.aptd.simulation.common;
 
-import com.github.aptd.simulation.simulation.graph.IEdge;
+import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
 
 /**
- * interface of network edge
- *
- * @tparam T identifier type
+ * tool class for defining agent trigger
  */
-public interface INetworkEdge<T> extends IEdge<T>
+public final class CAgentTrigger
 {
 
     /**
-     * returns the maximum speed of the edge
-     *
-     * @return speed
+     * ctor
      */
-    double maximumspeed();
+    private CAgentTrigger()
+    {}
+
+
+    /**
+     * wagon announcement
+     *
+     * @param p_data announcement data
+     * @return trigger
+     */
+    public static ITrigger wagonannouncement( final Object p_data )
+    {
+        return CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "wagon/announcement", CRawTerm.from( p_data ) ) );
+    }
 
 }
