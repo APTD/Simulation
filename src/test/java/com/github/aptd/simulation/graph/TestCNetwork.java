@@ -54,6 +54,7 @@ public final class TestCNetwork
      * initialize test
      */
     @Before
+    //@SuppressWarnings( "unchecked" )
     public void ininitialize()
     {
         try
@@ -61,10 +62,11 @@ public final class TestCNetwork
             final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
         )
         {
-            m_station = new CStationGenerator<>( l_station, CStation.class, String.class );
+            m_station = new CStationGenerator<>( l_station, CStation.class );
         }
         catch ( final Exception l_exception )
         {
+            l_exception.printStackTrace();
         }
     }
 
@@ -76,7 +78,7 @@ public final class TestCNetwork
     {
         Assume.assumeNotNull( m_station );
 
-        //m_station.generatesingle( "Göttingen", 51.536777, 9.926074 );
+        m_station.generatesingle( "Göttingen", 51.536777, 9.926074 );
 
 
         // build 8 node mini scenario, one full-qualified station with
@@ -128,13 +130,12 @@ public final class TestCNetwork
          *
          * @param p_stream asl input stream
          * @param p_classgenerator generator class
-         * @param p_classid node identifier type class
          * @throws Exception thrown on any parsing exception
          */
-        public CStationGenerator( final InputStream p_stream, final Class<G> p_classgenerator, final Class<T> p_classid ) throws Exception
+        public CStationGenerator( final InputStream p_stream, final Class<G> p_classgenerator ) throws Exception
         {
             super( p_stream, CCommon.actionsFromPackage().collect( Collectors.toSet() ), IAggregation.EMPTY );
-            m_ctor = p_classgenerator.getConstructor( IAgentConfiguration.class, p_classid, Double.class, Double.class );
+            m_ctor = p_classgenerator.getConstructor( IAgentConfiguration.class, Object.class, double.class, double.class );
         }
 
         @Override
