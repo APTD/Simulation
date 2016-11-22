@@ -45,6 +45,7 @@ public final class CSemanticException extends RuntimeException
      * ctor
      *
      * @param p_message any message
+     * @param p_values any object values which are printed
      */
     public CSemanticException( final String p_message, final Object... p_values )
     {
