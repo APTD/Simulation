@@ -22,24 +22,19 @@
 
 package com.github.aptd.simulation.graph;
 
-import com.github.aptd.simulation.simulation.error.CSemanticException;
 import com.github.aptd.simulation.simulation.graph.local.CNetworkEdge;
 import com.github.aptd.simulation.simulation.graph.local.CSparseGraph;
 import com.github.aptd.simulation.simulation.graph.local.CStation;
+import com.github.aptd.simulation.simulation.graph.network.CStationGenerator;
 import com.github.aptd.simulation.simulation.graph.network.INetworkEdge;
 import com.github.aptd.simulation.simulation.graph.network.INetworkNode;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import org.lightjason.agentspeak.common.CCommon;
-import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,14 +77,17 @@ public final class TestCNetwork
     {
         Assume.assumeNotNull( m_station );
 
+        final String l_goe = "Göttingen";
+        final String l_kreiensen = "Kreiensen";
+
         // build 8 node mini scenario, one full-qualified station with
         // different platforms and levels all other only transit station
         System.out.println(
             new CSparseGraph<String, INetworkNode<String>, INetworkEdge<String>>(
 
                 Stream.of(
-                    m_station.generatesingle( "Göttingen", 51.536777, 9.926074 ),
-                    m_station.generatesingle( "Kreiensen", 51.850591, 9.969346 ),
+                    m_station.generatesingle( l_goe, 51.536777, 9.926074 ),
+                    m_station.generatesingle( l_kreiensen, 51.850591, 9.969346 ),
                     m_station.generatesingle( "Herzberg Harz", 51.644046, 10.329508 ),
                     m_station.generatesingle( "Heilbad Heiligenstadt", 51.377105, 10.123940 ),
 
@@ -102,29 +100,29 @@ public final class TestCNetwork
 
                 Stream.of(
 
-                    CNetworkEdge.from( "Göttingen", "Hann Münden" ),
-                    CNetworkEdge.from( "Göttingen", "Witzenhausen" ),
-                    CNetworkEdge.from( "Göttingen", "Kreiensen" ),
-                    CNetworkEdge.from( "Göttingen", "Heilbad Heiligenstadt" ),
+                    CNetworkEdge.from( l_goe, "Hann Münden" ),
+                    CNetworkEdge.from( l_goe, "Witzenhausen" ),
+                    CNetworkEdge.from( l_goe, "Kreiensen" ),
+                    CNetworkEdge.from( l_goe, "Heilbad Heiligenstadt" ),
 
-                    CNetworkEdge.from( "Kreiensen", "Göttingen" ),
-                    CNetworkEdge.from( "Kreiensen", "Goslar" ),
-                    CNetworkEdge.from( "Kreiensen", "Alfred (Leine)" ),
-                    CNetworkEdge.from( "Kreiensen", "Herzberg Harz" ),
+                    CNetworkEdge.from( l_kreiensen, l_goe ),
+                    CNetworkEdge.from( l_kreiensen, "Goslar" ),
+                    CNetworkEdge.from( l_kreiensen, "Alfred (Leine)" ),
+                    CNetworkEdge.from( l_kreiensen, "Herzberg Harz" ),
 
                     CNetworkEdge.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
-                    CNetworkEdge.from( "Herzberg Harz", "Kreiensen" ),
+                    CNetworkEdge.from( "Herzberg Harz", l_kreiensen ),
 
                     CNetworkEdge.from( "Heilbad Heiligenstadt", "Herzberg Harz" ),
-                    CNetworkEdge.from( "Heilbad Heiligenstadt", "Göttingen" ),
+                    CNetworkEdge.from( "Heilbad Heiligenstadt", l_goe ),
 
-                    CNetworkEdge.from( "Alfred (Leine)", "Kreiensen" ),
+                    CNetworkEdge.from( "Alfred (Leine)", l_kreiensen ),
 
-                    CNetworkEdge.from( "Goslar", "Kreiensen" ),
+                    CNetworkEdge.from( "Goslar", l_kreiensen ),
 
-                    CNetworkEdge.from( "Hann Münden", "Göttingen" ),
+                    CNetworkEdge.from( "Hann Münden", l_goe ),
 
-                    CNetworkEdge.from( "Witzenhausen", "Göttingen" )
+                    CNetworkEdge.from( "Witzenhausen", l_goe )
 
                 ).collect( Collectors.toSet() )
             )
@@ -143,44 +141,7 @@ public final class TestCNetwork
         l_networktest.networkbuild();
     }
 
-    /**
-     * generator for full-qualified stations
-     * s
-     * @tparam T node identifier
-     */
-    private static final class CStationGenerator<T, G extends INetworkNode<T>> extends IBaseAgentGenerator<INetworkNode<T>>
-    {
-        /**
-         * ctor reference
-         */
-        private final Constructor<G> m_ctor;
 
-        /**
-         * ctor
-         *
-         * @param p_stream asl input stream
-         * @param p_classgenerator generator class
-         * @throws Exception thrown on any parsing exception
-         */
-        public CStationGenerator( final InputStream p_stream, final Class<G> p_classgenerator ) throws Exception
-        {
-            super( p_stream, CCommon.actionsFromPackage().collect( Collectors.toSet() ), IAggregation.EMPTY );
-            m_ctor = p_classgenerator.getConstructor( IAgentConfiguration.class, Object.class, double.class, double.class );
-        }
-
-        @Override
-        public final INetworkNode<T> generatesingle( final Object... p_data )
-        {
-            try
-            {
-                return m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
-            }
-            catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )
-            {
-                throw new CSemanticException( l_exception );
-            }
-        }
-    }
 
 
 }

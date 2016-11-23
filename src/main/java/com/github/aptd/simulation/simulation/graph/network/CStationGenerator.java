@@ -22,95 +22,53 @@
 
 package com.github.aptd.simulation.simulation.graph.network;
 
-import com.github.aptd.simulation.simulation.graph.INode;
-import org.lightjason.agentspeak.agent.IBaseAgent;
+import com.github.aptd.simulation.simulation.error.CSemanticException;
+import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
+import org.lightjason.agentspeak.language.score.IAggregation;
+
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.stream.Collectors;
 
 
 /**
- * abstract class of a network node
- *
- * @tparam T node type
- * @todo remove print stacktrace
+ * generator for full-qualified stations
+ * s
+ * @tparam T node identifier
  */
-public abstract class IBaseNetworkNode<T> extends IBaseAgent<INetworkNode<T>> implements INetworkNode<T>
+public final class CStationGenerator<T, G extends INetworkNode<T>> extends IBaseAgentGenerator<INetworkNode<T>>
 {
     /**
-     * node identifier
+     * ctor reference
      */
-    protected final T m_id;
-    /**
-     * longitude
-     */
-    protected final double m_longitude;
-    /**
-     * latitude
-     */
-    protected final double m_latitude;
+    private final Constructor<G> m_ctor;
 
     /**
      * ctor
      *
-     * @param p_configuration agent configuration
-     * @param p_id node identifier
-     * @param p_longitude longitude
-     * @param p_latitude latitude
+     * @param p_stream asl input stream
+     * @param p_classgenerator generator class
+     * @throws Exception thrown on any parsing exception
      */
-    public IBaseNetworkNode( final IAgentConfiguration<INetworkNode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
+    public CStationGenerator( final InputStream p_stream, final Class<G> p_classgenerator ) throws Exception
     {
-        super( p_configuration );
-        m_latitude = p_latitude;
-        m_longitude = p_longitude;
-        m_id = p_id;
+        super( p_stream, CCommon.actionsFromPackage().collect( Collectors.toSet() ), IAggregation.EMPTY );
+        m_ctor = p_classgenerator.getConstructor( IAgentConfiguration.class, Object.class, double.class, double.class );
     }
 
     @Override
-    public final double longitude()
-    {
-        return m_longitude;
-    }
-
-    @Override
-    public final double latitude()
-    {
-        return m_latitude;
-    }
-
-    @Override
-    public final T id()
-    {
-        return m_id;
-    }
-
-    @Override
-    public final int hashCode()
-    {
-        return m_id.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return m_id.equals( p_object );
-    }
-
-    @Override
-    public String toString()
-    {
-        return m_id.toString();
-    }
-
-    @Override
-    public final INode<T> execute()
+    public final INetworkNode<T> generatesingle( final Object... p_data )
     {
         try
         {
-            this.call();
+            return m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
         }
-        catch ( final Exception l_exception )
+        catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )
         {
-            l_exception.printStackTrace();
+            throw new CSemanticException( l_exception );
         }
-        return this;
     }
 }
