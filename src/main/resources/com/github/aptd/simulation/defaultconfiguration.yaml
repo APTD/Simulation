@@ -1,4 +1,5 @@
 httpserver:
+    enable: true
     port: 8080
     host: localhost
 

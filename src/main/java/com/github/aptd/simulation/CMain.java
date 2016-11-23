@@ -24,6 +24,7 @@ package com.github.aptd.simulation;
 
 
 import com.github.aptd.simulation.common.CCommon;
+import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -80,6 +81,7 @@ public final class CMain
         }
 
 
+        CHTTPServer.foo();
         System.out.println( CCommon.languagestring( CMain.class, "main" ) );
     }
 

@@ -23,10 +23,10 @@
 package com.github.aptd.simulation.common;
 
 import com.github.aptd.simulation.simulation.error.CSemanticException;
-import org.apache.commons.compress.utils.IOUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Map;
@@ -46,14 +46,6 @@ public final class CConfiguration
      */
     public static final CConfiguration INSTANCE = new CConfiguration();
     /**
-     * configuration path
-     */
-    private static final String CONFIGURATION = Stream.of(
-                                                    System.getProperty( "user.home" ),
-                                                    ".asimov",
-                                                    "configuration.yaml"
-                                                ).collect( Collectors.joining( File.separator ) );
-    /**
      * map with configuration data
      */
     private final Map<String, ?> m_configuration;
@@ -64,9 +56,23 @@ public final class CConfiguration
     @SuppressWarnings( "unchecked" )
     private CConfiguration()
     {
-        final InputStream l_stream = CConfiguration.class.getResourceAsStream( CONFIGURATION );
-        m_configuration = (Map<String, Object>) new Yaml().load( l_stream );
-        IOUtils.closeQuietly( l_stream );
+
+        try
+        (
+            final InputStream l_stream = CConfiguration.class.getResourceAsStream(
+                                            Stream.of(
+                                                System.getProperty( "user.home" ),
+                                                ".asimov",
+                                                "configuration.yaml"
+                                            ).collect( Collectors.joining( File.separator ) )
+            );
+        )
+        {
+            m_configuration = (Map<String, Object>) new Yaml().load( l_stream );
+        } catch ( final IOException l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
     }
 
 

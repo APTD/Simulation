@@ -22,6 +22,8 @@
 
 package com.github.aptd.simulation.ui;
 
+import com.github.aptd.simulation.common.CConfiguration;
+
 import java.net.InetSocketAddress;
 
 
@@ -33,18 +35,15 @@ import java.net.InetSocketAddress;
 public final class CHTTPServer
 {
     /**
-     * local
+     * webservcer instance
      */
-    private static CHTTPServer s_instance;
+    private static final CHTTPServer INSTANCE = CConfiguration.INSTANCE.<Boolean>get( "httpserver", "enable" ) ? new CHTTPServer() : null;
 
-    /**
-     * factory
-     *
-     * @param p_bind binding address
-     */
-    public synchronized void from( final InetSocketAddress p_bind )
+    private CHTTPServer()
     {
-        //s_instance = new CHTTPServer();
+        System.out.println( "foooo" );
     }
+
+    public static void foo() {}
 
 }
