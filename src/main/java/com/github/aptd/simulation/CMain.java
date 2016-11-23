@@ -52,6 +52,8 @@ public final class CMain
 
         final Options l_clioptions = new Options();
         l_clioptions.addOption( "help", false, "shows this information" );
+        l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
+        l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
         l_clioptions.addOption( "scenario", true, "scenario configuration" );
 
         final CommandLine l_cli;
