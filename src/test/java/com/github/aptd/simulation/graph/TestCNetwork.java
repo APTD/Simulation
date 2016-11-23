@@ -102,15 +102,29 @@ public final class TestCNetwork
 
                 Stream.of(
 
-                    CNetworkEdge.from( "Göttingen", "Kreiensen" ),
-                    CNetworkEdge.from( "Kreiensen", "Herzberg Harz" ),
-                    CNetworkEdge.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
-
-                    CNetworkEdge.from( "Kreiensen", "Alfred (Leine)" ),
-                    CNetworkEdge.from( "Kreiensen", "Goslar" ),
-
                     CNetworkEdge.from( "Göttingen", "Hann Münden" ),
-                    CNetworkEdge.from( "Göttingen", "Witzenhausen" )
+                    CNetworkEdge.from( "Göttingen", "Witzenhausen" ),
+                    CNetworkEdge.from( "Göttingen", "Kreiensen" ),
+                    CNetworkEdge.from( "Göttingen", "Heilbad Heiligenstadt" ),
+
+                    CNetworkEdge.from( "Kreiensen", "Göttingen" ),
+                    CNetworkEdge.from( "Kreiensen", "Goslar" ),
+                    CNetworkEdge.from( "Kreiensen", "Alfred (Leine)" ),
+                    CNetworkEdge.from( "Kreiensen", "Herzberg Harz" ),
+
+                    CNetworkEdge.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
+                    CNetworkEdge.from( "Herzberg Harz", "Kreiensen" ),
+
+                    CNetworkEdge.from( "Heilbad Heiligenstadt", "Herzberg Harz" ),
+                    CNetworkEdge.from( "Heilbad Heiligenstadt", "Göttingen" ),
+
+                    CNetworkEdge.from( "Alfred (Leine)", "Kreiensen" ),
+
+                    CNetworkEdge.from( "Goslar", "Kreiensen" ),
+
+                    CNetworkEdge.from( "Hann Münden", "Göttingen" ),
+
+                    CNetworkEdge.from( "Witzenhausen", "Göttingen" )
 
                 ).collect( Collectors.toSet() )
             )
