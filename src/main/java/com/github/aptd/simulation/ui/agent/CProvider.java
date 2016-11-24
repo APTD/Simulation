@@ -48,6 +48,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see http://stackoverflow.com/questions/17568469/jersey-2-0-equivalent-to-pojomappingfeature
  * @see https://github.com/jasonray/jersey-starterkit/wiki/Serializing-a-POJO-to-json-using-built-in-jersey-support
  * @see http://www.vogella.com/tutorials/REST/article.html
+ * @see https://github.com/DominikAngerer/Boostraped-Jersey-RestAPI/blob/master/pom.xml
  */
 @Path( "/agent/{id}" )
 public final class CProvider
@@ -81,10 +82,11 @@ public final class CProvider
      * @return agent object
      */
     @GET
-    @Path( "/view" )
+    @Path( "/mind" )
     @Produces( MediaType.APPLICATION_JSON )
-    public final CAgent view( @PathParam( "id" ) final String p_id )
+    public final CAgent mind( @PathParam( "id" ) final String p_id )
     {
+        System.out.println( "---> " + p_id );
         final IAgent<?> l_agent = m_agents.get( format( p_id ) );
         return l_agent == null
                ? null
