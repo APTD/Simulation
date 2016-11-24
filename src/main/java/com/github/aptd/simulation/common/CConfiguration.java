@@ -26,12 +26,18 @@ import com.github.aptd.simulation.simulation.error.CSemanticException;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -48,31 +54,77 @@ public final class CConfiguration
     /**
      * map with configuration data
      */
-    private final Map<String, ?> m_configuration;
+    private final Map<String, Object> m_configuration = new ConcurrentHashMap<>();
 
     /**
      * ctor
      */
-    @SuppressWarnings( "unchecked" )
+
     private CConfiguration()
     {
+    }
 
+    /**
+     * loads the configuration
+     * @param p_path path elements
+     * @return self reference
+     */
+    @SuppressWarnings( "unchecked" )
+    public CConfiguration load( final String p_path )
+    {
+        m_configuration.clear();
         try
-        (
-            final InputStream l_stream = CConfiguration.class.getResourceAsStream(
-                                            Stream.of(
-                                                System.getProperty( "user.home" ),
-                                                ".asimov",
-                                                "configuration.yaml"
-                                            ).collect( Collectors.joining( File.separator ) )
-            );
-        )
+            (
+                final InputStream l_stream = new FileInputStream( orDEfaultPath( p_path ) );
+            )
         {
-            m_configuration = (Map<String, Object>) new Yaml().load( l_stream );
+            m_configuration.putAll( (Map<String, Object>) new Yaml().load( l_stream ) );
         } catch ( final IOException l_exception )
         {
             throw new CSemanticException( l_exception );
         }
+
+        return this;
+    }
+
+    /**
+     * set default path
+     *
+     * @param p_path path or null / empty
+     * @return default path on empty or input path
+     */
+    private static String orDEfaultPath( final String p_path )
+    {
+        return ( p_path == null ) || ( p_path.isEmpty() )
+               ? Stream.of(
+                    System.getProperty( "user.home" ),
+                    ".asimov",
+                    "configuration.yaml"
+                ).collect( Collectors.joining( File.separator ) )
+                 : p_path;
+    }
+
+    /**
+     * creates the default configuration
+     *
+     * @return full path
+     * @throws IOException on any io error
+     */
+    public static String createdefault() throws IOException
+    {
+        final String l_path = Stream.of(
+            System.getProperty( "user.home" ),
+            ".asimov"
+        ).collect( Collectors.joining( File.separator ) );
+
+        new File( l_path ).mkdirs();
+        Files.copy(
+            CConfiguration.class.getResourceAsStream(  "configuration.yaml"   ),
+            FileSystems.getDefault().getPath( l_path + File.separator + "configuration.yaml" ),
+            StandardCopyOption.REPLACE_EXISTING
+        );
+
+        return l_path;
     }
 
 
@@ -102,7 +154,7 @@ public final class CConfiguration
         if ( ( p_path == null ) || ( p_path.length == 0 ) )
             throw new CSemanticException( "path need not to be empty" );
 
-        final Object l_data = p_map.get( p_path[0].toLowerCase() );
+        final Object l_data = p_map.get( p_path[0].toLowerCase( Locale.ROOT ) );
         return ( p_path.length == 1 ) || ( l_data == null )
                ? (T) l_data
                : (T) recursivedescent( (Map<String, ?>) l_data, Arrays.copyOfRange( p_path, 1, p_path.length ) );

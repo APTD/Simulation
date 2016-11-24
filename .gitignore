@@ -9,6 +9,7 @@
 !*.md
 !*.png
 !*.yaml
+!web.xml
 !*.properties
 
 !src/site/*.doxyfile

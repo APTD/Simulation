@@ -23,8 +23,12 @@
 package com.github.aptd.simulation.ui;
 
 import com.github.aptd.simulation.common.CConfiguration;
+import com.github.aptd.simulation.simulation.error.CSemanticException;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 import java.net.InetSocketAddress;
+
 
 
 /**
@@ -39,11 +43,41 @@ public final class CHTTPServer
      */
     private static final CHTTPServer INSTANCE = CConfiguration.INSTANCE.<Boolean>get( "httpserver", "enable" ) ? new CHTTPServer() : null;
 
+    /**
+     * ctor
+     */
     private CHTTPServer()
     {
-        System.out.println( "foooo" );
+        // web context definition
+        final WebAppContext l_webapp = new WebAppContext(
+            this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm(),
+            "/"
+        );
+        l_webapp.setDescriptor( "web-inf/web.xml" );
+
+        // server instance
+        final Server l_server = new Server(
+            new InetSocketAddress( CConfiguration.INSTANCE.<String>get( "httpserver", "host" ),
+                                   CConfiguration.INSTANCE.<Integer>get( "httpserver", "port" )
+            )
+        );
+        l_server.setHandler( l_webapp );
+
+        try
+        {
+            l_server.start();
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
     }
 
-    public static void foo() {}
+    /**
+     * test
+     */
+    public static void execute()
+    {
+    }
 
 }

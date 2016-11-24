@@ -24,11 +24,14 @@ package com.github.aptd.simulation;
 
 
 import com.github.aptd.simulation.common.CCommon;
+import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+
+import java.io.IOException;
 
 
 /**
@@ -46,8 +49,9 @@ public final class CMain
     /**
      * main method
      * @param p_args command-line parameters
+     * @throws IOException error on io errors
      */
-    public static void main( final String[] p_args )
+    public static void main( final String[] p_args ) throws IOException
     {
         // --- define CLI options ------------------------------------------------------------------------------------------------------------------------------
 
@@ -55,6 +59,7 @@ public final class CMain
         l_clioptions.addOption( "help", false, "shows this information" );
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
+        l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
         l_clioptions.addOption( "scenario", true, "scenario configuration" );
 
         final CommandLine l_cli;
@@ -80,9 +85,17 @@ public final class CMain
             return;
         }
 
+        if ( l_cli.hasOption( "generateconfig" ) )
+        {
+            System.out.println( CCommon.languagestring( CMain.class, "generateconfig", CConfiguration.createdefault() ) );
 
-        CHTTPServer.foo();
-        System.out.println( CCommon.languagestring( CMain.class, "main" ) );
+            System.exit( 0 );
+            return;
+        }
+
+        // load configuration and start the http server (if possible)
+        CConfiguration.INSTANCE.load( l_cli.getOptionValue( "config", "" ) );
+        CHTTPServer.execute();
     }
 
 }
