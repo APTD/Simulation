@@ -84,15 +84,43 @@
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jsp</artifactId>
+            <artifactId>jetty-webapp</artifactId>
             <version>9.4.0.RC2</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
+            <artifactId>apache-jsp</artifactId>
             <version>9.4.0.RC2</version>
         </dependency>
+
+
+        <!--
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>9.4.0.RC2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.24.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.24.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-jetty-http</artifactId>
+            <version>2.24.1</version>
+        </dependency>
+        -->
+
 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
@@ -164,7 +192,7 @@
         <dependency>
             <groupId>com.codepoetics</groupId>
             <artifactId>protonpack</artifactId>
-            <version>1.10</version>
+            <version>1.11</version>
         </dependency>
 
 
@@ -316,6 +344,12 @@
 
         <!-- we use some additional build plugins -->
         <plugins>
+
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.11.v20160721</version>
+            </plugin>
 
             <!-- exec plugin is used to build the source documentation with Doxygen (http://www.stack.nl/~dimitri/doxygen/) 
                  and GraphViz (http://www.graphviz.org/), GraphViz generates nice UML diagrams from the Java source code as SVG files,

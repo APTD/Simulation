@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>Asimov</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainers</servlet-class>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>

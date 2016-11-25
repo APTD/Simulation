@@ -42,6 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * json agent provider
  *
+ * @see https://myshadesofgray.wordpress.com/2014/04/27/restful-web-service-using-jersey-and-no-web-xml/
+ * @see http://nikgrozev.com/2014/10/16/rest-with-embedded-jetty-and-jersey-in-a-single-jar-step-by-step/
  * @see http://blog.dejavu.sk/2013/11/19/registering-resources-and-providers-in-jersey-2/
  * @see https://myshadesofgray.wordpress.com/2014/04/27/restful-web-service-using-jersey-and-no-web-xml/
  * @see http://stackoverflow.com/questions/5161466/how-do-i-use-the-jersey-json-pojo-support

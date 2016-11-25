@@ -32,9 +32,14 @@ import java.net.InetSocketAddress;
 
 
 /**
- * Jetty-HTTP server for UI
+ * Jersey-HTTP server for UI
  *
- * @see http://www.eclipse.org/jetty/
+ * @see https://dzone.com/articles/standalone-java-application-with-jersey-and-jetty
+ * @see http://www.dropwizard.io/1.0.5/docs/getting-started.html#jetty-for-http
+ * @see https://www.acando.no/thedailypassion/200555/a-rest-service-with-jetty-and-jersey
+ * @see https://www.mkyong.com/webservices/jax-rs/jersey-hello-world-example/
+ * @see http://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
+ * @see https://github.com/jetty-project/embedded-jetty-jsp/blob/master/src/main/java/org/eclipse/jetty/demo/Main.java
  */
 public final class CHTTPServer
 {
@@ -48,12 +53,14 @@ public final class CHTTPServer
      */
     private CHTTPServer()
     {
+        System.setProperty( "org.apache.jasper.compiler.disablejsr199", "false" );
+
         // web context definition
         final WebAppContext l_webapp = new WebAppContext(
             this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm(),
             "/"
         );
-        l_webapp.setDescriptor( "web-inf/web.xml" );
+        l_webapp.setDescriptor( "WEB-INF/web.xml" );
 
         // server instance
         final Server l_server = new Server(
@@ -63,13 +70,19 @@ public final class CHTTPServer
         );
         l_server.setHandler( l_webapp );
 
+
         try
         {
             l_server.start();
+            l_server.join();
         }
         catch ( final Exception l_exception )
         {
             throw new CSemanticException( l_exception );
+        }
+        finally
+        {
+            l_server.destroy();
         }
     }
 

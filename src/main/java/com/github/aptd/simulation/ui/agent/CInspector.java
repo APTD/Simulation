@@ -37,18 +37,18 @@ import java.util.stream.Stream;
  */
 public final class CInspector implements IInspector
 {
-    private final CAgent m_node = new CAgent();
+    private final CAgent<String> m_node = new CAgent<>();
 
     @Override
     public final void inspectsleeping( final long p_value )
     {
-        m_node.sleeping = p_value;
+        m_node.setSleeping( p_value );
     }
 
     @Override
     public final void inspectcycle( final long p_value )
     {
-        m_node.sleeping = p_value;
+        m_node.setCycle( p_value );
     }
 
     @Override

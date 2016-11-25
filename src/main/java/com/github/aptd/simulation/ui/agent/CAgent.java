@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.ui.agent;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -31,11 +32,83 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @see https://www.mkyong.com/webservices/jax-rs/json-example-with-jersey-jackson/
  * @see https://jersey.java.net/documentation/1.19.1/json.html
  */
-@XmlRootElement
-public final class CAgent
+@XmlRootElement( name = "agent" )
+public final class CAgent<T>
 {
-    public long cycle;
-    public long sleeping;
-    public String name;
+    /**
+     * cycle
+     */
+    private long m_cycle;
+    /**
+     * sleeping count
+     */
+    private long m_sleeping;
+    /**
+     * agent id
+     */
+    private T m_id;
+
+    /**
+     * get cycle
+     * @return cycle
+     */
+    public final long getCycle()
+    {
+        return m_cycle;
+    }
+
+    /**
+     * set cycle
+     * @param p_cycle cycle
+     * @return self reference
+     */
+    @XmlAttribute( name = "cycle" )
+    public final CAgent setCycle( final long p_cycle )
+    {
+        m_cycle = p_cycle;
+        return this;
+    }
+
+    /**
+     * get sleeping
+     * @return sleeping count
+     */
+    public final long getSleeping()
+    {
+        return m_sleeping;
+    }
+
+    /**
+     * set sleeping
+     * @param p_sleeping sleeping value
+     * @return self reference
+     */
+    @XmlAttribute( name = "sleeping" )
+    public final CAgent setSleeping( final long p_sleeping )
+    {
+        m_sleeping = p_sleeping;
+        return this;
+    }
+
+    /**
+     * get name / id
+     * @return name / id
+     */
+    public final T getID()
+    {
+        return m_id;
+    }
+
+    /**
+     * set name / id
+     * @param p_id name / id
+     * @return self reference
+     */
+    @XmlAttribute( name = "id" )
+    public final CAgent setID( final T p_id )
+    {
+        m_id = p_id;
+        return this;
+    }
 
 }
