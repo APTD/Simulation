@@ -55,6 +55,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Path( "/agent/{id}" )
 public final class CProvider
 {
+    /**
+     * singleton instance
+     */
+    public static final CProvider INSTANCE = new CProvider();
     /** map with agents **/
     private final Map<String, IAgent<?>> m_agents = new ConcurrentHashMap<>();
 
@@ -63,10 +67,9 @@ public final class CProvider
      */
     public CProvider()
     {
-        System.out.println( "--> foo" );
         try
             (
-                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
+                final InputStream l_station = new FileInputStream( "test/resource/asl/station.asl" );
             )
         {
             m_agents.put( "foo", new CStationGenerator<>( l_station, CStation.class ).generatesingle() );
@@ -88,7 +91,6 @@ public final class CProvider
     @Produces( MediaType.APPLICATION_JSON )
     public final CAgent mind( @PathParam( "id" ) final String p_id )
     {
-        System.out.println( "---> " + p_id );
         final IAgent<?> l_agent = m_agents.get( format( p_id ) );
         return l_agent == null
                ? null

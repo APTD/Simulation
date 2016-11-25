@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.ui.agent;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
@@ -62,7 +62,7 @@ public final class CAgent<T>
      * @param p_cycle cycle
      * @return self reference
      */
-    @XmlAttribute( name = "cycle" )
+    @XmlElement( name = "cycle" )
     public final CAgent setCycle( final long p_cycle )
     {
         m_cycle = p_cycle;
@@ -83,7 +83,7 @@ public final class CAgent<T>
      * @param p_sleeping sleeping value
      * @return self reference
      */
-    @XmlAttribute( name = "sleeping" )
+    @XmlElement( name = "sleeping" )
     public final CAgent setSleeping( final long p_sleeping )
     {
         m_sleeping = p_sleeping;
@@ -104,7 +104,7 @@ public final class CAgent<T>
      * @param p_id name / id
      * @return self reference
      */
-    @XmlAttribute( name = "id" )
+    @XmlElement( name = "id" )
     public final CAgent setID( final T p_id )
     {
         m_id = p_id;

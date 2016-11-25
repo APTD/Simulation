@@ -53,23 +53,21 @@ public final class CHTTPServer
      */
     private CHTTPServer()
     {
-        System.setProperty( "org.apache.jasper.compiler.disablejsr199", "false" );
-
         // web context definition
-        final WebAppContext l_webapp = new WebAppContext(
-            this.getClass().getProtectionDomain().getCodeSource().getLocation().toExternalForm(),
-            "/"
-        );
-        l_webapp.setDescriptor( "WEB-INF/web.xml" );
+        final WebAppContext l_webapp = new WebAppContext();
 
-        // server instance
+        // server process
         final Server l_server = new Server(
             new InetSocketAddress( CConfiguration.INSTANCE.<String>get( "httpserver", "host" ),
                                    CConfiguration.INSTANCE.<Integer>get( "httpserver", "port" )
             )
         );
-        l_server.setHandler( l_webapp );
 
+        // set server / webapp connection
+        l_webapp.setServer( l_server );
+        l_webapp.setDescriptor( "web-inf/web.xml" );
+        l_server.setHandler( l_webapp );
+        l_webapp.setWar( "src/main/webapp" );
 
         try
         {
