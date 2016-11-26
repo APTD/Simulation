@@ -69,7 +69,6 @@ public final class CHTTPServer
         l_webapp.setDescriptor( "web-inf/web.xml" );
         l_server.setHandler( l_webapp );
         l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
-        System.out.println( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
 
         try
         {

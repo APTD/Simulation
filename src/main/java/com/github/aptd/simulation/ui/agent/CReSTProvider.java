@@ -27,6 +27,7 @@ import com.github.aptd.simulation.simulation.graph.local.CStation;
 import com.github.aptd.simulation.simulation.graph.network.CStationGenerator;
 import org.lightjason.agentspeak.agent.IAgent;
 
+import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -53,6 +54,7 @@ import java.util.function.Function;
  * @see http://www.vogella.com/tutorials/REST/article.html
  * @see https://github.com/DominikAngerer/Boostraped-Jersey-RestAPI/blob/master/pom.xml
  */
+@Singleton
 @Path( "/agent/{id}" )
 public final class CReSTProvider
 {
@@ -85,10 +87,10 @@ public final class CReSTProvider
         m_formater = p_formater;
         try
             (
-                final InputStream l_station = new FileInputStream( "test/resource/asl/station.asl" );
+                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            m_agents.put( "foo", new CStationGenerator<>( l_station, CStation.class ).generatesingle() );
+            m_agents.put( "foo", new CStationGenerator<>( l_station, CStation.class ).generatesingle( "Göttingen", 51.536777, 9.926074 ) );
         }
         catch ( final Exception l_exception )
         {
