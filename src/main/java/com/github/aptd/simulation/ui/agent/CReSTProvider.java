@@ -25,6 +25,9 @@ package com.github.aptd.simulation.ui.agent;
 
 import com.github.aptd.simulation.simulation.graph.local.CStation;
 import com.github.aptd.simulation.simulation.graph.network.CStationGenerator;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import org.lightjason.agentspeak.agent.IAgent;
 
 import javax.inject.Singleton;
@@ -66,8 +69,10 @@ public final class CReSTProvider
      * function to format agent identifier
      */
     private final Function<String, String> m_formater;
-    /** map with agents **/
-    private final Map<String, IAgent<?>> m_agents = new ConcurrentHashMap<>();
+    /**
+     * map with agents
+     **/
+    private final BiMap<String, IAgent<?>> m_agents = Maps.synchronizedBiMap( HashBiMap.create() );
 
     /**
      * ctor
@@ -138,6 +143,18 @@ public final class CReSTProvider
     public final CReSTProvider unregister( final String p_id )
     {
         m_agents.remove( m_formater.apply( p_id ) );
+        return this;
+    }
+
+    /**
+     * unregister agent by the objct
+     *
+     * @param p_agent agent object
+     * @return self refrence
+     */
+    public final CReSTProvider unregister( final IAgent<?> p_agent )
+    {
+        m_agents.inverse().remove( p_agent );
         return this;
     }
 

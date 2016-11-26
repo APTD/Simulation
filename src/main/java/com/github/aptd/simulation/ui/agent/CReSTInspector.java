@@ -64,7 +64,7 @@ public final class CReSTInspector implements IInspector, IReSTInspector
     @Override
     public final void inspectbelief( final Stream<ILiteral> p_value )
     {
-
+        p_value.forEach( i -> m_node.setBelief( i.toString() ) );
     }
 
     @Override

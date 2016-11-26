@@ -22,8 +22,12 @@
 
 package com.github.aptd.simulation.ui.agent;
 
+import org.lightjason.agentspeak.language.ILiteral;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,6 +39,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement( name = "agent" )
 public final class CReSTAgent<T> implements IReSTAgent
 {
+    /**
+     * belief as strings
+     */
+    @XmlElement( name = "belief" )
+    private final List<String> m_belief = new ArrayList<>();
     /**
      * cycle
      */
@@ -48,6 +57,7 @@ public final class CReSTAgent<T> implements IReSTAgent
     /**
      * agent id
      */
+    @XmlElement( name = "id" )
     private T m_id;
 
     /**
@@ -104,11 +114,31 @@ public final class CReSTAgent<T> implements IReSTAgent
      * @param p_id name / id
      * @return self reference
      */
-    @XmlElement( name = "id" )
     public final CReSTAgent setID( final T p_id )
     {
         m_id = p_id;
         return this;
     }
 
+    /**
+     * returns belief list
+     *
+     * @return beliefs
+     */
+    public final List<String> getBelief()
+    {
+        return m_belief;
+    }
+
+    /**
+     * sets a belief
+     *
+     * @param p_belief belief as string
+     * @return self reference
+     */
+    public final CReSTAgent setBelief( final String p_belief )
+    {
+        m_belief.add( p_belief );
+        return this;
+    }
 }

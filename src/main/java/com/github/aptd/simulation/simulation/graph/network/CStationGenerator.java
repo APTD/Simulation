@@ -26,6 +26,9 @@ import com.github.aptd.simulation.simulation.error.CSemanticException;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
+import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
+import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
@@ -64,7 +67,15 @@ public final class CStationGenerator<T, G extends INetworkNode<T>> extends IBase
     {
         try
         {
-            return m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
+            final INetworkNode<T> l_agent = m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
+
+            l_agent.beliefbase().add( CLiteral.from( "name", CRawTerm.from( p_data[0].toString() ) ) );
+            l_agent.beliefbase().add( CLiteral.from( "gps",
+                                                    CLiteral.from( "longitude", CRawTerm.from( p_data[1] ) ),
+                                                    CLiteral.from( "latitude", CRawTerm.from( p_data[2] ) )
+            ) );
+
+            return l_agent;
         }
         catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )
         {
