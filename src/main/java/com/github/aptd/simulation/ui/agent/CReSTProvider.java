@@ -109,10 +109,11 @@ public final class CReSTProvider
     @Produces( MediaType.APPLICATION_JSON )
     public final IReSTAgent mind( @PathParam( "id" ) final String p_id )
     {
-        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
+        final String l_id = m_formater.apply( p_id );
+        final IAgent<?> l_agent = m_agents.get( l_id );
         return l_agent == null
                ? null
-               : l_agent.inspect( new CReSTInspector() ).findFirst().get().get();
+               : l_agent.inspect( new CReSTInspector( l_id ) ).findFirst().get().get();
     }
 
     /**

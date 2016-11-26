@@ -39,6 +39,16 @@ public final class CReSTInspector implements IInspector, IReSTInspector
 {
     private final CReSTAgent<String> m_node = new CReSTAgent<>();
 
+    /**
+     * ctor
+     *
+     * @param p_id agent id
+     */
+    public CReSTInspector( final String p_id )
+    {
+        m_node.setID( p_id );
+    }
+
     @Override
     public final void inspectsleeping( final long p_value )
     {

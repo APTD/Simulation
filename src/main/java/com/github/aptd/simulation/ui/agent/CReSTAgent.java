@@ -38,10 +38,12 @@ public final class CReSTAgent<T> implements IReSTAgent
     /**
      * cycle
      */
+    @XmlElement( name = "cycle" )
     private long m_cycle;
     /**
      * sleeping count
      */
+    @XmlElement( name = "sleeping" )
     private long m_sleeping;
     /**
      * agent id
@@ -62,7 +64,6 @@ public final class CReSTAgent<T> implements IReSTAgent
      * @param p_cycle cycle
      * @return self reference
      */
-    @XmlElement( name = "cycle" )
     public final CReSTAgent setCycle( final long p_cycle )
     {
         m_cycle = p_cycle;
@@ -83,10 +84,9 @@ public final class CReSTAgent<T> implements IReSTAgent
      * @param p_sleeping sleeping value
      * @return self reference
      */
-    @XmlElement( name = "sleeping" )
     public final CReSTAgent setSleeping( final long p_sleeping )
     {
-        m_sleeping = p_sleeping;
+        m_sleeping = p_sleeping < 0 ? 0 : p_sleeping;
         return this;
     }
 
