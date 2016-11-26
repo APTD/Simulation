@@ -23,8 +23,6 @@
 package com.github.aptd.simulation.ui.agent;
 
 
-import com.github.aptd.simulation.simulation.graph.local.CStation;
-import com.github.aptd.simulation.simulation.graph.network.CStationGenerator;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
@@ -36,37 +34,26 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Locale;
 import java.util.function.Function;
 
 
 /**
- * json agent provider
- *
- * @see https://myshadesofgray.wordpress.com/2014/04/27/restful-web-service-using-jersey-and-no-web-xml/
- * @see http://nikgrozev.com/2014/10/16/rest-with-embedded-jetty-and-jersey-in-a-single-jar-step-by-step/
- * @see http://blog.dejavu.sk/2013/11/19/registering-resources-and-providers-in-jersey-2/
- * @see https://myshadesofgray.wordpress.com/2014/04/27/restful-web-service-using-jersey-and-no-web-xml/
- * @see http://stackoverflow.com/questions/5161466/how-do-i-use-the-jersey-json-pojo-support
- * @see http://stackoverflow.com/questions/17568469/jersey-2-0-equivalent-to-pojomappingfeature
- * @see https://github.com/jasonray/jersey-starterkit/wiki/Serializing-a-POJO-to-json-using-built-in-jersey-support
- * @see http://www.vogella.com/tutorials/REST/article.html
- * @see https://github.com/DominikAngerer/Boostraped-Jersey-RestAPI/blob/master/pom.xml
+ * singleton webservice provider to control
+ * an agent as XML and JSON request
  */
 @Singleton
 @Path( "/agent/{id}" )
-public final class CReSTProvider
+public final class CProvider
 {
     /**
      * singleton instance
      */
-    public static final CReSTProvider INSTANCE = new CReSTProvider();
+    public static final CProvider INSTANCE = new CProvider();
     /**
      * function to format agent identifier
      */
-    private final Function<String, String> m_formater;
+    private final Function<String, String> m_formater = (i) -> i.trim().toLowerCase( Locale.ROOT );
     /**
      * map with agents
      **/
@@ -75,31 +62,8 @@ public final class CReSTProvider
     /**
      * ctor
      */
-    public CReSTProvider()
-    {
-        this( (i) -> i.trim().toLowerCase( Locale.ROOT ) );
-    }
-
-    /**
-     * ctor
-     *
-     * @param p_formater identifier formater
-     */
-    public CReSTProvider( final Function<String, String> p_formater )
-    {
-        m_formater = p_formater;
-        try
-            (
-                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
-            )
-        {
-            m_agents.put( "foo", new CStationGenerator<>( l_station, CStation.class ).generatesingle( "Göttingen", 51.536777, 9.926074 ) );
-        }
-        catch ( final Exception l_exception )
-        {
-            l_exception.printStackTrace();
-        }
-    }
+    private CProvider()
+    {}
 
     /**
      * http get for an agent
@@ -116,7 +80,7 @@ public final class CReSTProvider
         final IAgent<?> l_agent = m_agents.get( l_id );
         return l_agent == null
                ? null
-               : l_agent.inspect( new CReSTInspector( l_id ) ).findFirst().get().get();
+               : l_agent.inspect( new CReSTInspector( l_id ) ).findFirst().orElseThrow( RuntimeException::new ).get();
     }
 
     /**
@@ -124,9 +88,9 @@ public final class CReSTProvider
      *
      * @param p_id agent name / id (case-insensitive)
      * @param p_agent agent object
-     * @return serlf reference
+     * @return self reference
      */
-    public final CReSTProvider register( final String p_id, final IAgent<?> p_agent )
+    public final CProvider register( final String p_id, final IAgent<?> p_agent )
     {
         m_agents.put( m_formater.apply( p_id ), p_agent );
         return this;
@@ -138,7 +102,7 @@ public final class CReSTProvider
      * @param p_id agent name / id (case insensitive )
      * @return self refrence
      */
-    public final CReSTProvider unregister( final String p_id )
+    public final CProvider unregister( final String p_id )
     {
         m_agents.remove( m_formater.apply( p_id ) );
         return this;
@@ -150,7 +114,7 @@ public final class CReSTProvider
      * @param p_agent agent object
      * @return self refrence
      */
-    public final CReSTProvider unregister( final IAgent<?> p_agent )
+    public final CProvider unregister( final IAgent<?> p_agent )
     {
         m_agents.inverse().remove( p_agent );
         return this;

@@ -25,18 +25,27 @@ package com.github.aptd.simulation.ui.agent;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
- * jersy structure of agent structure
- *
- * @see https://www.mkyong.com/webservices/jax-rs/json-example-with-jersey-jackson/
- * @see https://jersey.java.net/documentation/1.19.1/json.html
+ * container for the restful export
  */
 @XmlRootElement( name = "agent" )
 public final class CReSTAgent<T> implements IReSTAgent
 {
+    /**
+     * storage element
+     */
+    @XmlElement( name = "storage" )
+    private final Map<String, Object> m_storage = new HashMap<>();
+    /**
+     * running plans
+     */
+    @XmlElement( name = "runningplan" )
+    private final List<String> m_runningplan = new ArrayList<>();
     /**
      * belief as strings
      */
@@ -139,4 +148,48 @@ public final class CReSTAgent<T> implements IReSTAgent
         m_belief.add( p_belief );
         return this;
     }
+
+    /**
+     * returns the running plans
+     *
+     * @return list with running plans
+     */
+    public final List<String> getRunningplan()
+    {
+        return m_runningplan;
+    }
+
+    /**
+     * sets the running plans
+     *
+     * @param p_plan plan
+     * @return self reference
+     */
+    public final CReSTAgent setRunningplan( final String p_plan )
+    {
+        m_runningplan.add( p_plan );
+        return this;
+    }
+
+    /**
+     * returns the storage map
+     * @return storage map
+     */
+    public final Map<String, ?> getStorage()
+    {
+        return m_storage;
+    }
+
+    /**
+     * sets a storage item
+     *
+     * @param p_value storage entry
+     * @return self reference
+     */
+    public final CReSTAgent setStorage( final Map.Entry<String, ?> p_value )
+    {
+        m_storage.put( p_value.getKey(), p_value.getValue() );
+        return this;
+    }
+
 }

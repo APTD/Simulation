@@ -22,9 +22,21 @@
 
 package com.github.aptd.simulation.ui.agent;
 
+import javax.ws.rs.core.Application;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+
 /**
- * interface of the container for the restful export
+ * webserver application application
  */
-public interface IReSTAgent
+public final class CApplication extends Application
 {
+
+    @Override
+    public final Set<Object> getSingletons()
+    {
+        return Stream.of( CProvider.INSTANCE ).collect( Collectors.toSet() );
+    }
 }

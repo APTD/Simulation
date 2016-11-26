@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.simulation.graph.network;
 
 import com.github.aptd.simulation.simulation.error.CSemanticException;
+import com.github.aptd.simulation.ui.agent.CProvider;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
@@ -68,12 +69,15 @@ public final class CStationGenerator<T, G extends INetworkNode<T>> extends IBase
         {
             final INetworkNode<T> l_agent = m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
 
+            // add parameters to beliefbase
             l_agent.beliefbase().add( CLiteral.from( "name", CRawTerm.from( p_data[0].toString() ) ) );
             l_agent.beliefbase().add( CLiteral.from( "gps",
                                                     CLiteral.from( "longitude", CRawTerm.from( p_data[1] ) ),
                                                     CLiteral.from( "latitude", CRawTerm.from( p_data[2] ) )
             ) );
 
+            // register agent at the restful API
+            CProvider.INSTANCE.register( p_data[0].toString(), l_agent );
             return l_agent;
         }
         catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )

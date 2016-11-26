@@ -25,13 +25,17 @@ package com.github.aptd.simulation;
 
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
+import com.github.aptd.simulation.simulation.graph.local.CStation;
+import com.github.aptd.simulation.simulation.graph.network.CStationGenerator;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -95,6 +99,20 @@ public final class CMain
 
         // load configuration and start the http server (if possible)
         CConfiguration.INSTANCE.load( l_cli.getOptionValue( "config", "" ) );
+
+        try
+            (
+                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
+            )
+        {
+            new CStationGenerator<>( l_station, CStation.class ).generatesingle( "Göttingen", 51.536777, 9.926074 ).storage().put( "randomnumber", Math.random() );
+        }
+        catch ( final Exception l_exception )
+        {
+            l_exception.printStackTrace();
+        }
+
+
         CHTTPServer.execute();
     }
 

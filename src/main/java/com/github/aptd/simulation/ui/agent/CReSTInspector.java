@@ -71,25 +71,23 @@ public final class CReSTInspector implements IInspector, IReSTInspector
     public final void inspectplans( final Stream<ImmutableTriple<IPlan, Long, Long>> p_value
     )
     {
-
     }
 
     @Override
     public final void inspectrules( final Stream<IRule> p_value )
     {
-
     }
 
     @Override
     public final void inspectrunningplans( final Stream<ILiteral> p_value )
     {
-
+        p_value.forEach( i -> m_node.setRunningplan( i.toString() ) );
     }
 
     @Override
     public final void inspectstorage( final Stream<? extends Map.Entry<String, ?>> p_value )
     {
-
+        p_value.forEach( i -> m_node.setStorage( i ) );
     }
 
     @Override
