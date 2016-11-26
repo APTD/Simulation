@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @see https://jersey.java.net/documentation/1.19.1/json.html
  */
 @XmlRootElement( name = "agent" )
-public final class CAgent<T>
+public final class CReSTAgent<T> implements IReSTAgent
 {
     /**
      * cycle
@@ -63,7 +63,7 @@ public final class CAgent<T>
      * @return self reference
      */
     @XmlElement( name = "cycle" )
-    public final CAgent setCycle( final long p_cycle )
+    public final CReSTAgent setCycle( final long p_cycle )
     {
         m_cycle = p_cycle;
         return this;
@@ -84,7 +84,7 @@ public final class CAgent<T>
      * @return self reference
      */
     @XmlElement( name = "sleeping" )
-    public final CAgent setSleeping( final long p_sleeping )
+    public final CReSTAgent setSleeping( final long p_sleeping )
     {
         m_sleeping = p_sleeping;
         return this;
@@ -105,7 +105,7 @@ public final class CAgent<T>
      * @return self reference
      */
     @XmlElement( name = "id" )
-    public final CAgent setID( final T p_id )
+    public final CReSTAgent setID( final T p_id )
     {
         m_id = p_id;
         return this;

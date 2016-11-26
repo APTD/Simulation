@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 
 /**
@@ -53,20 +54,35 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see https://github.com/DominikAngerer/Boostraped-Jersey-RestAPI/blob/master/pom.xml
  */
 @Path( "/agent/{id}" )
-public final class CProvider
+public final class CReSTProvider
 {
     /**
      * singleton instance
      */
-    public static final CProvider INSTANCE = new CProvider();
+    public static final CReSTProvider INSTANCE = new CReSTProvider();
+    /**
+     * function to format agent identifier
+     */
+    private final Function<String, String> m_formater;
     /** map with agents **/
     private final Map<String, IAgent<?>> m_agents = new ConcurrentHashMap<>();
 
     /**
      * ctor
      */
-    public CProvider()
+    public CReSTProvider()
     {
+        this( (i) -> i.trim().toLowerCase( Locale.ROOT ) );
+    }
+
+    /**
+     * ctor
+     *
+     * @param p_formater identifier formater
+     */
+    public CReSTProvider( final Function<String, String> p_formater )
+    {
+        m_formater = p_formater;
         try
             (
                 final InputStream l_station = new FileInputStream( "test/resource/asl/station.asl" );
@@ -89,12 +105,12 @@ public final class CProvider
     @GET
     @Path( "/mind" )
     @Produces( MediaType.APPLICATION_JSON )
-    public final CAgent mind( @PathParam( "id" ) final String p_id )
+    public final IReSTAgent mind( @PathParam( "id" ) final String p_id )
     {
-        final IAgent<?> l_agent = m_agents.get( format( p_id ) );
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
         return l_agent == null
                ? null
-               : l_agent.inspect( new CInspector() ).findFirst().get().get();
+               : l_agent.inspect( new CReSTInspector() ).findFirst().get().get();
     }
 
     /**
@@ -104,9 +120,9 @@ public final class CProvider
      * @param p_agent agent object
      * @return serlf reference
      */
-    public final CProvider register( final String p_id, final IAgent<?> p_agent )
+    public final CReSTProvider register( final String p_id, final IAgent<?> p_agent )
     {
-        m_agents.put( format( p_id ), p_agent );
+        m_agents.put( m_formater.apply( p_id ), p_agent );
         return this;
     }
 
@@ -116,21 +132,11 @@ public final class CProvider
      * @param p_id agent name / id (case insensitive )
      * @return self refrence
      */
-    public final CProvider unregister( final String p_id )
+    public final CReSTProvider unregister( final String p_id )
     {
-        m_agents.remove( format( p_id ) );
+        m_agents.remove( m_formater.apply( p_id ) );
         return this;
     }
 
-    /**
-     * formats the id
-     *
-     * @param p_value string
-     * @return formated name
-     */
-    private static String format( final String p_value )
-    {
-        return p_value.trim().toLowerCase( Locale.ROOT );
-    }
 
 }

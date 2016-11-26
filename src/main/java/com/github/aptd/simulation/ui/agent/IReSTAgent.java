@@ -22,68 +22,9 @@
 
 package com.github.aptd.simulation.ui.agent;
 
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.lightjason.agentspeak.agent.IInspector;
-import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
-import org.lightjason.agentspeak.language.instantiable.rule.IRule;
-
-import java.util.Map;
-import java.util.stream.Stream;
-
-
 /**
- * inspector of an agent
+ * interface to define a rest agent
  */
-public final class CInspector implements IInspector
+public interface IReSTAgent
 {
-    private final CAgent<String> m_node = new CAgent<>();
-
-    @Override
-    public final void inspectsleeping( final long p_value )
-    {
-        m_node.setSleeping( p_value );
-    }
-
-    @Override
-    public final void inspectcycle( final long p_value )
-    {
-        m_node.setCycle( p_value );
-    }
-
-    @Override
-    public final void inspectbelief( final Stream<ILiteral> p_value )
-    {
-
-    }
-
-    @Override
-    public final void inspectplans( final Stream<ImmutableTriple<IPlan, Long, Long>> p_value
-    )
-    {
-
-    }
-
-    @Override
-    public final void inspectrules( final Stream<IRule> p_value )
-    {
-
-    }
-
-    @Override
-    public final void inspectrunningplans( final Stream<ILiteral> p_value )
-    {
-
-    }
-
-    @Override
-    public final void inspectstorage( final Stream<? extends Map.Entry<String, ?>> p_value )
-    {
-
-    }
-
-    public final CAgent get()
-    {
-        return m_node;
-    }
 }
