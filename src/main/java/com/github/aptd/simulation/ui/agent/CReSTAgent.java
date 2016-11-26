@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.ui.agent;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,38 +40,33 @@ public final class CReSTAgent<T> implements IReSTAgent
     /**
      * storage element
      */
-    @XmlElement( name = "storage" )
     private final Map<String, Object> m_storage = new HashMap<>();
     /**
      * running plans
      */
-    @XmlElement( name = "runningplan" )
     private final List<String> m_runningplan = new ArrayList<>();
     /**
      * belief as strings
      */
-    @XmlElement( name = "belief" )
     private final List<String> m_belief = new ArrayList<>();
     /**
      * cycle
      */
-    @XmlElement( name = "cycle" )
     private long m_cycle;
     /**
      * sleeping count
      */
-    @XmlElement( name = "sleeping" )
     private long m_sleeping;
     /**
      * agent id
      */
-    @XmlElement( name = "id" )
     private T m_id;
 
     /**
      * get cycle
      * @return cycle
      */
+    @XmlElement( name = "cycle" )
     public final long getCycle()
     {
         return m_cycle;
@@ -91,6 +87,7 @@ public final class CReSTAgent<T> implements IReSTAgent
      * get sleeping
      * @return sleeping count
      */
+    @XmlElement( name = "sleeping" )
     public final long getSleeping()
     {
         return m_sleeping;
@@ -111,6 +108,7 @@ public final class CReSTAgent<T> implements IReSTAgent
      * get name / id
      * @return name / id
      */
+    @XmlElement( name = "id" )
     public final T getID()
     {
         return m_id;
@@ -132,6 +130,8 @@ public final class CReSTAgent<T> implements IReSTAgent
      *
      * @return beliefs
      */
+    @XmlElementWrapper( name = "beliefs" )
+    @XmlElement( name = "belief" )
     public final List<String> getBelief()
     {
         return m_belief;
@@ -154,6 +154,8 @@ public final class CReSTAgent<T> implements IReSTAgent
      *
      * @return list with running plans
      */
+    @XmlElementWrapper( name = "runningplans" )
+    @XmlElement( name = "plan" )
     public final List<String> getRunningplan()
     {
         return m_runningplan;
@@ -175,6 +177,7 @@ public final class CReSTAgent<T> implements IReSTAgent
      * returns the storage map
      * @return storage map
      */
+    @XmlElement( name = "storage" )
     public final Map<String, ?> getStorage()
     {
         return m_storage;

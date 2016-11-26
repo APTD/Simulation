@@ -73,7 +73,8 @@ public final class CProvider
      */
     @GET
     @Path( "/view" )
-    @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML } )
+    //@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML } )
+    @Produces( MediaType.APPLICATION_JSON )
     public final IReSTAgent mind( @PathParam( "id" ) final String p_id )
     {
         final String l_id = m_formater.apply( p_id );
