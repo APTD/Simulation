@@ -72,7 +72,7 @@ public final class CProvider
      * @return agent object
      */
     @GET
-    @Path( "/mind" )
+    @Path( "/view" )
     @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML } )
     public final IReSTAgent mind( @PathParam( "id" ) final String p_id )
     {
