@@ -22,8 +22,6 @@
 
 package com.github.aptd.simulation.ui.agent;
 
-import org.lightjason.agentspeak.language.ILiteral;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;

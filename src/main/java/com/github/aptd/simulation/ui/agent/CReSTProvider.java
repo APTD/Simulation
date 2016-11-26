@@ -39,8 +39,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 
@@ -111,7 +109,7 @@ public final class CReSTProvider
      */
     @GET
     @Path( "/mind" )
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML } )
     public final IReSTAgent mind( @PathParam( "id" ) final String p_id )
     {
         final String l_id = m_formater.apply( p_id );
