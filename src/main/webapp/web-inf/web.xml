@@ -10,7 +10,10 @@
 
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>com.fasterxml.jackson.jaxrs.json</param-value>
+            <param-value>
+                com.fasterxml.jackson.jaxrs.json
+                com.fasterxml.jackson.jaxrs.xml
+            </param-value>
         </init-param>
 
         <init-param>
