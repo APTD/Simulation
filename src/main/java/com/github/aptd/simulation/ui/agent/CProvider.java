@@ -29,7 +29,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.ITerm;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
@@ -40,9 +42,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -100,7 +105,7 @@ public final class CProvider
      */
     @GET
     @Path( "/cycle" )
-    public final Object cycle( @PathParam( "id" ) final String p_id )
+    public final Response cycle( @PathParam( "id" ) final String p_id )
     {
         final String l_id = m_formater.apply( p_id );
         final IAgent<?> l_agent = m_agents.get( l_id );
@@ -120,6 +125,102 @@ public final class CProvider
     }
 
     /**
+     * sets the agent into sleeping
+     *
+     * @param p_id agent identifier
+     * @param p_time sleeping time
+     * @return response
+     */
+    @GET
+    @POST
+    @Path( "/sleep" )
+    public final Response sleep( @PathParam( "id" ) final String p_id, @QueryParam( "time" ) final long p_time, final String p_data )
+    {
+        final String l_id = m_formater.apply( p_id );
+        final IAgent<?> l_agent = m_agents.get( l_id );
+
+        if ( l_agent == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build();
+
+        l_agent.sleep(
+
+            p_time <= 0 ? Long.MAX_VALUE : p_time,
+
+            p_data.isEmpty()
+            ? null
+            : Arrays.stream( p_data.split( ";|\\n" ) )
+                    .map( String::trim )
+                    .map( i -> parseterm(
+                        i,
+                        CLiteral::parse,
+                        ( j ) -> CRawTerm.from( Long.parseLong( j ) ),
+                        ( j ) -> CRawTerm.from( Double.parseDouble( j ) )
+                    ) )
+
+        );
+        return Response.status( Response.Status.OK ).build();
+    }
+
+    /**
+     * agent wakeup call
+     *
+     * @param p_id agent identifier
+     * @param p_data any optional data
+     * @return http response
+     */
+    @GET
+    @POST
+    @Path( "/wakeup" )
+    public final Response wakeup( @PathParam( "id" ) final String p_id, final String p_data )
+    {
+        final String l_id = m_formater.apply( p_id );
+        final IAgent<?> l_agent = m_agents.get( l_id );
+
+        if ( l_agent == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build();
+
+        l_agent.wakeup(
+
+            p_data.isEmpty()
+            ? null
+            : Arrays.stream( p_data.split( ";|\\n" ) )
+                .map( String::trim )
+                .map( i -> parseterm(
+                    i,
+                    CLiteral::parse,
+                    ( j ) -> CRawTerm.from( Long.parseLong( j ) ),
+                    ( j ) -> CRawTerm.from( Double.parseDouble( j ) )
+
+                ) )
+        );
+        return Response.status( Response.Status.OK ).build();
+    }
+
+    /**
+     * parse any string data into a term
+     *
+     * @param p_data string data
+     * @return term
+     */
+    private static ITerm parseterm( final String p_data, final IFunction<String, ITerm>... p_parse )
+    {
+        return Arrays.stream( p_parse )
+              .map( i -> {
+                  try
+                  {
+                      return i.apply( p_data );
+                  }
+                  catch ( final Exception l_exception )
+                  {
+                      return null;
+                  }
+              } )
+              .filter( Objects::nonNull )
+              .findFirst()
+              .orElseGet( CRawTerm.from( p_data ).raw() );
+    }
+
+    /**
      * triggers the agent immediately
      *
      * @param p_id agent identifier
@@ -130,7 +231,7 @@ public final class CProvider
     @POST
     @Path( "/trigger/{trigger}/immediately" )
     @Consumes( MediaType.APPLICATION_JSON )
-    public final Object triggerimmediately( @PathParam( "id" ) final String p_id, @PathParam( "trigger" ) final String p_trigger, final String p_literal )
+    public final Response triggerimmediately( @PathParam( "id" ) final String p_id, @PathParam( "trigger" ) final String p_trigger, final String p_literal )
     {
         return this.executetrigger( p_id, p_trigger, p_literal, ( i, j ) -> i.trigger( j, true ) );
     }
@@ -146,7 +247,7 @@ public final class CProvider
     @POST
     @Path( "/trigger/{trigger}" )
     @Consumes( MediaType.APPLICATION_JSON )
-    public final Object trigger( @PathParam( "id" ) final String p_id, @PathParam( "trigger" ) final String p_trigger, final String p_literal )
+    public final Response trigger( @PathParam( "id" ) final String p_id, @PathParam( "trigger" ) final String p_trigger, final String p_literal )
     {
         return this.executetrigger( p_id, p_trigger, p_literal, ( i, j ) -> i.trigger( j ) );
     }
@@ -249,4 +350,22 @@ public final class CProvider
     }
 
 
+    /**
+     * functional interface for function that can throw errors
+     *
+     * @tparam U input value type
+     * @tparam R return value type
+     */
+    @FunctionalInterface
+    private interface IFunction<U, R>
+    {
+        /**
+         * apply call
+         *
+         * @param p_value input value
+         * @return return value
+         * @throws Exception is thrown on any exception
+         */
+        R apply( final U p_value )throws Exception;
+    }
 }
