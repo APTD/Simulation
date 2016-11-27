@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 
 /**
@@ -87,15 +88,13 @@ public final class CProvider
      */
     @GET
     @Path( "/view" )
-    //@Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML } )
     @Produces( MediaType.APPLICATION_JSON )
     public final Object view( @PathParam( "id" ) final String p_id )
     {
-        final String l_id = m_formater.apply( p_id );
-        final IAgent<?> l_agent = m_agents.get( l_id );
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
         return l_agent == null
-               ? Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build()
-               : l_agent.inspect( new CReSTInspector( l_id ) ).findFirst().orElseThrow( RuntimeException::new ).get();
+               ? Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build()
+               : l_agent.inspect( new CReSTInspector( p_id ) ).findFirst().orElseThrow( RuntimeException::new ).get();
     }
 
     /**
@@ -107,11 +106,10 @@ public final class CProvider
     @Path( "/cycle" )
     public final Response cycle( @PathParam( "id" ) final String p_id )
     {
-        final String l_id = m_formater.apply( p_id );
-        final IAgent<?> l_agent = m_agents.get( l_id );
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
 
         if ( l_agent == null )
-            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build();
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
 
         try
         {
@@ -125,29 +123,43 @@ public final class CProvider
     }
 
     /**
-     * sets the agent into sleeping
+     * sets the agent into sleeping (http get)
      *
      * @param p_id agent identifier
      * @param p_time sleeping time
-     * @return response
+     * @return http response
      */
     @GET
+    @Path( "/sleep" )
+    public final Response sleep( @PathParam( "id" ) final String p_id, @QueryParam( "time" ) final long p_time )
+    {
+        return this.sleep( p_id, p_time, "" );
+    }
+
+    /**
+     * sets the agent into sleeping (http post)
+     *
+     * @param p_id agent identifier
+     * @param p_time sleeping time
+     * @param p_data wake-up data
+     * @return http response
+     */
     @POST
     @Path( "/sleep" )
+    @Consumes( MediaType.TEXT_PLAIN )
     public final Response sleep( @PathParam( "id" ) final String p_id, @QueryParam( "time" ) final long p_time, final String p_data )
     {
-        final String l_id = m_formater.apply( p_id );
-        final IAgent<?> l_agent = m_agents.get( l_id );
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
 
         if ( l_agent == null )
-            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build();
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
 
         l_agent.sleep(
 
             p_time <= 0 ? Long.MAX_VALUE : p_time,
 
             p_data.isEmpty()
-            ? null
+            ? Stream.of()
             : Arrays.stream( p_data.split( ";|\\n" ) )
                     .map( String::trim )
                     .map( i -> parseterm(
@@ -162,27 +174,39 @@ public final class CProvider
     }
 
     /**
-     * agent wakeup call
+     * agent wakeup call (http get)
      *
      * @param p_id agent identifier
-     * @param p_data any optional data
      * @return http response
      */
     @GET
+    @Path( "/wakeup" )
+    public final Response wakeup( @PathParam( "id" ) final String p_id )
+    {
+        return this.wakeup( p_id, "" );
+    }
+
+    /**
+     * agent wakeup call (http post)
+     *
+     * @param p_id agent identifier
+     * @param p_data data
+     * @return http response
+     */
     @POST
     @Path( "/wakeup" )
+    @Consumes( MediaType.TEXT_PLAIN )
     public final Response wakeup( @PathParam( "id" ) final String p_id, final String p_data )
     {
-        final String l_id = m_formater.apply( p_id );
-        final IAgent<?> l_agent = m_agents.get( l_id );
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
 
         if ( l_agent == null )
-            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build();
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
 
         l_agent.wakeup(
 
             p_data.isEmpty()
-            ? null
+            ? Stream.of()
             : Arrays.stream( p_data.split( ";|\\n" ) )
                 .map( String::trim )
                 .map( i -> parseterm(
@@ -192,6 +216,7 @@ public final class CProvider
                     ( j ) -> CRawTerm.from( Double.parseDouble( j ) )
 
                 ) )
+
         );
         return Response.status( Response.Status.OK ).build();
     }
@@ -202,6 +227,7 @@ public final class CProvider
      * @param p_data string data
      * @return term
      */
+    @SafeVarargs
     private static ITerm parseterm( final String p_data, final IFunction<String, ITerm>... p_parse )
     {
         return Arrays.stream( p_parse )
@@ -220,6 +246,54 @@ public final class CProvider
               .orElseGet( CRawTerm.from( p_data ).raw() );
     }
 
+
+    /**
+     * adds a new belief into agents beliefbase
+     *
+     * @param p_id agent identifier
+     * @param p_literal literal
+     * @return http response
+     */
+    @POST
+    @Path( "/belief/{action}" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    public final Response addbelief( @PathParam( "id" ) final String p_id, @PathParam( "action" ) final String p_action, final String p_literal )
+    {
+        // find agent
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
+        if ( l_agent == null )
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
+
+        // parse literal
+        final ILiteral l_literal;
+        try
+        {
+            l_literal = CLiteral.parse( p_literal );
+        }
+        catch ( final Exception l_exception )
+        {
+            return Response.status( Response.Status.BAD_REQUEST ).entity( CCommon.languagestring( this, "literalparse" ) ).build();
+        }
+
+        // execute belief action
+        switch ( p_action.toLowerCase( Locale.ROOT ) )
+        {
+            case "delete" :
+                l_agent.beliefbase().remove( l_literal );
+                break;
+
+            case "add" :
+                l_agent.beliefbase().add( l_literal );
+                break;
+
+            default:
+                return Response.status( Response.Status.BAD_REQUEST ).entity( CCommon.languagestring( this, "actionnotfound", p_action ) ).build();
+        }
+
+        return Response.status( Response.Status.OK ).build();
+    }
+
+
     /**
      * triggers the agent immediately
      *
@@ -230,7 +304,7 @@ public final class CProvider
      */
     @POST
     @Path( "/trigger/{trigger}/immediately" )
-    @Consumes( MediaType.APPLICATION_JSON )
+    @Consumes( MediaType.TEXT_PLAIN )
     public final Response triggerimmediately( @PathParam( "id" ) final String p_id, @PathParam( "trigger" ) final String p_trigger, final String p_literal )
     {
         return this.executetrigger( p_id, p_trigger, p_literal, ( i, j ) -> i.trigger( j, true ) );
@@ -246,7 +320,7 @@ public final class CProvider
      */
     @POST
     @Path( "/trigger/{trigger}" )
-    @Consumes( MediaType.APPLICATION_JSON )
+    @Consumes( MediaType.TEXT_PLAIN )
     public final Response trigger( @PathParam( "id" ) final String p_id, @PathParam( "trigger" ) final String p_trigger, final String p_literal )
     {
         return this.executetrigger( p_id, p_trigger, p_literal, ( i, j ) -> i.trigger( j ) );
@@ -264,10 +338,9 @@ public final class CProvider
     private Response executetrigger( final String p_id, final String p_trigger, final String p_literal, final BiConsumer<IAgent<?>, ITrigger> p_execute )
     {
         // find agent
-        final String l_id = m_formater.apply( p_id );
-        final IAgent<?> l_agent = m_agents.get( l_id );
+        final IAgent<?> l_agent = m_agents.get( m_formater.apply( p_id ) );
         if ( l_agent == null )
-            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", l_id ) ).build();
+            return Response.status( Response.Status.NOT_FOUND ).entity( CCommon.languagestring( this, "agentnotfound", p_id ) ).build();
 
         // parse literal
         final ILiteral l_literal;
@@ -308,9 +381,6 @@ public final class CProvider
         p_execute.accept( l_agent, l_trigger );
         return Response.status( Response.Status.OK ).build();
     }
-
-
-
 
     /**
      * register an agent with a name
@@ -368,4 +438,5 @@ public final class CProvider
          */
         R apply( final U p_value )throws Exception;
     }
+
 }
