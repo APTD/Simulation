@@ -23,13 +23,13 @@
 package com.github.aptd.simulation.simulation.graph.network;
 
 import com.github.aptd.simulation.simulation.error.CSemanticException;
-import com.github.aptd.simulation.ui.agent.CProvider;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.score.IAggregation;
+import org.lightjason.rest.CProvider;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
