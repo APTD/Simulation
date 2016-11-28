@@ -33,14 +33,8 @@ import java.net.InetSocketAddress;
 
 
 /**
- * Jersey-HTTP server for UI
+ * Jersey-Jetty-HTTP server for UI
  *
- * @see https://dzone.com/articles/standalone-java-application-with-jersey-and-jetty
- * @see http://www.dropwizard.io/1.0.5/docs/getting-started.html#jetty-for-http
- * @see https://www.acando.no/thedailypassion/200555/a-rest-service-with-jetty-and-jersey
- * @see https://www.mkyong.com/webservices/jax-rs/jersey-hello-world-example/
- * @see http://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
- * @see https://github.com/jetty-project/embedded-jetty-jsp/blob/master/src/main/java/org/eclipse/jetty/demo/Main.java
  */
 public final class CHTTPServer
 {

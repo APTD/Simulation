@@ -80,8 +80,49 @@ public final class CProvider
     private CProvider()
     {}
 
+    // --- agent register calls --------------------------------------------------------------------------------------------------------------------------------
+
     /**
-     * http get for an agent
+     * register an agent with a name
+     *
+     * @param p_id agent name / id (case-insensitive)
+     * @param p_agent agent object
+     * @return self reference
+     */
+    public final CProvider register( final String p_id, final IAgent<?> p_agent )
+    {
+        m_agents.put( m_formater.apply( p_id ), p_agent );
+        return this;
+    }
+
+    /**
+     * unregister agent by the name
+     *
+     * @param p_id agent name / id (case insensitive )
+     * @return self refrence
+     */
+    public final CProvider unregister( final String p_id )
+    {
+        m_agents.remove( m_formater.apply( p_id ) );
+        return this;
+    }
+
+    /**
+     * unregister agent by the objct
+     *
+     * @param p_agent agent object
+     * @return self refrence
+     */
+    public final CProvider unregister( final IAgent<?> p_agent )
+    {
+        m_agents.inverse().remove( p_agent );
+        return this;
+    }
+
+    // --- api calls -------------------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * rest-api call to get current state of the agent
      *
      * @param p_id agent identifier
      * @return agent object or http error
@@ -98,7 +139,7 @@ public final class CProvider
     }
 
     /**
-     * runs an agent cylce
+     * rest-api call to run a cycle
      *
      * @return response
      */
@@ -123,7 +164,7 @@ public final class CProvider
     }
 
     /**
-     * sets the agent into sleeping (http get)
+     * api call to set sleeping state (http get)
      *
      * @param p_id agent identifier
      * @param p_time sleeping time
@@ -137,7 +178,7 @@ public final class CProvider
     }
 
     /**
-     * sets the agent into sleeping (http post)
+     * rest-api call to set sleeping state (http post)
      *
      * @param p_id agent identifier
      * @param p_time sleeping time
@@ -174,7 +215,7 @@ public final class CProvider
     }
 
     /**
-     * agent wakeup call (http get)
+     * rest-api call to run wake-up (http get)
      *
      * @param p_id agent identifier
      * @return http response
@@ -187,7 +228,7 @@ public final class CProvider
     }
 
     /**
-     * agent wakeup call (http post)
+     * rest-api call to run wake-up (http post)
      *
      * @param p_id agent identifier
      * @param p_data data
@@ -222,35 +263,10 @@ public final class CProvider
     }
 
     /**
-     * parse any string data into a term
-     *
-     * @param p_data string data
-     * @return term
-     */
-    @SafeVarargs
-    private static ITerm parseterm( final String p_data, final IFunction<String, ITerm>... p_parse )
-    {
-        return Arrays.stream( p_parse )
-              .map( i -> {
-                  try
-                  {
-                      return i.apply( p_data );
-                  }
-                  catch ( final Exception l_exception )
-                  {
-                      return null;
-                  }
-              } )
-              .filter( Objects::nonNull )
-              .findFirst()
-              .orElseGet( CRawTerm.from( p_data ).raw() );
-    }
-
-
-    /**
-     * adds a new belief into agents beliefbase
+     * rest-api call to add a new belief
      *
      * @param p_id agent identifier
+     * @param p_action action
      * @param p_literal literal
      * @return http response
      */
@@ -293,9 +309,8 @@ public final class CProvider
         return Response.status( Response.Status.OK ).build();
     }
 
-
     /**
-     * triggers the agent immediately
+     * rest-api call to trigger a plan immediately
      *
      * @param p_id agent identifier
      * @param p_trigger trigger type
@@ -311,7 +326,7 @@ public final class CProvider
     }
 
     /**
-     * triggers the agent
+     * rest-api call to trigger a plan
      *
      * @param p_id agent identifier
      * @param p_trigger trigger type
@@ -325,6 +340,35 @@ public final class CProvider
     {
         return this.executetrigger( p_id, p_trigger, p_literal, ( i, j ) -> i.trigger( j ) );
     }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * parse any string data into a term
+     *
+     * @param p_data string data
+     * @param p_parse parsing function
+     * @return term
+     */
+    @SafeVarargs
+    private static ITerm parseterm( final String p_data, final IFunction<String, ITerm>... p_parse )
+    {
+        return Arrays.stream( p_parse )
+              .map( i -> {
+                  try
+                  {
+                      return i.apply( p_data );
+                  }
+                  catch ( final Exception l_exception )
+                  {
+                      return null;
+                  }
+              } )
+              .filter( Objects::nonNull )
+              .findFirst()
+              .orElseGet( CRawTerm.from( p_data ).raw() );
+    }
+
 
     /**
      * triggers the agent based on input data
@@ -380,43 +424,6 @@ public final class CProvider
         // execute trigger
         p_execute.accept( l_agent, l_trigger );
         return Response.status( Response.Status.OK ).build();
-    }
-
-    /**
-     * register an agent with a name
-     *
-     * @param p_id agent name / id (case-insensitive)
-     * @param p_agent agent object
-     * @return self reference
-     */
-    public final CProvider register( final String p_id, final IAgent<?> p_agent )
-    {
-        m_agents.put( m_formater.apply( p_id ), p_agent );
-        return this;
-    }
-
-    /**
-     * unregister agent by the name
-     *
-     * @param p_id agent name / id (case insensitive )
-     * @return self refrence
-     */
-    public final CProvider unregister( final String p_id )
-    {
-        m_agents.remove( m_formater.apply( p_id ) );
-        return this;
-    }
-
-    /**
-     * unregister agent by the objct
-     *
-     * @param p_agent agent object
-     * @return self refrence
-     */
-    public final CProvider unregister( final IAgent<?> p_agent )
-    {
-        m_agents.inverse().remove( p_agent );
-        return this;
     }
 
 
