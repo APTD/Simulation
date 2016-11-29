@@ -29,7 +29,7 @@ import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.score.IAggregation;
-import org.lightjason.rest.CProvider;
+import org.lightjason.rest.CAgentProvider;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -77,7 +77,7 @@ public final class CStationGenerator<T, G extends INetworkNode<T>> extends IBase
             ) );
 
             // register agent at the restful API
-            CProvider.INSTANCE.register( p_data[0].toString(), l_agent );
+            CAgentProvider.INSTANCE.register( p_data[0].toString(), l_agent );
             return l_agent;
         }
         catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )

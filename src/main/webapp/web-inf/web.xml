@@ -9,14 +9,6 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 
         <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>
-                com.fasterxml.jackson.jaxrs.json
-                com.fasterxml.jackson.jaxrs.xml
-            </param-value>
-        </init-param>
-
-        <init-param>
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>org.lightjason.rest.CApplication</param-value>
         </init-param>
