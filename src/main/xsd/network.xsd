@@ -3,8 +3,7 @@
     vc:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
     xmlns:rail="http://www.railml.org/schemas/2016">
 
-    <xs:import namespace="http://www.railml.org/schemas/2016"
-        schemaLocation="https://www.railml.org/files/download/schemas/2016/railML-2.3/schema/railML.xsd"/>
+    <xs:import namespace="http://www.railml.org/schemas/2016"  schemaLocation="http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/railML.xsd"/>
     <xs:simpleType name="tNumPassenger">
         <xs:annotation>
             <xs:documentation>generic type for the number of passengers</xs:documentation>

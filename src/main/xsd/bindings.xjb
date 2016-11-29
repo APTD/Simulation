@@ -1,13 +1,14 @@
-<jxb:bindings xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:jxb="http://java.sun.com/xml/ns/jaxb" version="2.1">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings version="2.1" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb">
 
-    <jxb:bindings schemaLocation="network_simulation.xsd">
-        <jxb:bindings node="//xsd:complexType[@name='rail:tTrack']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:any[@namespace='http://checklists.nist.gov/sccf/0.1']">
-            <jxb:property name="any2" />
-        </jxb:bindings>
-        <jxb:bindings node="//xsd:complexType[@name='rail:tTrainPart']/xsd:complexContent/xsd:extension/xsd:sequence/xsd:any[@namespace='http://checklists.nist.gov/sccf/0.1']">
-            <jxb:property name="any2" />
-        </jxb:bindings>
-    </jxb:bindings>
+    <jaxb:bindings schemaLocation="network.xsd">
 
-</jxb:bindings>
+        <jaxb:globalBindings generateIsSetMethod="false"/>
+
+        <jaxb:schemaBindings>
+            <jaxb:package name="com.github.aptd.simulation.data"/>
+        </jaxb:schemaBindings>
+
+    </jaxb:bindings>
+
+</jaxb:bindings>
