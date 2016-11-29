@@ -28,6 +28,7 @@ dependencies:
     pre:
         - sudo apt-get install doxygen graphviz
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
+        - git clone https://github.com/LightJason/REST.git && cd REST && mvn install -DskipTests
 
 test:
     override:
