@@ -11,6 +11,8 @@
 !*.yaml
 !web.xml
 !*.properties
+!*.xsd
+!*.xjb
 
 !src/site/*.doxyfile
 !src/site/*.htm*
