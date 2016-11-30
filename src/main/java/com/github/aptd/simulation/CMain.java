@@ -105,7 +105,7 @@ public final class CMain
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            new CStationGenerator<>( l_station, CStation.class ).generatesingle( "Göttingen", 51.536777, 9.926074 ).storage().put( "randomnumber", Math.random() );
+            new CStationGenerator<>( l_station, CStation.class ).generatesingle( "Goettingen", 51.536777, 9.926074 ).storage().put( "randomnumber", Math.random() );
         }
         catch ( final Exception l_exception )
         {

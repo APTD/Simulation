@@ -26,7 +26,9 @@ import com.github.aptd.simulation.CMain;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.simulation.error.CSemanticException;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.rest.CApplication;
 
 import java.net.InetSocketAddress;
@@ -65,7 +67,7 @@ public final class CHTTPServer
         l_webapp.setContextPath( "/" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase( CHTTPServer.class.getResource( "/com/github/aptd/simulation/html" ).toExternalForm() );
-        l_webapp.addBean( new CApplication() );
+        l_webapp.addServlet( new ServletHolder( new ServletContainer( new CApplication() ) ), "/rest" );
 
         /*
             <init-param>
@@ -73,6 +75,7 @@ public final class CHTTPServer
             <param-value>org.lightjason.rest.CApplication</param-value>
             </init-param>
         */
+        // http://stackoverflow.com/questions/27965207/creating-a-resourceconfig-that-behaves-the-same-way-as-default-jettys-jersey-re/27968094#27968094
         //l_webapp.setDefaultsDescriptor( CHTTPServer.class.getResource( "/com/github/aptd/simulation/web-inf/web.xml" ).toExternalForm() );
         //l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
 
