@@ -66,7 +66,7 @@ public final class CHTTPServer
         l_webapp.setContextPath( "/" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase( CHTTPServer.class.getResource( "/com/github/aptd/simulation/html" ).toExternalForm() );
-        l_webapp.addServlet( new ServletHolder( new ServletContainer( new CApplication() ) ), "/rest" );
+        l_webapp.addServlet( new ServletHolder( new ServletContainer( new CApplication() ) ), "/rest/*" );
 
         /*
             <init-param>
