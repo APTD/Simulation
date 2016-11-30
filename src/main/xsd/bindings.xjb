@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<jaxb:bindings version="2.1" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb">
+<jaxb:bindings version = "2.1" xmlns:jaxb = "http://java.sun.com/xml/ns/jaxb">
 
-    <jaxb:bindings schemaLocation="network.xsd">
+    <jaxb:bindings schemaLocation="network.xsd" node="/xs:schema">
 
         <jaxb:globalBindings generateIsSetMethod="false"/>
 
         <jaxb:schemaBindings>
             <jaxb:package name="com.github.aptd.simulation.data"/>
         </jaxb:schemaBindings>
+
+        <!--
+        <jaxb:bindings node="//xs:element[@name='anyAttribute']">
+            <jaxb:class ref="com.github.aptd.simulation.data.none"/>
+        </jaxb:bindings>
+        -->
 
     </jaxb:bindings>
 
