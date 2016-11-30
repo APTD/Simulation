@@ -22,7 +22,6 @@
 
 package com.github.aptd.simulation.ui;
 
-import com.github.aptd.simulation.CMain;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.simulation.error.CSemanticException;
 import org.eclipse.jetty.server.Server;
@@ -80,7 +79,6 @@ public final class CHTTPServer
         //l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
 
 
-        
         try
         {
             l_server.start();
