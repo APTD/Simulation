@@ -13,6 +13,9 @@
 !*.properties
 !*.xsd
 !*.xjb
+!src/main/webapp/**/*.htm*
+!src/main/webapp/**/*.js
+!src/main/webapp/**/*.css
 
 !src/site/*.doxyfile
 !src/site/*.htm*

@@ -27,6 +27,7 @@ import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.simulation.error.CSemanticException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.lightjason.rest.CApplication;
 
 import java.net.InetSocketAddress;
 
@@ -59,10 +60,24 @@ public final class CHTTPServer
         );
 
         // set server / webapp connection
-        l_webapp.setServer( l_server );
-        l_webapp.setDescriptor( "web-inf/web.xml" );
         l_server.setHandler( l_webapp );
-        l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
+        l_webapp.setServer( l_server );
+        l_webapp.setContextPath( "/" );
+        l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
+        l_webapp.setResourceBase( CHTTPServer.class.getResource( "/com/github/aptd/simulation/html" ).toExternalForm() );
+        l_webapp.addBean( new CApplication() );
+
+        /*
+            <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.lightjason.rest.CApplication</param-value>
+            </init-param>
+        */
+        //l_webapp.setDefaultsDescriptor( CHTTPServer.class.getResource( "/com/github/aptd/simulation/web-inf/web.xml" ).toExternalForm() );
+        //l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
+
+
+
 
         try
         {
