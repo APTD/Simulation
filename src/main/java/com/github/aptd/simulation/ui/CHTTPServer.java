@@ -37,6 +37,8 @@ import java.net.InetSocketAddress;
 /**
  * Jersey-Jetty-HTTP server for UI
  *
+ * debug: -Dorg.eclipse.jetty.servlet.LEVEL=ALL
+ *
  */
 public final class CHTTPServer
 {
