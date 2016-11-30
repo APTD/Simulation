@@ -60,9 +60,15 @@ public final class CHTTPServer
 
         // set server / webapp connection
         l_webapp.setServer( l_server );
-        l_webapp.setDescriptor( "web-inf/web.xml" );
+
+        // this is bad because it's requiring the unpacked source and must be run with correct working directory
+        l_webapp.setDescriptor( "src/main/webapp/web-inf/web.xml" );
+        l_webapp.setResourceBase( "src/main/webapp" );
         l_server.setHandler( l_webapp );
-        l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
+
+        // this is probably not needed any more
+        if ( false )
+            l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
 
         try
         {
