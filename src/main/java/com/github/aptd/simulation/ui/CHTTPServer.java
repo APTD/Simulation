@@ -76,7 +76,9 @@ public final class CHTTPServer
             <param-value>org.lightjason.rest.CApplication</param-value>
             </init-param>
         */
+        // http://www.draconianoverlord.com/2009/01/10/war-less-dev-with-jetty.html
         // http://stackoverflow.com/questions/27965207/creating-a-resourceconfig-that-behaves-the-same-way-as-default-jettys-jersey-re/27968094#27968094
+
         //l_webapp.setDefaultsDescriptor( CHTTPServer.class.getResource( "/com/github/aptd/simulation/web-inf/web.xml" ).toExternalForm() );
         //l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
 
