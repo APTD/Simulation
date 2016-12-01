@@ -23,13 +23,13 @@
 package com.github.aptd.simulation.simulation.graph.network;
 
 import com.github.aptd.simulation.simulation.error.CSemanticException;
+import com.github.aptd.simulation.ui.CHTTPServer;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.score.IAggregation;
-import org.lightjason.rest.CAgentProvider;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -77,7 +77,7 @@ public final class CStationGenerator<T, G extends INetworkNode<T>> extends IBase
             ) );
 
             // register agent at the restful API
-            CAgentProvider.INSTANCE.register( p_data[0].toString(), l_agent );
+            CHTTPServer.register( p_data[0].toString(), l_agent );
             return l_agent;
         }
         catch ( final IllegalAccessException | InvocationTargetException | InstantiationException l_exception )

@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.graph;
 
+import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.simulation.graph.local.CNetworkEdge;
 import com.github.aptd.simulation.simulation.graph.local.CSparseGraph;
 import com.github.aptd.simulation.simulation.graph.local.CStation;
@@ -56,6 +57,7 @@ public final class TestCNetwork
     @SuppressWarnings( "unchecked" )
     public void ininitialize()
     {
+        CConfiguration.INSTANCE.loadstring( "" );
         try
         (
             final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );

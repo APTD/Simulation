@@ -385,7 +385,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Jaxb for transform XSD into Java class structure -->
+            <!-- Jaxb for transform XSD into Java class structure
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -408,6 +408,7 @@
                     </bindingIncludes>
                 </configuration>
             </plugin>
+            -->
 
 
             <!--

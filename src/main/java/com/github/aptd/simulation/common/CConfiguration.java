@@ -70,15 +70,22 @@ public final class CConfiguration
      * @return self reference
      */
     @SuppressWarnings( "unchecked" )
-    public CConfiguration load( final String p_path )
+    public final CConfiguration loadfile( final String p_path )
     {
-        m_configuration.clear();
+
         try
             (
-                final InputStream l_stream = new FileInputStream( orDEfaultPath( p_path ) );
+                final InputStream l_stream = new FileInputStream( orDefaultPath( p_path ) );
             )
         {
-            m_configuration.putAll( (Map<String, Object>) new Yaml().load( l_stream ) );
+
+            final Map<String, ?> l_result = (Map<String, Object>) new Yaml().load( l_stream );
+            if ( l_result != null )
+            {
+                m_configuration.clear();
+                m_configuration.putAll( l_result );
+            }
+
         } catch ( final IOException l_exception )
         {
             throw new CSemanticException( l_exception );
@@ -88,12 +95,30 @@ public final class CConfiguration
     }
 
     /**
+     * loads the configuration from a string
+     *
+     * @param p_yaml yaml string
+     * @return self reference
+     */
+    @SuppressWarnings( "unchecked" )
+    public final CConfiguration loadstring( final String p_yaml )
+    {
+        final Map<String, ?> l_result = (Map<String, Object>) new Yaml().load( p_yaml );
+        if ( l_result != null )
+        {
+            m_configuration.clear();
+            m_configuration.putAll( l_result );
+        }
+        return this;
+    }
+
+    /**
      * set default path
      *
      * @param p_path path or null / empty
      * @return default path on empty or input path
      */
-    private static String orDEfaultPath( final String p_path )
+    private static String orDefaultPath( final String p_path )
     {
         return ( p_path == null ) || ( p_path.isEmpty() )
                ? Stream.of(
@@ -133,12 +158,30 @@ public final class CConfiguration
      *
      * @param p_path path of the element
      * @tparam T returning type
-     * @return value
+     * @return value or null
      */
-    public <T> T get( final String... p_path )
+    public final <T> T get( final String... p_path )
     {
         return recursivedescent( m_configuration, p_path );
     }
+
+    /**
+     * returns a configuration value or on not
+     * existing the default value
+     *
+     * @param p_default default value
+     * @param p_path path of the element
+     * @tparam T returning type
+     * @return value / default vaue
+     */
+    public final <T> T getOrDefault( final T p_default, final String... p_path )
+    {
+        final T l_result = recursivedescent( m_configuration, p_path );
+        return l_result == null
+               ? p_default
+               : l_result;
+    }
+
 
     /**
      * recursive descent

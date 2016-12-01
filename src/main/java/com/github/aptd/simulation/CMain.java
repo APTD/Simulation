@@ -98,7 +98,7 @@ public final class CMain
         }
 
         // load configuration and start the http server (if possible)
-        CConfiguration.INSTANCE.load( l_cli.getOptionValue( "config", "" ) );
+        CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
         try
             (
@@ -112,7 +112,7 @@ public final class CMain
             l_exception.printStackTrace();
         }
 
-
+        // execute server
         CHTTPServer.execute();
     }
 

@@ -28,6 +28,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.rest.CApplication;
 
 import java.net.InetSocketAddress;
@@ -45,7 +46,15 @@ public final class CHTTPServer
     /**
      * webservcer instance
      */
-    private static final CHTTPServer INSTANCE = CConfiguration.INSTANCE.<Boolean>get( "httpserver", "enable" ) ? new CHTTPServer() : null;
+    private static final CHTTPServer INSTANCE = CConfiguration.INSTANCE.<Boolean>getOrDefault( false, "httpserver", "enable" ) ? new CHTTPServer() : null;
+    /**
+     * server instance
+     */
+    private final Server m_server;
+    /**
+     * REST-API application
+     */
+    private final CApplication m_restagent = new CApplication();
 
     /**
      * ctor
@@ -56,37 +65,33 @@ public final class CHTTPServer
         final WebAppContext l_webapp = new WebAppContext();
 
         // server process
-        final Server l_server = new Server(
-            new InetSocketAddress( CConfiguration.INSTANCE.<String>get( "httpserver", "host" ),
-                                   CConfiguration.INSTANCE.<Integer>get( "httpserver", "port" )
+        m_server = new Server(
+            new InetSocketAddress( CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "httpserver", "host" ),
+                                   CConfiguration.INSTANCE.<Integer>getOrDefault( 8000, "httpserver", "port" )
             )
         );
 
         // set server / webapp connection
-        l_server.setHandler( l_webapp );
-        l_webapp.setServer( l_server );
+        m_server.setHandler( l_webapp );
+        l_webapp.setServer( m_server );
         l_webapp.setContextPath( "/" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase( CHTTPServer.class.getResource( "/com/github/aptd/simulation/html" ).toExternalForm() );
-        l_webapp.addServlet( new ServletHolder( new ServletContainer( new CApplication() ) ), "/rest/*" );
+        l_webapp.addServlet( new ServletHolder( new ServletContainer( m_restagent ) ), "/rest/*" );
+    }
 
-        /*
-            <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>org.lightjason.rest.CApplication</param-value>
-            </init-param>
-        */
-        // http://www.draconianoverlord.com/2009/01/10/war-less-dev-with-jetty.html
-        // http://stackoverflow.com/questions/27965207/creating-a-resourceconfig-that-behaves-the-same-way-as-default-jettys-jersey-re/27968094#27968094
-
-        //l_webapp.setDefaultsDescriptor( CHTTPServer.class.getResource( "/com/github/aptd/simulation/web-inf/web.xml" ).toExternalForm() );
-        //l_webapp.setWar( CMain.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm() );
-
+    /**
+     * execute the server instance
+     */
+    public static void execute()
+    {
+        if ( INSTANCE == null )
+            return;
 
         try
         {
-            l_server.start();
-            l_server.join();
+            INSTANCE.m_server.start();
+            INSTANCE.m_server.join();
         }
         catch ( final Exception l_exception )
         {
@@ -94,15 +99,25 @@ public final class CHTTPServer
         }
         finally
         {
-            l_server.destroy();
+            INSTANCE.m_server.destroy();
         }
     }
 
     /**
-     * test
+     * register agent if server is started
+     *
+     * @param p_name name of the agent
+     * @param p_agent agent object
      */
-    public static void execute()
+    public static void register( final String p_name, final IAgent<?> p_agent )
     {
+        if ( INSTANCE == null )
+            return;
+
+        INSTANCE.m_restagent.register( p_name, p_agent );
     }
+
+
+
 
 }
