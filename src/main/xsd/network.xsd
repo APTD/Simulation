@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
     vc:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
-    xmlns:rail="http://www.railml.org/schemas/2016">
+    xmlns:rail="http://www.railml.org/schemas/2016" xmlns:aptd="https://github.com/APTD/Simulation"
+    targetNamespace="https://github.com/APTD/Simulation">
 
-    <xs:import namespace="http://www.railml.org/schemas/2016"  schemaLocation="http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/railML.xsd"/>
+
+    <xs:import namespace="http://www.railml.org/schemas/2016"
+        schemaLocation="http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/railML.xsd"/>
     <xs:simpleType name="tNumPassenger">
         <xs:annotation>
             <xs:documentation>generic type for the number of passengers</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:double"/>
     </xs:simpleType>
-    <xs:attribute name="aPassengerLoad" type="tNumPassenger">
+    <xs:attribute name="aPassengerLoad" type="aptd:tNumPassenger">
         <xs:annotation>
             <xs:documentation>passenger load </xs:documentation>
         </xs:annotation>
@@ -18,7 +21,7 @@
     <xs:simpleType name="tFrequency">
         <xs:restriction base="xs:int"/>
     </xs:simpleType>
-    <xs:attribute name="aFrequency" type="tFrequency">
+    <xs:attribute name="aFrequency" type="aptd:tFrequency">
         <xs:annotation>
             <xs:documentation>Allows to specify a general frequency</xs:documentation>
         </xs:annotation>
@@ -26,7 +29,7 @@
     <xs:complexType name="eLine">
         <xs:complexContent>
             <xs:extension base="rail:tElementWithIDAndName">
-                <xs:attribute ref="aFrequency"/>
+                <xs:attribute ref="aptd:aFrequency"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -35,7 +38,8 @@
             <xs:element name="lines" maxOccurs="unbounded" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="line" type="eLine" maxOccurs="unbounded" minOccurs="1"/>
+                        <xs:element name="line" type="aptd:eLine" maxOccurs="unbounded"
+                            minOccurs="1"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -46,40 +50,37 @@
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
-    <xs:element name="lineplan" type="eLineplan"/>
-    <xs:element name="infrastructure">
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="rail:tInfrastructure">
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="infraAttrGroups" type="rail:eInfraAttrGroup"
-                            maxOccurs="unbounded"/>
-                        <xs:element name="tracks" type="rail:eTracks" maxOccurs="1" minOccurs="1"/>
-                        <xs:element name="trackGroups" type="rail:eTrackGroups"
-                            maxOccurs="unbounded" minOccurs="0"/>
-                        <xs:element name="controllers" type="rail:eControllers"
-                            maxOccurs="unbounded" minOccurs="0"/>
-                        <xs:element name="speedProfiles" type="rail:eSpeedProfiles"
-                            maxOccurs="unbounded" minOccurs="1"/>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="rolling_stock">
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="rail:tRollingstock">
-                    <xs:sequence>
-                        <xs:element maxOccurs="1" minOccurs="1" name="vehicles"
-                            type="rail:eVehicles"/>
-                        <xs:element maxOccurs="1" minOccurs="1" name="formations"
-                            type="rail:eFormations"/>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="lineplan" type="aptd:eLineplan"/>
+    <xs:element name="infrastructure" type="aptd:infrastructure"> </xs:element>
+    <xs:complexType name="infrastructure">
+        <xs:complexContent>
+            <xs:extension base="rail:tInfrastructure">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="infraAttrGroups" type="rail:eInfraAttrGroup"
+                        maxOccurs="unbounded"/>
+                    <xs:element name="tracks" type="rail:eTracks" maxOccurs="1" minOccurs="1"/>
+                    <xs:element name="trackGroups" type="rail:eTrackGroups" maxOccurs="unbounded"
+                        minOccurs="0"/>
+                    <xs:element name="controllers" type="rail:eControllers" maxOccurs="unbounded"
+                        minOccurs="0"/>
+                    <xs:element name="speedProfiles" type="rail:eSpeedProfiles"
+                        maxOccurs="unbounded" minOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="rollingStock" type="aptd:rollingStock"> </xs:element>
+    <xs:complexType name="rollingStock">
+        <xs:complexContent>
+            <xs:extension base="rail:tRollingstock">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="1" name="vehicles" type="rail:eVehicles"/>
+                    <xs:element maxOccurs="1" minOccurs="1" name="formations"
+                        type="rail:eFormations"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="tTrainPart">
         <xs:complexContent>
             <xs:extension base="rail:eTrainPart">
@@ -89,33 +90,34 @@
     </xs:complexType>
     <xs:complexType name="eTrainParts">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="1" name="trainPart" type="tTrainPart"/>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="trainPart" type="aptd:tTrainPart"
+            />
         </xs:sequence>
     </xs:complexType>
-    <xs:element name="timetable">
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="rail:tTimetable">
-                    <xs:sequence>
-                        <xs:element name="timetablePeriods" type="rail:eTimetablePeriods"
-                            maxOccurs="1" minOccurs="0"/>
-                        <xs:element name="operatingPeriods" type="rail:eOperatingPeriods"
-                            maxOccurs="1" minOccurs="1"/>
-                        <xs:element name="categories" type="rail:eCategories" maxOccurs="1"
-                            minOccurs="0"/>
-                        <xs:element name="annotations" type="rail:eAnnotations" maxOccurs="1"
-                            minOccurs="0"/>
-                        <xs:element name="trainParts" type="eTrainParts" maxOccurs="1" minOccurs="1"/>
-                        <xs:element name="trains" type="rail:eTrains" maxOccurs="1" minOccurs="0"/>
-                        <xs:element name="trainGroups" type="rail:eTrainGroups"
-                            maxOccurs="unbounded" minOccurs="0"/>
-                        <xs:element name="rosterings" type="rail:eRosterings" maxOccurs="1"
-                            minOccurs="0"/>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="timetable" type="aptd:timetable"> </xs:element>
+    <xs:complexType name="timetable">
+        <xs:complexContent>
+            <xs:extension base="rail:tTimetable">
+                <xs:sequence>
+                    <xs:element name="timetablePeriods" type="rail:eTimetablePeriods" maxOccurs="1"
+                        minOccurs="0"/>
+                    <xs:element name="operatingPeriods" type="rail:eOperatingPeriods" maxOccurs="1"
+                        minOccurs="1"/>
+                    <xs:element name="categories" type="rail:eCategories" maxOccurs="1"
+                        minOccurs="0"/>
+                    <xs:element name="annotations" type="rail:eAnnotations" maxOccurs="1"
+                        minOccurs="0"/>
+                    <xs:element name="trainParts" type="aptd:eTrainParts" maxOccurs="1"
+                        minOccurs="1"/>
+                    <xs:element name="trains" type="rail:eTrains" maxOccurs="1" minOccurs="0"/>
+                    <xs:element name="trainGroups" type="rail:eTrainGroups" maxOccurs="unbounded"
+                        minOccurs="0"/>
+                    <xs:element name="rosterings" type="rail:eRosterings" maxOccurs="1"
+                        minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="eShortestPathAlgorithm">
         <xs:annotation>
             <xs:documentation>The shortest path algorithm computes the shortest paths for the passengers.</xs:documentation>
@@ -126,7 +128,8 @@
     </xs:complexType>
     <xs:complexType name="shortestPathAlgorithmRef">
         <xs:sequence>
-            <xs:element name="shortestPathAlgorithm" type="eShortestPathAlgorithm" minOccurs="1"/>
+            <xs:element name="shortestPathAlgorithm" type="aptd:eShortestPathAlgorithm"
+                minOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="ePersona">
@@ -161,32 +164,32 @@
     </xs:complexType>
     <xs:complexType name="ePersonaDistribution">
         <xs:complexContent>
-            <xs:extension base="tGenericDistribution"/>
+            <xs:extension base="aptd:tGenericDistribution"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="eGroupDistribution">
         <xs:complexContent>
-            <xs:extension base="tGenericDistribution"/>
+            <xs:extension base="aptd:tGenericDistribution"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="eTimeDistribution">
         <xs:complexContent>
-            <xs:extension base="tGenericDistribution"/>
+            <xs:extension base="aptd:tGenericDistribution"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="eODEntry">
         <xs:sequence>
             <xs:element name="startNode" type="rail:eTrackNode" maxOccurs="1" minOccurs="1"/>
             <xs:element name="endNode" type="rail:eTrackNode" maxOccurs="1" minOccurs="1"/>
-            <xs:element name="entryTimeDistribution" type="tGenericDistribution" maxOccurs="1"
+            <xs:element name="entryTimeDistribution" type="aptd:tGenericDistribution" maxOccurs="1"
                 minOccurs="1">
                 <xs:annotation>
                     <xs:documentation>The time a passenger enters the door of the railway station</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="personaDistribution" type="ePersonaDistribution" maxOccurs="1"
+            <xs:element name="personaDistribution" type="aptd:ePersonaDistribution" maxOccurs="1"
                 minOccurs="1"/>
-            <xs:element name="groupDistribution" type="eGroupDistribution" maxOccurs="1"
+            <xs:element name="groupDistribution" type="aptd:eGroupDistribution" maxOccurs="1"
                 minOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="id" use="required">
@@ -196,14 +199,14 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="numPassengers" use="required" type="tNumPassenger"> </xs:attribute>
+        <xs:attribute name="numPassengers" use="required" type="aptd:tNumPassenger"> </xs:attribute>
     </xs:complexType>
     <xs:complexType name="eODMatrix">
         <xs:annotation>
             <xs:documentation>The od matrix giving the number of passenger who are willing to go from one trackNode to another trackNode during a given timeframe</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="odEntry" type="eODEntry" maxOccurs="unbounded" minOccurs="1"/>
+            <xs:element name="odEntry" type="aptd:eODEntry" maxOccurs="unbounded" minOccurs="1"/>
             <xs:element name="operatingPeriod" type="rail:eOperatingPeriod" maxOccurs="1"
                 minOccurs="1"/>
         </xs:sequence>
@@ -212,12 +215,12 @@
         <xs:complexContent>
             <xs:extension base="rail:tGlobalElementWithMetadata">
                 <xs:sequence>
-                    <xs:element name="odMatrix" type="eODMatrix" maxOccurs="1" minOccurs="1"/>
+                    <xs:element name="odMatrix" type="aptd:eODMatrix" maxOccurs="1" minOccurs="1"/>
                     <xs:element name="personas" maxOccurs="1" minOccurs="1">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:element name="persona" type="ePersona" maxOccurs="unbounded"
-                                    minOccurs="0"/>
+                                <xs:element name="persona" type="aptd:ePersona"
+                                    maxOccurs="unbounded" minOccurs="0"/>
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>
@@ -225,7 +228,7 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:element name="demand" type="eDemand">
+    <xs:element name="demand" type="aptd:eDemand">
         <xs:annotation>
             <xs:documentation>This is the demand element containing all sorts of demand related types: odmatrix, passenger, travelgroup</xs:documentation>
         </xs:annotation>
@@ -235,7 +238,7 @@
             <xs:documentation>A delay either happens at a trackNode or between two consecutive trackNodes. It is the amount of time by which the timetable is shifted minus possible buffer times.</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="tGenericDistribution">
+            <xs:extension base="aptd:tGenericDistribution">
                 <xs:attribute name="trackRef" type="rail:tGenericRef" use="optional"/>
                 <xs:attribute name="lengthM" type="rail:tLengthM" use="required">
                     <xs:annotation>
@@ -275,8 +278,8 @@
         <xs:complexContent>
             <xs:extension base="rail:tElementWithReference">
                 <xs:sequence>
-                    <xs:element name="dispositionManager" type="eDispositionManager" maxOccurs="1"
-                        minOccurs="1"/>
+                    <xs:element name="dispositionManager" type="aptd:eDispositionManager"
+                        maxOccurs="1" minOccurs="1"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -286,14 +289,14 @@
             <xs:extension base="rail:tGlobalElementWithMetadata">
                 <xs:sequence>
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="delayDistribution"
-                        type="eDelayDistribution"/>
-                    <xs:element name="dispositionAlgorithm" type="eDispositionAlgorithm"
+                        type="aptd:eDelayDistribution"/>
+                    <xs:element name="dispositionAlgorithm" type="aptd:eDispositionAlgorithm"
                         maxOccurs="unbounded" minOccurs="1">
                         <xs:annotation>
                             <xs:documentation>The algorithm by which the disposition manager decides about the waiting/departing and sequencing of trains in case of delays.</xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="dispositionManager" type="eDispositionManager"
+                    <xs:element name="dispositionManager" type="aptd:eDispositionManager"
                         maxOccurs="unbounded" minOccurs="1">
                         <xs:annotation>
                             <xs:documentation>The disposition manager deciding about the disposition decisions</xs:documentation>
@@ -303,16 +306,16 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:element name="disposition" type="eDisposition"/>
+    <xs:element name="disposition" type="aptd:eDisposition"/>
     <xs:element name="asimov">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="infrastructure"/>
-                <xs:element ref="rolling_stock"/>
-                <xs:element ref="lineplan"/>
-                <xs:element ref="timetable"/>
-                <xs:element ref="demand"/>
-                <xs:element ref="disposition"/>
+                <xs:element name="infrastructure" type="aptd:infrastructure"/>
+                <xs:element name="rollingStock" type="aptd:rollingStock"/>
+                <xs:element name="lineplan" type="aptd:eLineplan"/>
+                <xs:element name="timetable" type="aptd:timetable"/>
+                <xs:element name="demand" type="aptd:eDemand"/>
+                <xs:element name="disposition" type="aptd:eDisposition"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

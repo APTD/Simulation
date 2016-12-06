@@ -273,15 +273,6 @@
             <scope>test</scope>
         </dependency>
 
-	<!-- XMLBEANS -->
-	
-	<dependency>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>xmlbeans-maven-plugin</artifactId>
-		<version>2.3.3</version>
-		<scope>compile</scope>
-	</dependency>
-	
     </dependencies>
     
     
@@ -446,28 +437,8 @@
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
-
-     	<plugin>
-          	<groupId>org.codehaus.mojo</groupId>
-          	<artifactId>xmlbeans-maven-plugin</artifactId>
-          	<version>2.3.3</version>
-		<executions>
-			<execution>
-				<phase>generate-sources</phase>
-				<goals>
-					<goal>xmlbeans</goal>
-				</goals>
-			</execution>
-		</executions>
-		<configuration>
-			<download>true</download>
-			<noUpa>true</noUpa>
-                	<schemaDirectory>src/main/xsd</schemaDirectory>
-                </configuration>
-     	</plugin>
-
-            <!-- Jaxb for transform XSD into Java class structure -->
-	<!--
+            
+	<!-- Jaxb for transform XSD into Java class structure -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -488,10 +459,10 @@
                     <bindingIncludes>
                         <include>**/*.xjb</include>
                     </bindingIncludes>
-		    <laxSchemaValidation>true</laxSchemaValidation>
+		    <laxSchemaValidation>true</laxSchemaValidation>i
+		<strict>false</strict>
                 </configuration>
             </plugin>
-		-->
 
             <!--
             https://github.com/highsource/maven-jaxb2-plugin/wiki/Configure-Target-Packages-in-Binding-Files
