@@ -385,7 +385,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Jaxb for transform XSD into Java class structure
+            <!-- Jaxb for transform XSD into Java class structure -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -398,6 +398,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <strict>false</strict>
                     <generateDirectory>target/generated-sources/jaxb</generateDirectory>
                     <schemaDirectory>src/main/xsd</schemaDirectory>
                     <schemaIncludes>
@@ -406,11 +407,8 @@
                     <bindingIncludes>
                         <include>**/*.xjb</include>
                     </bindingIncludes>
-		<strict>false</strict>
                 </configuration>
             </plugin>
-            -->
-
 
             <!-- the project should be build into one executable Jar file, which stores any dependencies which are included above -->
             <plugin>
