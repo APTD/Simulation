@@ -85,19 +85,19 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.0.RC2</version>
+            <version>9.4.0.RC3</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>9.4.0.RC2</version>
+            <version>9.4.0.RC3</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>9.4.0.RC2</version>
+            <version>9.4.0.RC3</version>
         </dependency>
 
         <dependency>
@@ -202,7 +202,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.0.0-alpha.10</version>
+            <version>3.0.0-RC.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -385,7 +385,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Jaxb for transform XSD into Java class structure -->
+            <!-- Jaxb for transform XSD into Java class structure
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -409,6 +409,7 @@
 		<strict>false</strict>
                 </configuration>
             </plugin>
+            -->
 
 
             <!-- the project should be build into one executable Jar file, which stores any dependencies which are included above -->
@@ -475,7 +476,6 @@
                         <headerDefinition>src/analysis/license/style.xml</headerDefinition>
                     </headerDefinitions>
                     <excludes>
-                        <exclude>**/*.tokens</exclude>
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.yml</exclude>
                         <exclude>**/*.md</exclude>
