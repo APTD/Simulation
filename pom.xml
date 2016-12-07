@@ -406,6 +406,7 @@
                     <bindingIncludes>
                         <include>**/*.xjb</include>
                     </bindingIncludes>
+		<strict>false</strict>
                 </configuration>
             </plugin>
 
