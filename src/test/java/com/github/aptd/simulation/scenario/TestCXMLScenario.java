@@ -64,7 +64,11 @@ public final class TestCXMLScenario
         }
     }
 
-
+    /**
+     * run manual test
+     *
+     * @param p_args command-line arguments
+     */
     public static void main( final String[] p_args )
     {
         new TestCXMLScenario().reading();
