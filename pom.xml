@@ -385,7 +385,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Jaxb for transform XSD into Java class structure
+            <!-- Jaxb for transform XSD into Java class structure -->
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
@@ -408,12 +408,7 @@
                     </bindingIncludes>
                 </configuration>
             </plugin>
-            -->
 
-
-            <!--
-            https://github.com/highsource/maven-jaxb2-plugin/wiki/Configure-Target-Packages-in-Binding-Files
-            -->
 
             <!-- the project should be build into one executable Jar file, which stores any dependencies which are included above -->
             <plugin>

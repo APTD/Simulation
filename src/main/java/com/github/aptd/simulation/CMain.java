@@ -85,15 +85,12 @@ public final class CMain
         if ( l_cli.hasOption( "help" ) )
         {
             new HelpFormatter().printHelp( new java.io.File( CMain.class.getProtectionDomain().getCodeSource().getLocation().getPath() ).getName(), l_clioptions );
-            System.exit( 0 );
             return;
         }
 
         if ( l_cli.hasOption( "generateconfig" ) )
         {
             System.out.println( CCommon.languagestring( CMain.class, "generateconfig", CConfiguration.createdefault() ) );
-
-            System.exit( 0 );
             return;
         }
 
