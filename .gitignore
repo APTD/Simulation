@@ -9,13 +9,11 @@
 !*.md
 !*.png
 !*.yaml
-!web.xml
 !*.properties
 !*.xsd
 !*.xjb
 !src/main/webapp/**/*.htm*
-!src/main/webapp/**/*.js
-!src/main/webapp/**/*.css
+!src/test/resources/**/*.xml
 
 !src/site/*.doxyfile
 !src/site/*.htm*

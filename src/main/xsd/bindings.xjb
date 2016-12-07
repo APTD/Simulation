@@ -6,7 +6,7 @@ xmlns:jaxb = "http://java.sun.com/xml/ns/jaxb"
 	<jaxb:bindings schemaLocation="network.xsd">
        		<jaxb:globalBindings generateIsSetMethod="false"/>
 		<jaxb:schemaBindings>
-         		<jaxb:package name="com.github.aptd.simulation.data"/>
+         		<jaxb:package name="com.github.aptd.simulation.model.xml"/>
       		</jaxb:schemaBindings>
 	</jaxb:bindings>
 	<jaxb:bindings schemaLocation="http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/infrastructure.xsd">
