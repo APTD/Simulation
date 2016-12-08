@@ -46,12 +46,11 @@
         </xs:sequence>
         <xs:attribute name="period" type="xs:duration" use="required">
             <xs:annotation>
-                <xs:documentation>Period for which the lineplan is constructed in minutes</xs:documentation>
+                <xs:documentation>Period for which the lineplan is constructed in
+                    minutes</xs:documentation>
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
-    <xs:element name="lineplan" type="aptd:eLineplan"/>
-    <xs:element name="infrastructure" type="aptd:infrastructure"> </xs:element>
     <xs:complexType name="infrastructure">
         <xs:complexContent>
             <xs:extension base="rail:tInfrastructure">
@@ -69,7 +68,6 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:element name="rollingStock" type="aptd:rollingStock"> </xs:element>
     <xs:complexType name="rollingStock">
         <xs:complexContent>
             <xs:extension base="rail:tRollingstock">
@@ -94,7 +92,6 @@
             />
         </xs:sequence>
     </xs:complexType>
-    <xs:element name="timetable" type="aptd:timetable"> </xs:element>
     <xs:complexType name="timetable">
         <xs:complexContent>
             <xs:extension base="rail:tTimetable">
@@ -120,7 +117,8 @@
     </xs:complexType>
     <xs:complexType name="eShortestPathAlgorithm">
         <xs:annotation>
-            <xs:documentation>The shortest path algorithm computes the shortest paths for the passengers.</xs:documentation>
+            <xs:documentation>The shortest path algorithm computes the shortest paths for the
+                passengers.</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="rail:tElementWithReference"> </xs:extension>
@@ -149,7 +147,8 @@
                 <xs:attribute name="own_cell_phone" type="xs:boolean" use="optional"/>
                 <xs:attribute name="risk_readiness" type="xs:double" use="optional">
                     <xs:annotation>
-                        <xs:documentation>the readiness to risk possibly insecure connections</xs:documentation>
+                        <xs:documentation>the readiness to risk possibly insecure
+                            connections</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
                 <xs:attribute name="shortestPathAlgorithmRef" type="rail:tGenericRef" use="required"
@@ -184,7 +183,8 @@
             <xs:element name="entryTimeDistribution" type="aptd:tGenericDistribution" maxOccurs="1"
                 minOccurs="1">
                 <xs:annotation>
-                    <xs:documentation>The time a passenger enters the door of the railway station</xs:documentation>
+                    <xs:documentation>The time a passenger enters the door of the railway
+                        station</xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="personaDistribution" type="aptd:ePersonaDistribution" maxOccurs="1"
@@ -203,7 +203,8 @@
     </xs:complexType>
     <xs:complexType name="eODMatrix">
         <xs:annotation>
-            <xs:documentation>The od matrix giving the number of passenger who are willing to go from one trackNode to another trackNode during a given timeframe</xs:documentation>
+            <xs:documentation>The od matrix giving the number of passenger who are willing to go
+                from one trackNode to another trackNode during a given timeframe</xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="odEntry" type="aptd:eODEntry" maxOccurs="unbounded" minOccurs="1"/>
@@ -228,21 +229,19 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:element name="demand" type="aptd:eDemand">
-        <xs:annotation>
-            <xs:documentation>This is the demand element containing all sorts of demand related types: odmatrix, passenger, travelgroup</xs:documentation>
-        </xs:annotation>
-    </xs:element>
     <xs:complexType name="eDelayDistribution">
         <xs:annotation>
-            <xs:documentation>A delay either happens at a trackNode or between two consecutive trackNodes. It is the amount of time by which the timetable is shifted minus possible buffer times.</xs:documentation>
+            <xs:documentation>A delay either happens at a trackNode or between two consecutive
+                trackNodes. It is the amount of time by which the timetable is shifted minus
+                possible buffer times.</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="aptd:tGenericDistribution">
                 <xs:attribute name="trackRef" type="rail:tGenericRef" use="optional"/>
                 <xs:attribute name="lengthM" type="rail:tLengthM" use="required">
                     <xs:annotation>
-                        <xs:documentation>The position of the delay along the track.</xs:documentation>
+                        <xs:documentation>The position of the delay along the
+                            track.</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
                 <xs:attribute name="operatingPeriodRef" type="rail:tGenericRef"/>
@@ -257,7 +256,8 @@
     </xs:simpleType>
     <xs:complexType name="eDispositionAlgorithm">
         <xs:annotation>
-            <xs:documentation>input parameters: the current timetable situation (with delays), the current set of passengers in the system</xs:documentation>
+            <xs:documentation>input parameters: the current timetable situation (with delays), the
+                current set of passengers in the system</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="rail:tElementWithIDAndName"> </xs:extension>
@@ -265,7 +265,8 @@
     </xs:complexType>
     <xs:complexType name="eDispositionManager">
         <xs:annotation>
-            <xs:documentation>The disposition manager taking the disposition decisions</xs:documentation>
+            <xs:documentation>The disposition manager taking the disposition
+                decisions</xs:documentation>
         </xs:annotation>
         <xs:complexContent>
             <xs:extension base="rail:tElementWithIDAndName">
@@ -293,30 +294,30 @@
                     <xs:element name="dispositionAlgorithm" type="aptd:eDispositionAlgorithm"
                         maxOccurs="unbounded" minOccurs="1">
                         <xs:annotation>
-                            <xs:documentation>The algorithm by which the disposition manager decides about the waiting/departing and sequencing of trains in case of delays.</xs:documentation>
+                            <xs:documentation>The algorithm by which the disposition manager decides
+                                about the waiting/departing and sequencing of trains in case of
+                                delays.</xs:documentation>
                         </xs:annotation>
                     </xs:element>
                     <xs:element name="dispositionManager" type="aptd:eDispositionManager"
                         maxOccurs="unbounded" minOccurs="1">
                         <xs:annotation>
-                            <xs:documentation>The disposition manager deciding about the disposition decisions</xs:documentation>
+                            <xs:documentation>The disposition manager deciding about the disposition
+                                decisions</xs:documentation>
                         </xs:annotation>
                     </xs:element>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:element name="disposition" type="aptd:eDisposition"/>
-    <xs:element name="asimov">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="infrastructure" type="aptd:infrastructure"/>
-                <xs:element name="rollingStock" type="aptd:rollingStock"/>
-                <xs:element name="lineplan" type="aptd:eLineplan"/>
-                <xs:element name="timetable" type="aptd:timetable"/>
-                <xs:element name="demand" type="aptd:eDemand"/>
-                <xs:element name="disposition" type="aptd:eDisposition"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:complexType abstract="true" final="#all" name="inetwork">
+        <xs:sequence>
+            <xs:element name="infrastructure" type="aptd:infrastructure"/>
+            <xs:element name="rollingStock" type="aptd:rollingStock"/>
+            <xs:element name="lineplan" type="aptd:eLineplan"/>
+            <xs:element name="timetable" type="aptd:timetable"/>
+            <xs:element name="demand" type="aptd:eDemand"/>
+            <xs:element name="disposition" type="aptd:eDisposition"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>
