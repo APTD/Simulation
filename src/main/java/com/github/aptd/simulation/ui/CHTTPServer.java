@@ -23,7 +23,7 @@
 package com.github.aptd.simulation.ui;
 
 import com.github.aptd.simulation.common.CConfiguration;
-import com.github.aptd.simulation.simulation.error.CSemanticException;
+import com.github.aptd.simulation.elements.error.CSemanticException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -108,13 +108,14 @@ public final class CHTTPServer
      *
      * @param p_name name of the agent
      * @param p_agent agent object
+     * @param p_group additional group
      */
-    public static void register( final String p_name, final IAgent<?> p_agent )
+    public static void register( final String p_name, final IAgent<?> p_agent, final String... p_group )
     {
         if ( INSTANCE == null )
             return;
 
-        INSTANCE.m_restagent.register( p_name, p_agent );
+        INSTANCE.m_restagent.register( p_name, p_agent, p_group );
     }
 
 
