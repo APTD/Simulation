@@ -54,6 +54,7 @@ public final class CMain
      * @param p_args command-line parameters
      * @throws IOException error on io errors
      */
+    @SuppressWarnings( "unchecked" )
     public static void main( final String[] p_args ) throws IOException
     {
         // --- define CLI options ------------------------------------------------------------------------------------------------------------------------------
@@ -64,6 +65,7 @@ public final class CMain
         l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
         l_clioptions.addOption( "scenario", true, "scenario configuration" );
+        l_clioptions.addOption( "stepbystep", false, "runs simulation on manuell step-by-step execution" );
 
         final CommandLine l_cli;
         try
@@ -101,7 +103,8 @@ public final class CMain
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            new CStation<>( l_station, com.github.aptd.simulation.elements.graph.local.CStation.class ).generatesingle( "Goettingen", 51.536777, 9.926074 ).storage().put( "randomnumber", Math.random() );
+            new CStation<>( l_station, com.github.aptd.simulation.elements.graph.local.CStation.class )
+                .generatesingle( "Goettingen", 51.536777, 9.926074 ).storage().put( "randomnumber", Math.random() );
         }
         catch ( final Exception l_exception )
         {
