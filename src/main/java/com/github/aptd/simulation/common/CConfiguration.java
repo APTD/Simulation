@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.common;
 
-import com.github.aptd.simulation.elements.error.CSemanticException;
+import com.github.aptd.simulation.error.CSemanticException;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;

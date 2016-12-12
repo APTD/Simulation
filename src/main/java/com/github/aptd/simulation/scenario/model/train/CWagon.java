@@ -20,58 +20,74 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.scenario.model.train;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
+import com.github.aptd.simulation.scenario.model.passenger.IPassenger;
+import com.google.common.collect.Sets;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import java.util.Set;
+import java.util.stream.Stream;
 
 
 /**
- * scenario XML test
+ * wagon class
  */
-public final class TestCXMLScenario
+public final class CWagon implements IWagon
 {
+    /**
+     * set with agents
+     */
+    private Set<IPassenger<?>> m_passanger = Sets.newConcurrentHashSet();
+    /**
+     * maximum passanger
+     */
+    private final int m_maximum;
 
     /**
-     * reads a test scenario
+     * passanger
+     *
+     * @param p_maximum maximum
      */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
+    public CWagon( final int p_maximum )
     {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
+        m_maximum = p_maximum;
     }
 
-    /**
-     * run manual test
-     *
-     * @param p_args command-line arguments
-     */
-    public static void main( final String[] p_args )
+    @Override
+    public IWagon announcement( final ITrigger p_trigger )
     {
-        new TestCXMLScenario().reading();
+        m_passanger.parallelStream().forEach( i -> i.trigger( p_trigger ) );
+        return this;
+    }
+
+    @Override
+    public int free()
+    {
+        return m_maximum - m_passanger.size();
+    }
+
+    @Override
+    public int size()
+    {
+        return m_passanger.size();
+    }
+
+    @Override
+    public final IWagon add( final IPassenger<?> p_passenger )
+    {
+        return null;
+    }
+
+    @Override
+    public final IWagon remove( final IPassenger<?> p_passenger )
+    {
+        return null;
+    }
+
+    @Override
+    public final Stream<IPassenger<?>> stream()
+    {
+        return null;
     }
 }

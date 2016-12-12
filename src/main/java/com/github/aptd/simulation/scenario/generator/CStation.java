@@ -22,9 +22,9 @@
 
 package com.github.aptd.simulation.scenario.generator;
 
-import com.github.aptd.simulation.elements.error.CSemanticException;
-import com.github.aptd.simulation.elements.graph.network.INetworkNode;
-import com.github.aptd.simulation.ui.CHTTPServer;
+import com.github.aptd.simulation.error.CSemanticException;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
+import com.github.aptd.simulation.CHTTPServer;
 import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;

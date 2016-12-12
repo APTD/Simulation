@@ -20,58 +20,32 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.scenario.model.graph.network;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.github.aptd.simulation.elements.graph.INode;
+import org.lightjason.agentspeak.agent.IAgent;
 
 
 /**
- * scenario XML test
+ * interface of a network node
+ *
+ * @tparam T node identifier
  */
-public final class TestCXMLScenario
+public interface INetworkNode<T> extends INode<T>, IAgent<INetworkNode<T>>
 {
 
     /**
-     * reads a test scenario
+     * returns the longitude information
+     *
+     * @return longitude
      */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
-    {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
+    double longitude();
 
     /**
-     * run manual test
+     * returns the latitude information
      *
-     * @param p_args command-line arguments
+     * @return latitude
      */
-    public static void main( final String[] p_args )
-    {
-        new TestCXMLScenario().reading();
-    }
+    double latitude();
+
 }

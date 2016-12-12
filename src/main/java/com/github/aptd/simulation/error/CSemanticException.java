@@ -20,58 +20,45 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.error;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import java.text.MessageFormat;
 
 
 /**
- * scenario XML test
+ * semantic exception to define internal errors
+ *
+ * @warning exception will not properagte outside
  */
-public final class TestCXMLScenario
+public final class CSemanticException extends RuntimeException
 {
 
     /**
-     * reads a test scenario
+     * ctor
      */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
+    public CSemanticException()
     {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
+        super();
     }
 
     /**
-     * run manual test
+     * ctor
      *
-     * @param p_args command-line arguments
+     * @param p_message any message
+     * @param p_values any object values which are printed
      */
-    public static void main( final String[] p_args )
+    public CSemanticException( final String p_message, final Object... p_values )
     {
-        new TestCXMLScenario().reading();
+        super( MessageFormat.format( p_message, p_values ) );
+    }
+
+    /**
+     * ctor
+     *
+     * @param p_cause any throwable
+     */
+    public CSemanticException( final Throwable p_cause )
+    {
+        super( p_cause );
     }
 }

@@ -6,7 +6,7 @@
     <jaxb:globalBindings generateIsSetMethod="false" fixedAttributeAsConstantProperty="true" enableValidation = "true" enableFailFastCheck="true"/>
     <jaxb:bindings schemaLocation = "network.xsd">
         <jaxb:schemaBindings>
-            <jaxb:package name = "com.github.aptd.simulation.model.xml" />
+            <jaxb:package name = "com.github.aptd.simulation.scenario.xml" />
         </jaxb:schemaBindings>
     </jaxb:bindings>
     <jaxb:bindings schemaLocation = "http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/infrastructure.xsd">

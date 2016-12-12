@@ -20,58 +20,30 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.elements.factory.local;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.github.aptd.simulation.elements.graph.IEdge;
+import com.github.aptd.simulation.elements.factory.IFactory;
+import com.github.aptd.simulation.elements.graph.IGraph;
+import com.github.aptd.simulation.elements.graph.INode;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
 /**
- * scenario XML test
+ * factory class of the local graph
  */
-public final class TestCXMLScenario
+public final class CFactory implements IFactory
 {
-
-    /**
-     * reads a test scenario
-     */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
+    @Override
+    public final <T, N extends INode<T>, E extends IEdge<T>> IGraph<T, N, E> graph()
     {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
+        return null;
     }
 
-    /**
-     * run manual test
-     *
-     * @param p_args command-line arguments
-     */
-    public static void main( final String[] p_args )
+    @Override
+    public final <T> INetworkNode<T> networkvirtualnode( final IAgentConfiguration<INetworkNode<T>> p_agent, final T p_id, final double p_longitude, final double p_latitude )
     {
-        new TestCXMLScenario().reading();
+        return new CVirtualNetworkNode<T>( p_agent, p_id, p_longitude, p_latitude );
     }
 }

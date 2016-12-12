@@ -20,58 +20,62 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.scenario.model.train;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
+import com.github.aptd.simulation.scenario.model.passenger.IPassenger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import java.util.stream.Stream;
 
 
 /**
- * scenario XML test
+ * wagon interface
  */
-public final class TestCXMLScenario
+public interface IWagon
 {
 
     /**
-     * reads a test scenario
+     * anouncement for all agents within the wagon
+     *
+     * @param p_trigger announcement trigger
+     * @return self reference
      */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
-    {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
+    IWagon announcement( final ITrigger p_trigger );
 
     /**
-     * run manual test
+     * unused places
      *
-     * @param p_args command-line arguments
+     * @return places
      */
-    public static void main( final String[] p_args )
-    {
-        new TestCXMLScenario().reading();
-    }
+    int free();
+
+    /**
+     * number of free placeses
+     *
+     * @return size
+     */
+    int size();
+
+    /**
+     * adds a passenger to the wagon
+     *
+     * @param p_passenger passanger agent
+     * @return self reference
+     */
+    IWagon add( final IPassenger<?> p_passenger );
+
+    /**
+     * removes a passenger from the wagon
+     * @param p_passenger passenger
+     * @return self reference
+     */
+    IWagon remove( final IPassenger<?> p_passenger );
+
+    /**
+     * stream over all passenger
+     *
+     * @return passenger stream
+     */
+    Stream<IPassenger<?>> stream();
+
 }

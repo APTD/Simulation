@@ -20,58 +20,30 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.elements.factory.local;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.github.aptd.simulation.scenario.model.graph.network.IBaseNetworkNode;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 
 /**
- * scenario XML test
+ * full station with different tracks and building
  */
-public final class TestCXMLScenario
+public final class CStation<T> extends IBaseNetworkNode<T>
 {
 
     /**
-     * reads a test scenario
-     */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
-    {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
-
-    /**
-     * run manual test
+     * ctor
      *
-     * @param p_args command-line arguments
+     * @param p_configuration agent configuration
+     * @param p_id node identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
      */
-    public static void main( final String[] p_args )
+    public CStation( final IAgentConfiguration<INetworkNode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
     {
-        new TestCXMLScenario().reading();
+        super( p_configuration, p_id, p_longitude, p_latitude );
     }
+
 }

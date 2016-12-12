@@ -20,58 +20,46 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.scenario.model.train;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.github.aptd.simulation.scenario.model.IElement;
+import org.lightjason.agentspeak.agent.IAgent;
 
 
 /**
- * scenario XML test
+ * interface of train
  */
-public final class TestCXMLScenario
+public interface ITrain<T> extends IElement, IAgent<ITrain<T>>
 {
 
     /**
-     * reads a test scenario
+     * unique identifier of the train
+     *
+     * @return identifier
      */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
-    {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
+    T id();
 
     /**
-     * run manual test
+     * wagon number
      *
-     * @param p_args command-line arguments
+     * @return wagon number
      */
-    public static void main( final String[] p_args )
-    {
-        new TestCXMLScenario().reading();
-    }
+    int wagon();
+
+    /**
+     * adds a new wagon
+     *
+     * @param p_wagon wagon
+     * @return self reference
+     */
+    ITrain addwagon( final IWagon p_wagon );
+
+    /**
+     * removes the last wagon
+     *
+     * @return last wagon
+     */
+    IWagon removewagon();
+
+
 }

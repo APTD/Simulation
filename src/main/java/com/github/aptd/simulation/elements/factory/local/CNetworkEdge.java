@@ -20,58 +20,44 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.elements.factory.local;
 
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.github.aptd.simulation.elements.graph.IBaseEdge;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
 
 
 /**
- * scenario XML test
+ * network edge class to link to nodes
  */
-public final class TestCXMLScenario
+public final class CNetworkEdge<T> extends IBaseEdge<T> implements INetworkEdge<T>
 {
-
     /**
-     * reads a test scenario
-     */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
-    {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
-        {
-
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
-
-    /**
-     * run manual test
+     * ctor
      *
-     * @param p_args command-line arguments
+     * @param p_sourceidentifier source identifier of the edge
+     * @param p_targetidentifier target identifiers of the edge
      */
-    public static void main( final String[] p_args )
+    private CNetworkEdge( final T p_sourceidentifier, final T p_targetidentifier )
     {
-        new TestCXMLScenario().reading();
+        super( p_sourceidentifier, p_targetidentifier );
     }
+
+    @Override
+    public final double maximumspeed()
+    {
+        return 0;
+    }
+
+    /**
+     * factory
+     * @param p_sourceidentifier source identifier
+     * @param p_targetidentifier target identifiers
+     * @tparam U identifier type
+     * @return edge instance
+     */
+    public static <U> INetworkEdge<U> from( final U p_sourceidentifier, final U p_targetidentifier )
+    {
+        return new CNetworkEdge<U>( p_sourceidentifier, p_targetidentifier );
+    }
+
 }
