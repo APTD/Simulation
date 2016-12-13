@@ -23,8 +23,8 @@
                 <asimov:character xsi:type="asimov:icharacter">
                     <asimov:definition>
                         <asimov:character>
-                            <asimov:motivation id="fast"/>
-                            <asimov:attribute id="relaxed"/>
+                            <asimov:motivation id="fast" expected="0.5" minimum="0.1" maximum="1"/>
+                            <asimov:attribute id="relaxed" expected="0.5" minimum="0.1" maximum="1"/>
                         </asimov:character>
                     </asimov:definition>
                 </asimov:character>
