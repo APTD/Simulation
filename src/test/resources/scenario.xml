@@ -1,1 +1,106 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<asimov:asimov
+        xmlns:asimov = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
+        xmlns:rail = "http://www.railml.org/schemas/2016"
+        xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
+    <asimov:passenger xsi:type="asimov:ipassenger">
+        <asimov:passenger>
+            <asimov:configuration xsi:type="asimov:icharacterproperty">
+                <asimov:motivation>
+                    <asimov:item xsi:type="asimov:iproperty" id="fast"/>
+                    <asimov:item xsi:type="asimov:iproperty" id="lowcost"/>
+                    <asimov:item xsi:type="asimov:iproperty" id="relaxed"/>
+                    <asimov:item xsi:type="asimov:iproperty" id="comfortable"/>
+                </asimov:motivation>
+                <asimov:attribute>
+                    <asimov:item id="nervous"/>
+                    <asimov:item id="hectic"/>
+                    <asimov:item id="relaxed"/>
+                </asimov:attribute>
+            </asimov:configuration>
+            <asimov:instance>
+                <asimov:character xsi:type="asimov:icharacter">
+                    <asimov:definition>
+                        <asimov:character>
+                            <asimov:motivation id="fast"/>
+                            <asimov:attribute id="relaxed"/>
+                        </asimov:character>
+                    </asimov:definition>
+                </asimov:character>
+            </asimov:instance>
+        </asimov:passenger>
+    </asimov:passenger>
+    <asimov:network xsi:type="asimov:inetwork">
+        <asimov:infrastructure id="ID000">
+            <asimov:tracks> </asimov:tracks>
+            <asimov:speedProfiles> </asimov:speedProfiles>
+            <asimov:speedProfiles> </asimov:speedProfiles>
+        </asimov:infrastructure>
+        <asimov:rollingStock id="ID001">
+            <asimov:vehicles>
+                <rail:vehicle id="ID002"> </rail:vehicle>
+                <rail:vehicle id="ID003"> </rail:vehicle>
+            </asimov:vehicles>
+            <asimov:formations>
+                <rail:formation id="ID004"> </rail:formation>
+                <rail:formation id="ID005"> </rail:formation>
+            </asimov:formations>
+        </asimov:rollingStock>
+        <asimov:lineplan period="P1Y2M3DT1H10M0S"> </asimov:lineplan>
+        <asimov:timetable id="ID006">
+            <asimov:operatingPeriods>
+                <rail:operatingPeriod id="ID007"> </rail:operatingPeriod>
+                <rail:operatingPeriod id="ID008"> </rail:operatingPeriod>
+            </asimov:operatingPeriods>
+            <asimov:trainParts>
+                <asimov:trainPart id="ID009">
+                    <rail:ocpsTT>
+                        <rail:ocpTT ocpRef="ID001"> </rail:ocpTT>
+                        <rail:ocpTT ocpRef="ID007"> </rail:ocpTT>
+                    </rail:ocpsTT>
+                </asimov:trainPart>
+                <asimov:trainPart id="ID010">
+                    <rail:ocpsTT>
+                        <rail:ocpTT ocpRef="ID006"> </rail:ocpTT>
+                        <rail:ocpTT ocpRef="ID000"> </rail:ocpTT>
+                    </rail:ocpsTT>
+                </asimov:trainPart>
+            </asimov:trainParts>
+        </asimov:timetable>
+        <asimov:demand id="ID011">
+            <asimov:odMatrix>
+                <asimov:odEntry id="ID013" numPassengers="0">
+                    <asimov:startNode id="ID014" pos="0.000000">
+                        <rail:macroscopicNode ocpRef="ID003"/>
+                    </asimov:startNode>
+                    <asimov:endNode id="ID015" pos="0.000000">
+                        <rail:openEnd id="ID016"> </rail:openEnd>
+                    </asimov:endNode>
+                    <asimov:entryTimeDistribution id="ID017"> </asimov:entryTimeDistribution>
+                    <asimov:personaDistribution id="ID018"> </asimov:personaDistribution>
+                    <asimov:groupDistribution id="ID019"> </asimov:groupDistribution>
+                </asimov:odEntry>
+                <asimov:odEntry id="ID021" numPassengers="0">
+                    <asimov:startNode id="ID022" pos="0.000000">
+                        <rail:connection id="ID023" ref="ID006"/>
+                    </asimov:startNode>
+                    <asimov:endNode id="ID024" pos="0.000000">
+                        <rail:openEnd id="ID025"> </rail:openEnd>
+                    </asimov:endNode>
+                    <asimov:entryTimeDistribution id="ID026"> </asimov:entryTimeDistribution>
+                    <asimov:personaDistribution id="ID027"> </asimov:personaDistribution>
+                    <asimov:groupDistribution id="ID028"> </asimov:groupDistribution>
+                </asimov:odEntry>
+                <asimov:operatingPeriod id="ID029"> </asimov:operatingPeriod>
+            </asimov:odMatrix>
+            <asimov:personas> </asimov:personas>
+        </asimov:demand>
+        <asimov:disposition id="ID030">
+            <asimov:dispositionAlgorithm id="ID031"> </asimov:dispositionAlgorithm>
+            <asimov:dispositionAlgorithm id="ID032"> </asimov:dispositionAlgorithm>
+            <asimov:dispositionManager dispositionAlgorithmRef="ID009" ocpGroupRef="ID011" id="ID033"> </asimov:dispositionManager>
+            <asimov:dispositionManager dispositionAlgorithmRef="ID012" ocpGroupRef="ID024" id="ID034"> </asimov:dispositionManager>
+        </asimov:disposition>
+    </asimov:network>
+</asimov:asimov>

@@ -22,7 +22,7 @@
                     <xs:all>
                         <xs:element maxOccurs="1" minOccurs="1" name="configuration"
                             type="asimov:icharacterproperty"> </xs:element>
-                        <xs:element name="definition">
+                        <xs:element name="instance">
                             <xs:complexType>
                                 <xs:sequence maxOccurs="unbounded" minOccurs="1">
                                     <xs:element name="character" type="asimov:icharacter"/>
