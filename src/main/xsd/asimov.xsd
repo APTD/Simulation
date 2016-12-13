@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-    vc:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
-    xmlns:rail="http://www.railml.org/schemas/2016" xmlns:aptd="https://github.com/APTD/Simulation"
-    targetNamespace="https://github.com/APTD/Simulation">
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema" elementFormDefault = "qualified"
+           vc:minVersion = "1.1" xmlns:vc = "http://www.w3.org/2007/XMLSchema-versioning"
+           xmlns:asimov = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
+           targetNamespace = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
 
 
     <xs:include schemaLocation="network.xsd"/>
@@ -11,8 +11,8 @@
     <xs:element name="asimov">
         <xs:complexType>
             <xs:all>
-                <xs:element name="passenger" type="aptd:ipassenger"/>
-                <xs:element name="network" type="aptd:inetwork"/>
+                <xs:element name="passenger" type="asimov:ipassenger"/>
+                <xs:element name="network" type="asimov:inetwork"/>
             </xs:all>
         </xs:complexType>
     </xs:element>

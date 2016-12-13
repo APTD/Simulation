@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified" vc:minVersion="1.0"
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:asimov="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
+    targetNamespace="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
 
     <!-- disable assert because Jaxb cannot deal with asserts -->
 
@@ -10,29 +12,31 @@
     </xs:annotation>
     <xs:complexType abstract="true" final="#all" name="ipassenger">
         <xs:annotation>
-            <xs:documentation>abstract passenger simulation definition, split into two parts configuration of a generic character element and the configuration of a passenger based on the character elements</xs:documentation>
+            <xs:documentation>abstract passenger simulation definition, split into two parts
+                configuration of a generic character element and the configuration of a passenger
+                based on the character elements</xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="passenger">
                 <xs:complexType>
                     <xs:all>
                         <xs:element maxOccurs="1" minOccurs="1" name="configuration"
-                            type="icharacterproperty"> </xs:element>
+                            type="asimov:icharacterproperty"> </xs:element>
                         <xs:element name="definition">
                             <xs:complexType>
                                 <xs:sequence maxOccurs="unbounded" minOccurs="1">
-                                    <xs:element name="character" type="icharacter"/>
+                                    <xs:element name="character" type="asimov:icharacter"/>
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
                     </xs:all>
                 </xs:complexType>
-                <xs:keyref name="keyref-motivation" refer="key-motivation">
-                    <xs:selector xpath=".//definition/passenger/motivation"/>
+                <xs:keyref name="keyref-motivation" refer="asimov:key-motivation">
+                    <xs:selector xpath=".//definition/configuration/motivation"/>
                     <xs:field xpath="@id"/>
                 </xs:keyref>
-                <xs:keyref name="keyref-attribute" refer="key-attribute">
-                    <xs:selector xpath=".//definition/passenger/attribute"/>
+                <xs:keyref name="keyref-attribute" refer="asimov:key-attribute">
+                    <xs:selector xpath=".//definition/configuration/attribute"/>
                     <xs:field xpath="@id"/>
                 </xs:keyref>
             </xs:element>
@@ -47,7 +51,7 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" minOccurs="0" name="attribute"
-                            type="idefinition">
+                            type="asimov:idefinition">
                             <!--
                             <xs:complexType>
                                 <xs:complexContent>
@@ -59,7 +63,7 @@
                             </xs:complexType>
                             --> </xs:element>
                         <xs:element maxOccurs="unbounded" minOccurs="0" name="motivation"
-                            type="idefinition">
+                            type="asimov:idefinition">
                             <!--
                             <xs:complexType>
                                 <xs:complexContent>
@@ -101,8 +105,8 @@
             <xs:element name="motivation">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="1" name="item" type="iproperty"
-                            > </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="item"
+                            type="asimov:iproperty"> </xs:element>
                     </xs:sequence>
                 </xs:complexType>
                 <xs:key name="key-motivation">
@@ -116,7 +120,7 @@
                         <xs:element maxOccurs="unbounded" minOccurs="1" name="item">
                             <xs:complexType>
                                 <xs:complexContent>
-                                    <xs:extension base="iproperty">
+                                    <xs:extension base="asimov:iproperty">
                                         <xs:attribute name="agentaccess">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
