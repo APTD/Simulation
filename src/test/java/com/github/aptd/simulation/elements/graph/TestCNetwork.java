@@ -92,7 +92,7 @@ public final class TestCNetwork
                     m_station.generatesingle( "Herzberg Harz", 51.644046, 10.329508 ),
                     m_station.generatesingle( "Heilbad Heiligenstadt", 51.377105, 10.123940 ),
 
-                    m_station.generatesingle( "Alfred (Leine)", 51.984547, 9.812833 ),
+                    m_station.generatesingle( "Alfeld (Leine)", 51.984547, 9.812833 ),
                     m_station.generatesingle( "Goslar", 51.911861, 10.420842 ),
 
                     m_station.generatesingle( "Hann Münden", 51.412148, 9.657186 ),
@@ -108,7 +108,7 @@ public final class TestCNetwork
 
                     CNetworkEdge.from( l_kreiensen, l_goe ),
                     CNetworkEdge.from( l_kreiensen, "Goslar" ),
-                    CNetworkEdge.from( l_kreiensen, "Alfred (Leine)" ),
+                    CNetworkEdge.from( l_kreiensen, "Alfeld (Leine)" ),
                     CNetworkEdge.from( l_kreiensen, "Herzberg Harz" ),
 
                     CNetworkEdge.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
@@ -117,7 +117,7 @@ public final class TestCNetwork
                     CNetworkEdge.from( "Heilbad Heiligenstadt", "Herzberg Harz" ),
                     CNetworkEdge.from( "Heilbad Heiligenstadt", l_goe ),
 
-                    CNetworkEdge.from( "Alfred (Leine)", l_kreiensen ),
+                    CNetworkEdge.from( "Alfeld (Leine)", l_kreiensen ),
 
                     CNetworkEdge.from( "Goslar", l_kreiensen ),
 
