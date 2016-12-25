@@ -62,10 +62,11 @@ public class CSparseGraph<T, N extends INode<T>, E extends IEdge<T>> implements 
      *
      * @param p_nodes nodes elements
      * @param p_edges edge elements
+     * @todo need to check
      */
     public CSparseGraph( final Collection<N> p_nodes, final Collection<E> p_edges )
     {
-        this( p_nodes, p_edges, IEdge::weight );
+        this( p_nodes, p_edges, null );
     }
 
     /**

@@ -131,7 +131,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <version>21.0-rc1</version>
         </dependency>
 
         <dependency>
@@ -171,7 +171,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.0.0-RC.1</version>
+            <version>3.0.0-RC.4</version>
             <scope>test</scope>
         </dependency>
 
