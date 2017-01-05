@@ -31,7 +31,10 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.rest.CApplication;
 
+import java.awt.*;
 import java.net.InetSocketAddress;
+import java.net.URI;
+import java.text.MessageFormat;
 
 
 
@@ -91,7 +94,17 @@ public final class CHTTPServer
         try
         {
             INSTANCE.m_server.start();
+
+            // open browser if possible
+            if ( Desktop.isDesktopSupported() )
+                Desktop.getDesktop().browse( new URI(
+                    "http://" + CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "httpserver", "host" )
+                        + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 8000, "httpserver", "port" )
+                    )
+                );
+
             INSTANCE.m_server.join();
+
         }
         catch ( final Exception l_exception )
         {
