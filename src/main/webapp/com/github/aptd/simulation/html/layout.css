@@ -1,4 +1,44 @@
-  #selectable .ui-selecting { background: #FECA40; }
-  #selectable .ui-selected { background: #F39814; color: white; }
-  #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-  #selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+body {
+  font-family: Pridi, serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.selectable {
+    list-style: none;
+}
+
+.selectable li {
+    margin: 0.5em;
+    font-size: 120%;
+    height: 18px;
+    line-height: 20px;
+}
+
+.selectable .ui-selecting {
+    background: #feca40;
+}
+
+.selectable .ui-selected {
+    background: #f39814;
+    color: white;
+}
+
+.horizontalcontentcontainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#agentcontainer {
+    width: 15%;
+    margin-right: 0.5em;
+}
+
+#agentdetail {
+    width: 85%;
+    margin-left: 0.5em;
+}
+

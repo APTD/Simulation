@@ -26,10 +26,12 @@ package com.github.aptd.simulation;
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.scenario.generator.CStation;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.lightjason.agentspeak.generator.IAgentGenerator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -102,8 +104,11 @@ public final class CMain
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            new CStation<>( l_station, com.github.aptd.simulation.elements.factory.local.CStation.class )
-                .generatesingle( "Goettingen", 51.536777, 9.926074 ).storage().put( "randomnumber", Math.random() );
+            final IAgentGenerator<INetworkNode<CStation>> l_generator = new CStation<>( l_station, com.github.aptd.simulation.elements.factory.local.CStation.class );
+
+            l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
+            l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );
+
         }
         catch ( final Exception l_exception )
         {
