@@ -13,6 +13,8 @@
 !*.xsd
 !*.xjb
 !src/main/webapp/**/*.htm*
+!src/main/webapp/**/*.css
+!src/main/webapp/**/*.js
 !src/test/resources/**/*.xml
 
 !src/site/*.doxyfile

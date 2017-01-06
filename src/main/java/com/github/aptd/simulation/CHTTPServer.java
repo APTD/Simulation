@@ -34,7 +34,6 @@ import org.lightjason.rest.CApplication;
 import java.awt.*;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.text.MessageFormat;
 
 
 
@@ -96,7 +95,7 @@ public final class CHTTPServer
             INSTANCE.m_server.start();
 
             // open browser if possible
-            if ( Desktop.isDesktopSupported() )
+            if ( ( CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "openbrowser" ) ) && ( Desktop.isDesktopSupported() ) )
                 Desktop.getDesktop().browse( new URI(
                     "http://" + CConfiguration.INSTANCE.<String>getOrDefault( "localhost", "httpserver", "host" )
                         + ":" + CConfiguration.INSTANCE.<Integer>getOrDefault( 8000, "httpserver", "port" )

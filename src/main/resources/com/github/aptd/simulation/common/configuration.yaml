@@ -1,3 +1,5 @@
+openbrowser : true
+
 httpserver:
     enable: true
     port: 8000
