@@ -20,8 +20,9 @@ var Asimov = (function (px_modul) {
         // in strict mode a deep-copy is needed / string defines the URL
         // data is set explicit on string, because Java browser did not call it without on OSX
         var lo_options    = classof(px_options, "string") ? { "url" : px_options } : jQuery.extend( true, {}, px_options );
-        lo_options.method = lo_options.method || "get";
+        lo_options.method = lo_options.method || "GET";
         lo_options.data   = lo_options.data   || {};
+        lo_options.cache  = lo_options.cache  || false;
         lo_options.url    = lo_options.url.startsWith("http://") ? lo_options.url : lo_options.url = "/rest" + lo_options.url;
 
         return jQuery.ajax( lo_options );
