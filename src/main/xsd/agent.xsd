@@ -8,60 +8,39 @@
     <!-- disable assert because Jaxb cannot deal with asserts -->
 
     <xs:annotation>
-        <xs:documentation>schema of the passenger simulation</xs:documentation>
+        <xs:documentation>schema of the agent definition</xs:documentation>
     </xs:annotation>
-    <xs:complexType abstract="true" final="#all" name="ipassenger">
+    <xs:element name="foo" type="asimov:iagents"/>
+    <xs:complexType final="#all" name="iagents">
         <xs:annotation>
-            <xs:documentation>abstract passenger simulation definition, split into two parts
-                configuration of a generic character element and the configuration of a passenger
-                based on the character elements</xs:documentation>
+            <xs:documentation>agent simulation definition, split into two parts abstract property definition and different abstract instances with AgentSpeak source code of an agent</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="passenger">
+            <xs:element name="agents">
                 <xs:complexType>
                     <xs:all>
-                        <xs:element maxOccurs="1" minOccurs="1" name="configuration"
-                            type="asimov:icharacterproperty"> </xs:element>
+                        <xs:element maxOccurs="1" minOccurs="1" name="properties"
+                            type="asimov:iproperty"> </xs:element>
                         <xs:element name="instance">
                             <xs:complexType>
                                 <xs:sequence maxOccurs="unbounded" minOccurs="1">
-                                    <xs:element name="character" type="asimov:icharacter"/>
+                                    <xs:element name="agent" type="asimov:iagent"/>
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
                     </xs:all>
                 </xs:complexType>
-                <xs:keyref name="keyref-motivation" refer="asimov:key-motivation">
-                    <xs:selector xpath=".//definition/configuration/motivation"/>
-                    <xs:field xpath="@id"/>
-                </xs:keyref>
-                <xs:keyref name="keyref-attribute" refer="asimov:key-attribute">
-                    <xs:selector xpath=".//definition/configuration/attribute"/>
-                    <xs:field xpath="@id"/>
-                </xs:keyref>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType abstract="true" final="#all" name="icharacter">
+    <xs:complexType final="#all" name="iagent">
         <xs:annotation>
-            <xs:documentation>abstract character definition</xs:documentation>
+            <xs:documentation>definition of a single agent (property definition and AgentSpeak source code)</xs:documentation>
         </xs:annotation>
         <xs:sequence maxOccurs="1" minOccurs="1">
-            <xs:element name="definition">
+            <xs:element name="configuration">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="attribute"
-                            type="asimov:idefinition">
-                            <!--
-                            <xs:complexType>
-                                <xs:complexContent>
-                                    <xs:extension base="ilevelitem">
-                                        <xs:assert test="@minimum &lt; @expected"/>
-                                        <xs:assert test="@expected &lt; @maximum"/>
-                                    </xs:extension>
-                                </xs:complexContent>
-                            </xs:complexType>
-                            --> </xs:element>
                         <xs:element maxOccurs="unbounded" minOccurs="0" name="motivation"
                             type="asimov:idefinition">
                             <!--
@@ -73,22 +52,41 @@
                                     </xs:extension>
                                 </xs:complexContent>
                             </xs:complexType>
-                            -->
+                            --> </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="preference"
+                            type="asimov:idefinition">
+                            <!--
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="ilevelitem">
+                                        <xs:assert test="@minimum &lt; @expected"/>
+                                        <xs:assert test="@expected &lt; @maximum"/>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                            --> </xs:element>
+                        <xs:element name="script" maxOccurs="1" minOccurs="1">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:pattern value="[\s\S]*[^ ][\s\S]*"/>
+                                </xs:restriction>
+                            </xs:simpleType>
                         </xs:element>
                     </xs:sequence>
                 </xs:complexType>
-                <xs:unique name="unique-motivation">
+                <xs:unique name="unique-iagent-motivation">
                     <xs:selector xpath="motivation"/>
                     <xs:field xpath="@id"/>
                 </xs:unique>
-                <xs:unique name="unique-attribute">
-                    <xs:selector xpath="attribute"/>
+                <xs:unique name="unique-iagent-preference">
+                    <xs:selector xpath="preference"/>
                     <xs:field xpath="@id"/>
                 </xs:unique>
             </xs:element>
         </xs:sequence>
+        <xs:attribute name="id" use="required"/>
     </xs:complexType>
-    <xs:complexType name="idefinition" abstract="true" final="#all">
+    <xs:complexType name="idefinition" final="#all">
         <xs:annotation>
             <xs:documentation>abstract definition of a level item element</xs:documentation>
         </xs:annotation>
@@ -97,30 +95,36 @@
         <xs:attribute name="minimum" type="xs:double" use="required"/>
         <xs:attribute name="maximum" type="xs:double" use="required"/>
     </xs:complexType>
-    <xs:complexType final="#all" name="icharacterproperty" abstract="true">
+    <xs:complexType final="#all" name="iproperty">
         <xs:annotation>
-            <xs:documentation>abstract definition of the character configuration</xs:documentation>
+            <xs:documentation>definition of the agent properties which present the agent character, the values will be stored as first-order-logic literals with a numeric value which is generated by a distribution based on the parameters</xs:documentation>
         </xs:annotation>
         <xs:all>
             <xs:element name="motivation">
+                <xs:annotation>
+                    <xs:documentation>any motivation of an agent e.g. minimize train changes</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" minOccurs="1" name="item"
-                            type="asimov:iproperty"> </xs:element>
+                            type="asimov:item"> </xs:element>
                     </xs:sequence>
                 </xs:complexType>
-                <xs:key name="key-motivation">
+                <xs:key name="key-iproperty-motivation">
                     <xs:selector xpath="item"/>
                     <xs:field xpath="@id"/>
                 </xs:key>
             </xs:element>
-            <xs:element name="attribute">
+            <xs:element name="preference">
+                <xs:annotation>
+                    <xs:documentation>preference of an agent e.g. like coffee</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element maxOccurs="unbounded" minOccurs="1" name="item">
                             <xs:complexType>
                                 <xs:complexContent>
-                                    <xs:extension base="asimov:iproperty">
+                                    <xs:extension base="asimov:item">
                                         <xs:attribute name="agentaccess">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
@@ -135,16 +139,16 @@
                         </xs:element>
                     </xs:sequence>
                 </xs:complexType>
-                <xs:key name="key-attribute">
+                <xs:key name="key-iproperty-preference">
                     <xs:selector xpath="item"/>
                     <xs:field xpath="@id"/>
                 </xs:key>
             </xs:element>
         </xs:all>
     </xs:complexType>
-    <xs:complexType name="iproperty" abstract="true" final="">
+    <xs:complexType name="item">
         <xs:annotation>
-            <xs:documentation>abstract definition of a property</xs:documentation>
+            <xs:documentation>definition of a property which must present a first-order-logical term</xs:documentation>
         </xs:annotation>
         <xs:attribute name="id" use="required">
             <xs:simpleType>
