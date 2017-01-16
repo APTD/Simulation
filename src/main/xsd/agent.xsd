@@ -27,6 +27,10 @@
                                     <xs:element name="agent" type="asimov:iagent"/>
                                 </xs:sequence>
                             </xs:complexType>
+                            <xs:key name="key-iagents-agent">
+                                <xs:selector xpath="./asimov:agent"/>
+                                <xs:field xpath="@id"/>
+                            </xs:key>
                         </xs:element>
                     </xs:all>
                 </xs:complexType>
@@ -65,7 +69,7 @@
                                 </xs:complexContent>
                             </xs:complexType>
                             --> </xs:element>
-                        <xs:element name="script" maxOccurs="1" minOccurs="1">
+                        <xs:element name="asl" maxOccurs="1" minOccurs="1">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
                                     <xs:pattern value="[\s\S]*[^ ][\s\S]*"/>
@@ -75,13 +79,21 @@
                     </xs:sequence>
                 </xs:complexType>
                 <xs:unique name="unique-iagent-motivation">
-                    <xs:selector xpath="motivation"/>
+                    <xs:selector xpath="./asimov:motivation"/>
                     <xs:field xpath="@id"/>
                 </xs:unique>
                 <xs:unique name="unique-iagent-preference">
-                    <xs:selector xpath="preference"/>
+                    <xs:selector xpath="./asimov:preference"/>
                     <xs:field xpath="@id"/>
                 </xs:unique>
+                <xs:keyref name="keyref-iagent-motivation" refer="asimov:key-iproperty-motivation">
+                    <xs:selector xpath="./asimov:preference"/>
+                    <xs:field xpath="@id"/>
+                </xs:keyref>
+                <xs:keyref name="keyref-iagent-preference" refer="asimov:key-iproperty-preference">
+                    <xs:selector xpath="./asimov:preference"/>
+                    <xs:field xpath="@id"/>
+                </xs:keyref>
             </xs:element>
         </xs:sequence>
         <xs:attribute name="id" use="required"/>
@@ -91,7 +103,15 @@
             <xs:documentation>abstract definition of a level item element</xs:documentation>
         </xs:annotation>
         <xs:attribute name="id" use="required"/>
-        <xs:attribute name="expected" type="xs:double" use="required"/>
+        <xs:attribute name="distribution" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value=""/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="moment1" type="xs:double" use="required"/>
+        <xs:attribute name="moment2" type="xs:double" use="optional"/>
         <xs:attribute name="minimum" type="xs:double" use="required"/>
         <xs:attribute name="maximum" type="xs:double" use="required"/>
     </xs:complexType>
@@ -111,7 +131,7 @@
                     </xs:sequence>
                 </xs:complexType>
                 <xs:key name="key-iproperty-motivation">
-                    <xs:selector xpath="item"/>
+                    <xs:selector xpath="./asimov:item"/>
                     <xs:field xpath="@id"/>
                 </xs:key>
             </xs:element>
@@ -140,7 +160,7 @@
                     </xs:sequence>
                 </xs:complexType>
                 <xs:key name="key-iproperty-preference">
-                    <xs:selector xpath="item"/>
+                    <xs:selector xpath="./asimov:item"/>
                     <xs:field xpath="@id"/>
                 </xs:key>
             </xs:element>
