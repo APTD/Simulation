@@ -24,7 +24,7 @@ package com.github.aptd.simulation.scenario;
 
 import com.github.aptd.simulation.scenario.reader.CXMLReader;
 import com.github.aptd.simulation.scenario.xml.Asimov;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -38,14 +38,13 @@ import static org.junit.Assert.assertTrue;
  */
 public final class TestCXMLScenario
 {
+    private Asimov m_scenario;
 
     /**
      * reads a test scenario
      */
-    @Test
-    // @todo "ignore" bitte heraus nehmen, damit der Test läuft
-    @Ignore
-    public final void reading()
+    @Before
+    public final void initialize()
     {
         try
         (
@@ -53,17 +52,29 @@ public final class TestCXMLScenario
         )
         {
 
-            final Asimov l_scenario = new CXMLReader().get( l_stream );
-
-            // @todo hier bitte einen Test bauen, d.h. die XML (scenario.xml) mit Beispieldaten befüllen und dann
-            // prüfen, ob alles in dem Asimov-Objekt korrekt vorhanden ist
-            // siehe http://www.tutego.de/blog/javainsel/2010/04/junit-4-tutorial-java-tests-mit-junit/
+            m_scenario = new CXMLReader().get( l_stream );
         }
         catch ( final Exception l_exception )
         {
             assertTrue( l_exception.getMessage(), false );
         }
+
     }
+
+
+    /**
+     * test the agents
+     */
+    @Test
+    public final void testAgent()
+    {
+        m_scenario.getAi().getAgents().getInstance().getAgent().stream().forEach( i -> {
+            System.out.println( i.getId() );
+            System.out.println( i.getConfiguration().getAsl() );
+            System.out.println();
+        } );
+    }
+
 
     /**
      * run manual test
@@ -72,6 +83,9 @@ public final class TestCXMLScenario
      */
     public static void main( final String[] p_args )
     {
-        new TestCXMLScenario().reading();
+
+        final TestCXMLScenario l_test = new TestCXMLScenario();
+
+        l_test.initialize();
     }
 }
