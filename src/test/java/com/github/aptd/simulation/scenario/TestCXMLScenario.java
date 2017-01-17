@@ -68,7 +68,7 @@ public final class TestCXMLScenario
     @Test
     public final void testAgent()
     {
-        m_scenario.getAi().getAgents().getInstance().getAgent().stream().forEach( i -> {
+        m_scenario.getAi().getAgents().getInstance().getAgent().forEach( i -> {
             System.out.println( i.getId() );
             System.out.println( i.getConfiguration().getAsl() );
             System.out.println();
