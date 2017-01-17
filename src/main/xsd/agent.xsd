@@ -34,6 +34,22 @@
                         </xs:element>
                     </xs:all>
                 </xs:complexType>
+                <xs:keyref name="keyref-iagent-preference" refer="asimov:key-iproperty-preference">
+                    <xs:annotation>
+                        <xs:documentation>preference key-reference between agent instance and configuration property definition</xs:documentation>
+                    </xs:annotation>
+                    <xs:selector
+                        xpath=".//asimov:instance/asimov:agent/asimov:configuration/asimov:preference"/>
+                    <xs:field xpath="@id"/>
+                </xs:keyref>
+                <xs:keyref name="keyref-iagent-motivation" refer="asimov:key-iproperty-motivation">
+                    <xs:annotation>
+                        <xs:documentation>motivation key-reference between agent instance and configuration property definition</xs:documentation>
+                    </xs:annotation>
+                    <xs:selector
+                        xpath=".//asimov:instance/asimov:agent/asimov:configuration/asimov:motivation"/>
+                    <xs:field xpath="@id"/>
+                </xs:keyref>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
@@ -92,29 +108,27 @@
                     <xs:selector xpath="./asimov:preference"/>
                     <xs:field xpath="@id"/>
                 </xs:unique>
-                <xs:keyref name="keyref-iagent-motivation" refer="asimov:key-iproperty-motivation">
-                    <xs:annotation>
-                        <xs:documentation>motivation key-reference between agent instance and configuration property definition</xs:documentation>
-                    </xs:annotation>
-                    <xs:selector xpath="./asimov:preference"/>
-                    <xs:field xpath="@id"/>
-                </xs:keyref>
-                <xs:keyref name="keyref-iagent-preference" refer="asimov:key-iproperty-preference">
-                    <xs:annotation>
-                        <xs:documentation>preference key-reference between agent instance and configuration property definition</xs:documentation>
-                    </xs:annotation>
-                    <xs:selector xpath="./asimov:preference"/>
-                    <xs:field xpath="@id"/>
-                </xs:keyref>
             </xs:element>
         </xs:sequence>
-        <xs:attribute name="id" use="required"/>
+        <xs:attribute name="id" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="([a-z0-9_-])+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="ipropertyinstance" final="#all">
         <xs:annotation>
             <xs:documentation>definition of an property instance item</xs:documentation>
         </xs:annotation>
-        <xs:attribute name="id" use="required"/>
+        <xs:attribute name="id" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="([a-z0-9_-])+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="distribution" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
