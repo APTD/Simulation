@@ -11,7 +11,7 @@
     <xs:element name="asimov">
         <xs:complexType>
             <xs:all>
-                <xs:element name="element" type="asimov:iagents"/>
+                <xs:element name="ai" type="asimov:iagents"/>
                 <xs:element name="network" type="asimov:network"/>
             </xs:all>
         </xs:complexType>

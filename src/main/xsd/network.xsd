@@ -5,7 +5,6 @@
     xmlns:asimov="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
     targetNamespace="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
 
-
     <xs:import namespace="http://www.railml.org/schemas/2016"
         schemaLocation="http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/railML.xsd"/>
     <xs:simpleType name="tNumPassenger">
@@ -202,7 +201,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="numPassengers" use="required" type="asimov:tNumPassenger"> </xs:attribute>
+        <xs:attribute name="numPassengers" use="required" type="asimov:tNumPassenger" />
     </xs:complexType>
     <xs:complexType name="eODMatrix">
         <xs:annotation>
