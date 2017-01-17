@@ -312,7 +312,7 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:complexType abstract="true" final="#all" name="inetwork">
+    <xs:complexType final="#all" name="network">
         <xs:sequence>
             <xs:element ref="rail:infrastructure"/>
             <xs:element ref="rail:rollingstock"/>

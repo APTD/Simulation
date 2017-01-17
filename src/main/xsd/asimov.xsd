@@ -12,7 +12,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element name="element" type="asimov:iagents"/>
-                <xs:element name="network" type="asimov:inetwork"/>
+                <xs:element name="network" type="asimov:network"/>
             </xs:all>
         </xs:complexType>
     </xs:element>
