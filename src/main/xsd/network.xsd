@@ -52,7 +52,7 @@
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
-    <xs:complexType name="infrastructure">
+    <!--<xs:complexType name="infrastructure">
         <xs:complexContent>
             <xs:extension base="rail:tInfrastructure">
                 <xs:sequence>
@@ -115,7 +115,7 @@
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
-    </xs:complexType>
+    </xs:complexType>-->
     <xs:complexType name="eShortestPathAlgorithm">
         <xs:annotation>
             <xs:documentation>The shortest path algorithm computes the shortest paths for the
@@ -158,9 +158,11 @@
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="tGenericDistribution">
-        <xs:complexContent>
+        <!--<xs:complexContent>
             <xs:extension base="rail:tElementWithIDAndName"/>
-        </xs:complexContent>
+
+        </xs:complexContent>-->
+        <xs:attribute name="id" type="xs:string" />
     </xs:complexType>
     <xs:complexType name="ePersonaDistribution">
         <xs:complexContent>
@@ -181,7 +183,7 @@
         <xs:sequence>
             <xs:element name="startNode" type="rail:eTrackNode" maxOccurs="1" minOccurs="1"/>
             <xs:element name="endNode" type="rail:eTrackNode" maxOccurs="1" minOccurs="1"/>
-            <xs:element name="entryTimeDistribution" type="asimov:tGenericDistribution" maxOccurs="1"
+            <xs:element name="entryTimeDistribution" type="asimov:eTimeDistribution" maxOccurs="1"
                 minOccurs="1">
                 <xs:annotation>
                     <xs:documentation>The time a passenger enters the door of the railway
@@ -200,8 +202,7 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="numPassengers" use="required" type="asimov:tNumPassenger"
-        > </xs:attribute>
+        <xs:attribute name="numPassengers" use="required" type="asimov:tNumPassenger"> </xs:attribute>
     </xs:complexType>
     <xs:complexType name="eODMatrix">
         <xs:annotation>
@@ -215,21 +216,17 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="eDemand">
-        <xs:complexContent>
-            <xs:extension base="rail:tGlobalElementWithMetadata">
-                <xs:sequence>
-                    <xs:element name="odMatrix" type="asimov:eODMatrix" maxOccurs="1" minOccurs="1"/>
-                    <xs:element name="personas" maxOccurs="1" minOccurs="1">
-                        <xs:complexType>
-                            <xs:sequence>
-                                <xs:element name="persona" type="asimov:ePersona"
-                                    maxOccurs="unbounded" minOccurs="0"/>
-                            </xs:sequence>
-                        </xs:complexType>
-                    </xs:element>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
+        <xs:sequence>
+            <xs:element name="odMatrix" type="asimov:eODMatrix" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="personas" maxOccurs="1" minOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="persona" type="asimov:ePersona"
+                            maxOccurs="unbounded" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
     </xs:complexType>
     <xs:complexType name="eDelayDistribution">
         <xs:annotation>
@@ -288,29 +285,25 @@
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="eDisposition">
-        <xs:complexContent>
-            <xs:extension base="rail:tGlobalElementWithMetadata">
-                <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="delayDistribution"
-                        type="asimov:eDelayDistribution"/>
-                    <xs:element name="dispositionAlgorithm" type="asimov:eDispositionAlgorithm"
-                        maxOccurs="unbounded" minOccurs="1">
-                        <xs:annotation>
-                            <xs:documentation>The algorithm by which the disposition manager decides
-                                about the waiting/departing and sequencing of trains in case of
-                                delays.</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="dispositionManager" type="asimov:eDispositionManager"
-                        maxOccurs="unbounded" minOccurs="1">
-                        <xs:annotation>
-                            <xs:documentation>The disposition manager deciding about the disposition
-                                decisions</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="delayDistribution"
+                type="asimov:eDelayDistribution"/>
+            <xs:element name="dispositionAlgorithm" type="asimov:eDispositionAlgorithm"
+                maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>The algorithm by which the disposition manager decides
+                        about the waiting/departing and sequencing of trains in case of
+                        delays.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="dispositionManager" type="asimov:eDispositionManager"
+                maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>The disposition manager deciding about the disposition
+                        decisions</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
     </xs:complexType>
     <xs:complexType final="#all" name="network">
         <xs:sequence>
