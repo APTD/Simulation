@@ -3,7 +3,7 @@
         xmlns:rail = "http://www.railml.org/schemas/2016"
         xmlns:asimov = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd file:/Users/pkraus/Documents/Developer/Asimov/Simulation/src/main/xsd/asimov.xsd">
+        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
     <asimov:ai>
         <asimov:agents>
             <asimov:properties>
