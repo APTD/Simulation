@@ -181,8 +181,8 @@
         <xs:sequence>
             <xs:element name="startNode" type="rail:eTrackNode" maxOccurs="1" minOccurs="1"/>
             <xs:element name="endNode" type="rail:eTrackNode" maxOccurs="1" minOccurs="1"/>
-            <xs:element name="entryTimeDistribution" type="asimov:tGenericDistribution" maxOccurs="1"
-                minOccurs="1">
+            <xs:element name="entryTimeDistribution" type="asimov:tGenericDistribution"
+                maxOccurs="1" minOccurs="1">
                 <xs:annotation>
                     <xs:documentation>The time a passenger enters the door of the railway
                         station</xs:documentation>
@@ -200,8 +200,8 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="numPassengers" use="required" type="asimov:tNumPassenger"
-        > </xs:attribute>
+        <xs:attribute name="numPassengers" use="required" type="asimov:tNumPassenger">
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="eODMatrix">
         <xs:annotation>

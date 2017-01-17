@@ -3,7 +3,7 @@
                xmlns:jaxb = "http://java.sun.com/xml/ns/jaxb"
                version = "2.1"
 >
-    <jaxb:globalBindings generateIsSetMethod="false" fixedAttributeAsConstantProperty="true" enableValidation = "true" enableFailFastCheck="true"/>
+    <jaxb:globalBindings fixedAttributeAsConstantProperty = "true" enableValidation = "true" enableFailFastCheck = "true" />
     <jaxb:bindings schemaLocation = "network.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name = "com.github.aptd.simulation.scenario.xml" />

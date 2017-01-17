@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" vc:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:asimov="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd" targetNamespace="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema" elementFormDefault = "qualified"
+           vc:minVersion = "1.1" xmlns:vc = "http://www.w3.org/2007/XMLSchema-versioning"
+           targetNamespace = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
 
     <xs:annotation>
-        <xs:documentation>common global elements that used by all other schema structures</xs:documentation>
+        <xs:documentation>common global elements that used by all other schema
+            structures</xs:documentation>
     </xs:annotation>
     <xs:attributeGroup name="distribution">
         <xs:annotation>
-            <xs:documentation>group of attributes to describe a distribution with fixed maximum and minum value and first and second moment</xs:documentation>
+            <xs:documentation>group of attributes to describe a distribution with fixed maximum and
+                minum value and first and second moment</xs:documentation>
         </xs:annotation>
         <xs:attribute name="distribution" use="required">
             <xs:simpleType>
