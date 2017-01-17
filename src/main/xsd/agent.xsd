@@ -10,7 +10,6 @@
     <xs:annotation>
         <xs:documentation>schema of the agent definition</xs:documentation>
     </xs:annotation>
-    <xs:element name="foo" type="asimov:iagents"/>
     <xs:complexType final="#all" name="iagents">
         <xs:annotation>
             <xs:documentation>agent simulation definition, split into two parts abstract property definition and different abstract instances with AgentSpeak source code of an agent</xs:documentation>
