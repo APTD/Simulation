@@ -314,10 +314,10 @@
     </xs:complexType>
     <xs:complexType abstract="true" final="#all" name="inetwork">
         <xs:sequence>
-            <xs:element name="infrastructure" type="asimov:infrastructure"/>
-            <xs:element name="rollingStock" type="asimov:rollingStock"/>
+            <xs:element ref="rail:infrastructure"/>
+            <xs:element ref="rail:rollingstock"/>
             <xs:element name="lineplan" type="asimov:eLineplan"/>
-            <xs:element name="timetable" type="asimov:timetable"/>
+            <xs:element ref="rail:timetable"/>
             <xs:element name="demand" type="asimov:eDemand"/>
             <xs:element name="disposition" type="asimov:eDisposition"/>
         </xs:sequence>
