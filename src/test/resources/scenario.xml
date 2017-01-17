@@ -35,7 +35,122 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
         </asimov:agents>
     </asimov:ai>
     <asimov:network>
-        <rail:infrastructure id="ID000">
+        <rail:infrastructure id="toy-infrastructure">
+            <rail:infraAttrGroups>
+                <rail:infraAttributes id="toy-attributes">
+                    <rail:epsgCode default="urn:ogc:def:crs:EPSG::4326" />
+                </rail:infraAttributes>
+            </rail:infraAttrGroups>
+            <rail:tracks>
+                <rail:track id="toy-edge-1">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-1-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-1" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-1-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-2">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-2-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-2" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-2-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-3">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-3-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-3-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-4" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-4">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-4-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-4" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-4-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-5" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-5">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-5-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-5" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-5-end" pos="40000">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-6">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-6-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-6-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-7">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-7-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-7-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-7" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-8">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-8-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-8-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-8" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+            </rail:tracks>
+            <rail:operationControlPoints>
+                <rail:ocp id="toy-node-1" name="1" description="Eins">
+                    <rail:geoCoord coord="51.351333 9.860542"/>
+                </rail:ocp>
+                <rail:ocp id="toy-node-2" name="2" description="Zwei">
+                    <rail:geoCoord coord="51.412148 9.657186" />
+                </rail:ocp>
+                <rail:ocp id="toy-node-3" name="3" description="Drei">
+                    <rail:propOperational operationalType="station" orderChangeable="true" trafficType="passenger" />
+                    <rail:geoCoord coord="51.536777 9.926074" />
+                </rail:ocp>
+                <rail:ocp id="toy-node-4" name="4" description="Vier">
+                    <rail:geoCoord coord="51.377105 10.123940" />
+                </rail:ocp>
+                <rail:ocp id="toy-node-5" name="5" description="Fünf">
+                    <rail:geoCoord coord="51.644046 10.329508" />
+                </rail:ocp>
+                <rail:ocp id="toy-node-6" name="6" description="Sechs">
+                    <rail:propOperational operationalType="station" orderChangeable="true" trafficType="passenger" />
+                    <rail:geoCoord coord="51.850591 9.969346" />
+                </rail:ocp>
+                <rail:ocp id="toy-node-7" name="7" description="Sieben">
+                    <rail:geoCoord coord="51.984547 9.812833" />
+                </rail:ocp>
+                <rail:ocp id="toy-node-8" name="8" description="Acht">
+                    <rail:geoCoord coord="51.911861 10.420842" />
+                </rail:ocp>
+            </rail:operationControlPoints>
         </rail:infrastructure>
         <rail:rollingstock id="ID001">
         </rail:rollingstock>
@@ -45,21 +160,18 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
         </rail:timetable>
         <asimov:demand>
             <asimov:odMatrix>
-                <asimov:odEntry id="ID005" numPassengers="0">
+                <asimov:odEntry id="lintim-od-01" numPassengers="0">
                     <asimov:startNode id="ID006" pos="0.000000">
-                        <rail:macroscopicNode ocpRef="ID006"/>
+                        <rail:macroscopicNode ocpRef="toy-node-1"/>
                     </asimov:startNode>
                     <asimov:endNode id="ID007" pos="0.000000">
-                        <rail:macroscopicNode ocpRef="ID004"/>
+                        <rail:macroscopicNode ocpRef="toy-node-2"/>
                     </asimov:endNode>
-                    <asimov:entryTimeDistribution id="ID008">
-                    </asimov:entryTimeDistribution>
-                    <asimov:personaDistribution id="ID009">
-                    </asimov:personaDistribution>
-                    <asimov:groupDistribution id="ID010">
-                    </asimov:groupDistribution>
+                    <asimov:entryTimeDistribution id="ID008" />
+                    <asimov:personaDistribution id="ID009" />
+                    <asimov:groupDistribution id="ID010" />
                 </asimov:odEntry>
-                <asimov:odEntry id="ID012" numPassengers="0">
+                <asimov:odEntry id="lintim-od-02" numPassengers="0">
                     <asimov:startNode id="ID013" pos="0.000000">
                         <rail:openEnd id="ID014">
                         </rail:openEnd>
@@ -68,12 +180,9 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         <rail:openEnd id="ID016">
                         </rail:openEnd>
                     </asimov:endNode>
-                    <asimov:entryTimeDistribution id="ID017">
-                    </asimov:entryTimeDistribution>
-                    <asimov:personaDistribution id="ID018">
-                    </asimov:personaDistribution>
-                    <asimov:groupDistribution id="ID019">
-                    </asimov:groupDistribution>
+                    <asimov:entryTimeDistribution id="ID017" />
+                    <asimov:personaDistribution id="ID018" />
+                    <asimov:groupDistribution id="ID019" />
                 </asimov:odEntry>
                 <asimov:operatingPeriod id="ID020">
                 </asimov:operatingPeriod>
@@ -86,9 +195,9 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
             </asimov:dispositionAlgorithm>
             <asimov:dispositionAlgorithm id="ID023">
             </asimov:dispositionAlgorithm>
-            <asimov:dispositionManager dispositionAlgorithmRef="ID017" ocpGroupRef="ID007" id="ID024">
+            <asimov:dispositionManager dispositionAlgorithmRef="ID022" ocpGroupRef="ID007" id="ID024">
             </asimov:dispositionManager>
-            <asimov:dispositionManager dispositionAlgorithmRef="ID010" ocpGroupRef="ID015" id="ID025">
+            <asimov:dispositionManager dispositionAlgorithmRef="ID023" ocpGroupRef="ID015" id="ID025">
             </asimov:dispositionManager>
         </asimov:disposition>
     </asimov:network>
