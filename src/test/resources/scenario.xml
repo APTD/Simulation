@@ -3,7 +3,8 @@
         xmlns:rail = "http://www.railml.org/schemas/2016"
         xmlns:asimov = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd ../../main/xsd/asimov.xsd">
+        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd
+http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/railML.xsd">
     <asimov:ai>
         <asimov:agents>
             <asimov:properties>
@@ -42,7 +43,7 @@
         </asimov:lineplan>
         <rail:timetable id="ID002">
         </rail:timetable>
-        <asimov:demand id="ID003">
+        <asimov:demand>
             <asimov:odMatrix>
                 <asimov:odEntry id="ID005" numPassengers="0">
                     <asimov:startNode id="ID006" pos="0.000000">
@@ -80,7 +81,7 @@
             <asimov:personas>
             </asimov:personas>
         </asimov:demand>
-        <asimov:disposition id="ID021">
+        <asimov:disposition>
             <asimov:dispositionAlgorithm id="ID022">
             </asimov:dispositionAlgorithm>
             <asimov:dispositionAlgorithm id="ID023">
