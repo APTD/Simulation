@@ -3,7 +3,7 @@
         xmlns:rail = "http://www.railml.org/schemas/2016"
         xmlns:asimov = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd"
         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
+        xsi:schemaLocation = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd ../../main/xsd/asimov.xsd">
     <asimov:ai>
         <asimov:agents>
             <asimov:properties>
@@ -23,9 +23,9 @@
                         <asimov:preference id="newspaper" distribution="normal" minimum = "0" maximum = "1" moment1 = "0.7" moment2 = "0.2"/>
                         <asimov:asl>
                             !main.
-
+                            
                             +!main &lt;-
-                                generic/print("hello world")
+                            generic/print(&quot;hello world&quot;)
                             .
                         </asimov:asl>
                     </asimov:configuration>
