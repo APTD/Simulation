@@ -8,23 +8,26 @@
         <asimov:agents>
             <asimov:properties>
                 <asimov:motivation>
-                    <asimov:item id="id0"/>
-                    <asimov:item id="id1"/>
+                    <asimov:item id="minimalchanges"/>
                 </asimov:motivation>
                 <asimov:preference>
-                    <asimov:item id="id2"/>
-                    <asimov:item id="id3"/>
+                    <asimov:item id="coffee"/>
+                    <asimov:item id="newspaper"/>
                 </asimov:preference>
             </asimov:properties>
             <asimov:instance>
-                <asimov:agent id="id4">
+                <asimov:agent id="oldpassenger">
                     <asimov:configuration>
-                        <asimov:asl>asl0</asimov:asl>
-                    </asimov:configuration>
-                </asimov:agent>
-                <asimov:agent id="id5">
-                    <asimov:configuration>
-                        <asimov:asl>asl1</asimov:asl>
+                        <asimov:motivation id="minimalchanges" distribution="normal" minimum = "0" maximum = "10" moment1 = "5" moment2 = "2" />
+                        <asimov:preference id="coffee" distribution="uniform" minimum = "0" maximum = "1" moment1 = "0.3" moment2 = "0.1"/>
+                        <asimov:preference id="newspaper" distribution="normal" minimum = "0" maximum = "1" moment1 = "0.7" moment2 = "0.2"/>
+                        <asimov:asl>
+                            !main.
+
+                            +!main &lt;-
+                                generic/print("hello world")
+                            .
+                        </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
             </asimov:instance>
