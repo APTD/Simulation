@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema" elementFormDefault = "qualified"
-           vc:minVersion = "1.1" xmlns:vc = "http://www.w3.org/2007/XMLSchema-versioning"
-           targetNamespace = "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    vc:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
+    targetNamespace="https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd">
 
     <xs:annotation>
         <xs:documentation>common global elements that used by all other schema
@@ -23,28 +23,5 @@
         <xs:attribute name="moment2" type="xs:double" use="optional"/>
         <xs:attribute name="minimum" type="xs:double" use="required"/>
         <xs:attribute name="maximum" type="xs:double" use="required"/>
-    </xs:attributeGroup>
-    <xs:attributeGroup name="gps">
-        <xs:annotation>
-            <xs:documentation>attribute definition for GPS data</xs:documentation>
-        </xs:annotation>
-        <xs:attribute name="latitude" use="required">
-            <xs:annotation>
-                <xs:documentation>latitude value (positive values = east, negativ values =
-                    west)</xs:documentation>
-            </xs:annotation>
-            <xs:simpleType>
-                <xs:restriction base="xs:double"/>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="longitude" use="required">
-            <xs:annotation>
-                <xs:documentation>longitude value (positive values = north, negative values =
-                    south)</xs:documentation>
-            </xs:annotation>
-            <xs:simpleType>
-                <xs:restriction base="xs:double"/>
-            </xs:simpleType>
-        </xs:attribute>
     </xs:attributeGroup>
 </xs:schema>
