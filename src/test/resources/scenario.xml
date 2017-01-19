@@ -197,6 +197,13 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:ocpsTT>
                 </rail:trainPart>
             </rail:trainParts>
+            <rail:trains>
+                <rail:train id="train-01" type="commercial">
+                    <rail:trainPartSequence sequence="1">
+                        <rail:trainPartRef ref="train-part-001" position="1"/>
+                    </rail:trainPartSequence>
+                </rail:train>
+            </rail:trains>
         </rail:timetable>
         <asimov:demand>
             <asimov:odMatrix>
