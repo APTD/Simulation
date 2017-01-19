@@ -24,4 +24,13 @@
             <jaxb:property name = "any4" />
         </jaxb:bindings>
     </jaxb:bindings>
+    <!--
+    <jaxb:bindings node="//xs:schem//xs:attribute[@ocref]">
+        <property>
+            <baseType>
+                <javaType name="java.lang.String"></javaType>
+            </baseType>
+        </property>
+    </jaxb:bindings>
+    -->
 </jaxb:bindings>

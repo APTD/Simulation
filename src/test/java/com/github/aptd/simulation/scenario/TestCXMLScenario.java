@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.scenario;
 
+import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
 import com.github.aptd.simulation.scenario.reader.CXMLReader;
 import com.github.aptd.simulation.scenario.xml.Asimov;
 import org.junit.Before;
@@ -63,16 +64,21 @@ public final class TestCXMLScenario
 
 
     /**
-     * test the agents
+     * test graph build with node agents
      */
     @Test
     public final void testAgent()
     {
-        m_scenario.getAi().getAgents().getInstance().getAgent().forEach( i -> {
-            System.out.println( i.getId() );
-            System.out.println( i.getConfiguration().getAsl() );
-            System.out.println();
-        } );
+        m_scenario
+            .getNetwork()
+            .getInfrastructure()
+            .getTracks()
+            .getTrack()
+            .parallelStream()
+            .map( i -> CNetworkEdge.from(
+                            i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
+                            i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
+            ) ).forEach( System.out::println );
     }
 
 
