@@ -152,7 +152,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </rail:ocp>
             </rail:operationControlPoints>
         </rail:infrastructure>
-        <rail:rollingstock id="ID001">
+        <rail:rollingstock id="rolling-stock">
             <rail:vehicles>
                 <rail:vehicle id="default-passenger-wagon" length="80">
                     <rail:wagon>
@@ -174,7 +174,29 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
         </rail:rollingstock>
         <asimov:lineplan period="P1Y2M3DT1H10M0S">
         </asimov:lineplan>
-        <rail:timetable id="ID002">
+        <rail:timetable id="timetable" infrastructureRef="toy-infrastructure" rollingstockRef="rolling-stock">
+            <rail:trainParts>
+                <rail:trainPart id="train-part-001">
+                    <rail:formationTT formationRef="default-train" />
+                    <rail:ocpsTT>
+                        <rail:ocpTT ocpRef="toy-node-1" ocpType="stop">
+                            <rail:times scope="published" departure="10:00:00" />
+                            <rail:sectionTT>
+                                <rail:trackRef ref="toy-edge-1" dir="up" />
+                            </rail:sectionTT>
+                        </rail:ocpTT>
+                        <rail:ocpTT ocpRef="toy-node-3" ocpType="stop">
+                            <rail:times scope="published" arrival="10:30:00" departure="10:35:00"/>
+                            <rail:sectionTT>
+                                <rail:trackRef ref="toy-edge-3" dir="up" />
+                            </rail:sectionTT>
+                        </rail:ocpTT>
+                        <rail:ocpTT ocpRef="toy-node-4" ocpType="stop">
+                            <rail:times scope="published" arrival="11:11:00" />
+                        </rail:ocpTT>
+                    </rail:ocpsTT>
+                </rail:trainPart>
+            </rail:trainParts>
         </rail:timetable>
         <asimov:demand>
             <asimov:odMatrix>
