@@ -31,6 +31,16 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
+                <asimov:agent id="agent-station-default">
+                    <asimov:configuration>
+                        <asimov:asl></asimov:asl>
+                    </asimov:configuration>
+                </asimov:agent>
+                <asimov:agent id="agent-station-simulated-default">
+                    <asimov:configuration>
+                        <asimov:asl></asimov:asl>
+                    </asimov:configuration>
+                </asimov:agent>
             </asimov:instance>
         </asimov:agents>
     </asimov:ai>
@@ -125,29 +135,37 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
             </rail:tracks>
             <rail:operationControlPoints>
                 <rail:ocp id="toy-node-1" name="1" description="Eins">
+                    <asimov:agentRef agent="agent-station-default" />
                     <rail:geoCoord coord="51.351333 9.860542"/>
                 </rail:ocp>
                 <rail:ocp id="toy-node-2" name="2" description="Zwei">
+                    <asimov:agentRef agent="agent-station-default" />
                     <rail:geoCoord coord="51.412148 9.657186" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-3" name="3" description="Drei">
+                    <asimov:agentRef agent="agent-station-simulated-default" />
                     <rail:propOperational operationalType="station" orderChangeable="true" trafficType="passenger" />
                     <rail:geoCoord coord="51.536777 9.926074" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-4" name="4" description="Vier">
+                    <asimov:agentRef agent="agent-station-default" />
                     <rail:geoCoord coord="51.377105 10.123940" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-5" name="5" description="Fünf">
+                    <asimov:agentRef agent="agent-station-default" />
                     <rail:geoCoord coord="51.644046 10.329508" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-6" name="6" description="Sechs">
+                    <asimov:agentRef agent="agent-station-simulated-default" />
                     <rail:propOperational operationalType="station" orderChangeable="true" trafficType="passenger" />
                     <rail:geoCoord coord="51.850591 9.969346" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-7" name="7" description="Sieben">
+                    <asimov:agentRef agent="agent-station-default" />
                     <rail:geoCoord coord="51.984547 9.812833" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-8" name="8" description="Acht">
+                    <asimov:agentRef agent="agent-station-default" />
                     <rail:geoCoord coord="51.911861 10.420842" />
                 </rail:ocp>
             </rail:operationControlPoints>

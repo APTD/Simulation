@@ -15,5 +15,16 @@
                 <xs:element name="network" type="asimov:network"/>
             </xs:all>
         </xs:complexType>
+        <xs:keyref name="agentRef" refer="asimov:key-iagents-agent">
+            <xs:selector xpath=".//asimov:agentRef"></xs:selector>
+            <xs:field xpath="@agent" />
+        </xs:keyref>
     </xs:element>
+
+    <xs:element name="agentRef">
+        <xs:complexType>
+            <xs:attribute name="agent" type="xs:string" use="required" />
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
