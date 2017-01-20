@@ -24,13 +24,14 @@
             <jaxb:property name = "any4" />
         </jaxb:bindings>
     </jaxb:bindings>
-    <!--
-    <jaxb:bindings node="//xs:schem//xs:attribute[@ocref]">
-        <property>
-            <baseType>
-                <javaType name="java.lang.String"></javaType>
-            </baseType>
-        </property>
+
+    <jaxb:bindings schemaLocation = "http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/infrastructureTypes.xsd">
+        <jaxb:bindings node="//xs:schema//xs:attribute[@name='ocpRef']" multiple="true">
+            <jaxb:property>
+                <jaxb:baseType>
+                    <jaxb:javaType name="java.lang.String" />
+                </jaxb:baseType>
+            </jaxb:property>
+        </jaxb:bindings>
     </jaxb:bindings>
-    -->
 </jaxb:bindings>
