@@ -23,6 +23,8 @@
 package com.github.aptd.simulation.common;
 
 import com.github.aptd.simulation.error.CSemanticException;
+import org.lightjason.agentspeak.action.IAction;
+import org.lightjason.agentspeak.language.score.IAggregation;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -35,6 +37,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +58,14 @@ public final class CConfiguration
      * map with configuration data
      */
     private final Map<String, Object> m_configuration = new ConcurrentHashMap<>();
+    /**
+     * all global agent actions
+     */
+    private final Set<IAction> m_agentaction = org.lightjason.agentspeak.common.CCommon.actionsFromPackage().collect( Collectors.toSet() );
+    /**
+     * global agent aggregation function
+     */
+    private final IAggregation m_aggregation = IAggregation.EMPTY;
 
     /**
      * ctor
@@ -150,6 +161,40 @@ public final class CConfiguration
         );
 
         return l_path;
+    }
+
+    /**
+     * returns a set with all agent actions
+     *
+     * @param p_action arguments with additional actions
+     * @return action set
+     */
+    public final Set<IAction> agentaction( final IAction... p_action )
+    {
+        return ( p_action == null ) || ( p_action.length == 0 )
+               ? m_agentaction
+               : this.agentaction( Arrays.stream( p_action ) );
+    }
+
+    /**
+     * returns a set with all agent actions
+     *
+     * @param p_action stream with additional actions
+     * @return action set
+     */
+    public final Set<IAction> agentaction( final Stream<IAction> p_action )
+    {
+        return Stream.concat( m_agentaction.stream(), p_action ).collect( Collectors.toSet() );
+    }
+
+    /**
+     * returns the agent aggregation function
+     *
+     * @return aggregation function
+     */
+    public final IAggregation agentaggregation()
+    {
+        return m_aggregation;
     }
 
 

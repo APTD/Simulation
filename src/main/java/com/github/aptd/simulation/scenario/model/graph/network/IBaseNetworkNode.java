@@ -91,7 +91,7 @@ public abstract class IBaseNetworkNode<T> extends IBaseAgent<INetworkNode<T>> im
     @Override
     public final boolean equals( final Object p_object )
     {
-        return m_id.equals( p_object );
+        return ( p_object != null ) && ( p_object instanceof INetworkNode<?> ) && ( m_id.hashCode() == p_object.hashCode() );
     }
 
     @Override

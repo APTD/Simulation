@@ -33,12 +33,24 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </asimov:agent>
                 <asimov:agent id="agent-station-default">
                     <asimov:configuration>
-                        <asimov:asl></asimov:asl>
+                        <asimov:asl>
+                            !main.
+
+                            +!main &lt;-
+                            generic/print(&quot;hello world&quot;)
+                            .
+                        </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
                 <asimov:agent id="agent-station-simulated-default">
                     <asimov:configuration>
-                        <asimov:asl></asimov:asl>
+                        <asimov:asl>
+                            !main.
+
+                            +!main &lt;-
+                            generic/print(&quot;hello world&quot;)
+                            .
+                        </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
             </asimov:instance>

@@ -22,20 +22,19 @@
 
 package com.github.aptd.simulation.scenario.generator;
 
+
+import com.github.aptd.simulation.CHTTPServer;
+import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.error.CSemanticException;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
-import com.github.aptd.simulation.CHTTPServer;
-import org.lightjason.agentspeak.common.CCommon;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.stream.Collectors;
 
 
 /**
@@ -43,24 +42,26 @@ import java.util.stream.Collectors;
  * s
  * @tparam T node identifier
  */
-public final class CStation<T, G extends INetworkNode<T>> extends IBaseAgentGenerator<INetworkNode<T>>
+public final class CStationGenerator<T> extends IBaseAgentGenerator<INetworkNode<T>>
 {
+
     /**
      * ctor reference
      */
-    private final Constructor<G> m_ctor;
+    private final Constructor<? extends INetworkNode<T>> m_agentctor;
+
 
     /**
      * ctor
      *
-     * @param p_stream asl input stream
-     * @param p_classgenerator generator class
-     * @throws Exception thrown on any parsing exception
+     * @param p_stream ASL input stream
+     * @param p_agentclass agent class for generation
+     * @throws Exception is thrown on any error
      */
-    public CStation( final InputStream p_stream, final Class<G> p_classgenerator ) throws Exception
+    public <G extends INetworkNode<T>> CStationGenerator( final InputStream p_stream, final Class<G> p_agentclass ) throws Exception
     {
-        super( p_stream, CCommon.actionsFromPackage().collect( Collectors.toSet() ), IAggregation.EMPTY );
-        m_ctor = p_classgenerator.getConstructor( IAgentConfiguration.class, Object.class, double.class, double.class );
+        super( p_stream, CConfiguration.INSTANCE.agentaction(), CConfiguration.INSTANCE.agentaggregation() );
+        m_agentctor = p_agentclass.getConstructor( IAgentConfiguration.class, Object.class, double.class, double.class );
     }
 
     @Override
@@ -68,13 +69,13 @@ public final class CStation<T, G extends INetworkNode<T>> extends IBaseAgentGene
     {
         try
         {
-            final INetworkNode<T> l_agent = m_ctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
+            final INetworkNode<T> l_agent = m_agentctor.newInstance( m_configuration, p_data[0], p_data[1], p_data[2] );
 
             // add parameters to beliefbase
             l_agent.beliefbase().add( CLiteral.from( "name", CRawTerm.from( p_data[0].toString() ) ) );
             l_agent.beliefbase().add( CLiteral.from( "gps",
-                                                    CLiteral.from( "longitude", CRawTerm.from( p_data[1] ) ),
-                                                    CLiteral.from( "latitude", CRawTerm.from( p_data[2] ) )
+                                                     CLiteral.from( "longitude", CRawTerm.from( p_data[1] ) ),
+                                                     CLiteral.from( "latitude", CRawTerm.from( p_data[2] ) )
             ) );
 
             // register agent at the restful API
@@ -86,4 +87,5 @@ public final class CStation<T, G extends INetworkNode<T>> extends IBaseAgentGene
             throw new CSemanticException( l_exception );
         }
     }
+
 }

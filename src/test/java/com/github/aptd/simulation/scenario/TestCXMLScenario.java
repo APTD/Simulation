@@ -23,13 +23,24 @@
 package com.github.aptd.simulation.scenario;
 
 import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
+import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
+import com.github.aptd.simulation.elements.factory.local.CStation;
+import com.github.aptd.simulation.scenario.generator.CStationGenerator;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
+import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
 import com.github.aptd.simulation.scenario.reader.CXMLReader;
 import com.github.aptd.simulation.scenario.xml.Asimov;
+import com.github.aptd.simulation.scenario.xml.Iagent;
+import org.apache.commons.io.IOUtils;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
 
@@ -39,7 +50,14 @@ import static org.junit.Assert.assertTrue;
  */
 public final class TestCXMLScenario
 {
+    /**
+     * configuration object
+     */
     private Asimov m_scenario;
+    /**
+     * agent configuration data
+     */
+    private Map<String, String> m_agent;
 
     /**
      * reads a test scenario
@@ -60,6 +78,17 @@ public final class TestCXMLScenario
             assertTrue( l_exception.getMessage(), false );
         }
 
+        // read all agents
+        m_agent = m_scenario
+            .getAi()
+            .getAgents()
+            .getInstance()
+            .getAgent()
+            .parallelStream()
+            .collect( Collectors.toMap( Iagent::getId, i -> i.getConfiguration().getAsl() ) );
+
+        System.out.println( m_agent );
+
     }
 
 
@@ -67,18 +96,52 @@ public final class TestCXMLScenario
      * test graph build with node agents
      */
     @Test
-    public final void testAgent()
+    @SuppressWarnings( "unchecked" )
+    public final void testNetworkWithAgent()
     {
-        m_scenario
-            .getNetwork()
-            .getInfrastructure()
-            .getTracks()
-            .getTrack()
-            .parallelStream()
-            .map( i -> CNetworkEdge.from(
-                            i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
-                            i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
-            ) ).forEach( System.out::println );
+        Assume.assumeNotNull( m_scenario );
+        Assume.assumeNotNull( m_agent );
+
+        System.out.println(
+            new CSparseGraph<String, INetworkNode<String>, INetworkEdge<String>>(
+                m_scenario
+                    .getNetwork()
+                    .getInfrastructure()
+                    .getOperationControlPoints()
+                    .getOcp()
+                    .parallelStream()
+                    .map( i -> {
+                        try
+                        {
+                            return new CStationGenerator<String>(
+                                IOUtils.toInputStream( m_agent.get( i.getId() ), "UTF-8" ),
+                                CStation.class
+                            ).generatesingle( i.getDescription(), i.getGeoCoord().getCoord().get( 0 ), i.getGeoCoord().getCoord().get( 1 ) );
+                        }
+                        catch ( final Exception l_exception )
+                        {
+                            assertTrue( l_exception.getMessage(), false );
+                            return null;
+                        }
+                    } )
+                    .filter( Objects::nonNull )
+                    .collect( Collectors.toSet() ),
+
+
+                m_scenario
+                    .getNetwork()
+                    .getInfrastructure()
+                    .getTracks()
+                    .getTrack()
+                    .parallelStream()
+                    .map( i -> CNetworkEdge.from(
+                                    i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
+                                    i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
+                    ) )
+                    .collect( Collectors.toSet() )
+
+            )
+        );
     }
 
 
@@ -93,5 +156,6 @@ public final class TestCXMLScenario
         final TestCXMLScenario l_test = new TestCXMLScenario();
 
         l_test.initialize();
+        l_test.testNetworkWithAgent();
     }
 }

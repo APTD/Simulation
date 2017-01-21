@@ -25,7 +25,8 @@ package com.github.aptd.simulation.elements.graph;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
 import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
-import com.github.aptd.simulation.scenario.generator.CStation;
+import com.github.aptd.simulation.elements.factory.local.CStation;
+import com.github.aptd.simulation.scenario.generator.CStationGenerator;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
 import org.junit.Assume;
@@ -62,7 +63,7 @@ public final class TestCNetwork
             final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
         )
         {
-            m_station = new CStation<>( l_station, com.github.aptd.simulation.elements.factory.local.CStation.class );
+            m_station = new CStationGenerator<>( l_station, CStation.class );
         }
         catch ( final Exception l_exception )
         {

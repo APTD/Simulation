@@ -14,7 +14,7 @@
         </xs:annotation>
         <xs:attribute name="distribution" use="required">
             <xs:simpleType>
-                <xs:restriction base="xs:string">
+                <xs:restriction base="xs:ID">
                     <xs:pattern value="[\s\S]*[^ ][\s\S]*"/>
                 </xs:restriction>
             </xs:simpleType>
