@@ -367,7 +367,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <strict>false</strict>
+                    <strict>true</strict>
                     <generateDirectory>target/generated-sources/jaxb</generateDirectory>
                     <schemaDirectory>src/main/xsd</schemaDirectory>
                     <schemaIncludes>
