@@ -4,7 +4,7 @@
                version = "2.1"
 >
     <jaxb:globalBindings fixedAttributeAsConstantProperty = "true" enableValidation = "true" enableFailFastCheck = "true" />
-    <jaxb:bindings schemaLocation = "network.xsd">
+    <jaxb:bindings schemaLocation = "asimov.xsd">
         <jaxb:schemaBindings>
             <jaxb:package name = "com.github.aptd.simulation.scenario.xml" />
         </jaxb:schemaBindings>
@@ -25,7 +25,7 @@
         </jaxb:bindings>
     </jaxb:bindings>
 
-    <jaxb:bindings schemaLocation = "http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/infrastructureTypes.xsd">
+    <!--<jaxb:bindings schemaLocation = "http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/infrastructureTypes.xsd">
         <jaxb:bindings node="//xs:schema//xs:attribute[@name='ocpRef']" multiple="true">
             <jaxb:property>
                 <jaxb:baseType>
@@ -33,5 +33,5 @@
                 </jaxb:baseType>
             </jaxb:property>
         </jaxb:bindings>
-    </jaxb:bindings>
+    </jaxb:bindings>-->
 </jaxb:bindings>

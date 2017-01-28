@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.scenario.reader;
 
+import com.github.aptd.simulation.scenario.xml.AgentRef;
 import com.github.aptd.simulation.scenario.xml.Asimov;
 
 import javax.xml.bind.JAXBContext;
@@ -45,7 +46,7 @@ public final class CXMLReader implements IReader<Asimov>
      */
     public CXMLReader() throws JAXBException
     {
-        m_context = JAXBContext.newInstance( Asimov.class );
+        m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
     }
 
     @Override

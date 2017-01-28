@@ -29,12 +29,14 @@ import com.github.aptd.simulation.scenario.generator.CStationGenerator;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
 import com.github.aptd.simulation.scenario.reader.CXMLReader;
+import com.github.aptd.simulation.scenario.xml.AgentRef;
 import com.github.aptd.simulation.scenario.xml.Asimov;
 import com.github.aptd.simulation.scenario.xml.Iagent;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.railml.schemas._2016.EOcp;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -103,7 +105,7 @@ public final class TestCXMLScenario
         Assume.assumeNotNull( m_agent );
 
         System.out.println(
-            new CSparseGraph<String, INetworkNode<String>, INetworkEdge<String>>(
+            new CSparseGraph<EOcp, INetworkNode<EOcp>, INetworkEdge<EOcp>>(
                 m_scenario
                     .getNetwork()
                     .getInfrastructure()
@@ -113,13 +115,19 @@ public final class TestCXMLScenario
                     .map( i -> {
                         try
                         {
-                            return new CStationGenerator<String>(
-                                IOUtils.toInputStream( m_agent.get( i.getId() ), "UTF-8" ),
+                            return new CStationGenerator<EOcp>(
+                                IOUtils.toInputStream( m_agent.get( i.getAny().stream()
+                                        .filter( a -> a instanceof AgentRef )
+                                        .map( a -> ( (AgentRef) a ).getAgent() )
+                                        .findAny()
+                                        .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) )
+                                    ), "UTF-8" ),
                                 CStation.class
                             ).generatesingle( i.getDescription(), i.getGeoCoord().getCoord().get( 0 ), i.getGeoCoord().getCoord().get( 1 ) );
                         }
                         catch ( final Exception l_exception )
                         {
+                            l_exception.printStackTrace();
                             assertTrue( l_exception.getMessage(), false );
                             return null;
                         }
@@ -135,8 +143,8 @@ public final class TestCXMLScenario
                     .getTrack()
                     .parallelStream()
                     .map( i -> CNetworkEdge.from(
-                                    i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
-                                    i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
+                            (EOcp) i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
+                            (EOcp) i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
                     ) )
                     .collect( Collectors.toSet() )
 
