@@ -156,6 +156,11 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </rail:ocp>
                 <rail:ocp id="toy-node-3" name="3" description="Drei">
                     <asimov:agentRef agent="agent-station-simulated-default" class="com.github.aptd.simulation.elements.factory.local.CTransitStation" />
+                    <asimov:stationLayout>
+                        <asimov:platform number="1" />
+                        <asimov:platform number="2" />
+                        <asimov:platform number="3" />
+                    </asimov:stationLayout>
                     <rail:propOperational operationalType="station" orderChangeable="true" trafficType="passenger" />
                     <rail:geoCoord coord="51.536777 9.926074" />
                 </rail:ocp>
@@ -169,6 +174,11 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </rail:ocp>
                 <rail:ocp id="toy-node-6" name="6" description="Sechs">
                     <asimov:agentRef agent="agent-station-simulated-default" class="com.github.aptd.simulation.elements.factory.local.CTransitStation" />
+                    <asimov:stationLayout>
+                        <asimov:platform number="1" />
+                        <asimov:platform number="2" />
+                        <asimov:platform number="3" />
+                    </asimov:stationLayout>
                     <rail:propOperational operationalType="station" orderChangeable="true" trafficType="passenger" />
                     <rail:geoCoord coord="51.850591 9.969346" />
                 </rail:ocp>

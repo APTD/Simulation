@@ -28,4 +28,23 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="stationLayout" type="asimov:stationLayoutType">
+        <xs:key name="key-station-platforms">
+            <xs:selector xpath="./asimov:platform"/>
+            <xs:field xpath="@number"/>
+        </xs:key>
+    </xs:element>
+
+    <xs:complexType name="stationLayoutType">
+        <xs:sequence>
+            <xs:element name="platform" type="asimov:platformType" minOccurs="0" maxOccurs="unbounded" />
+            <!-- extend by CityGML here? -->
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="platformType">
+        <xs:attribute name="number" type="xs:integer" />
+        <!-- maybe also extend by CityGML here? -->
+    </xs:complexType>
+
 </xs:schema>
