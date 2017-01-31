@@ -144,6 +144,86 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         </rail:trackEnd>
                     </rail:trackTopology>
                 </rail:track>
+                <rail:track id="toy-edge-1-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-1-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-1-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-1" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-2-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-2-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-2-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-2" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-3-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-3-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-4" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-3-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-4-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-4-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-5" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-4-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-4" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-5-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-5-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-5-back-end" pos="40000">
+                            <rail:macroscopicNode ocpRef="toy-node-5" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-6-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-6-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-6-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-3" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-7-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-7-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-7" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-7-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
+                <rail:track id="toy-edge-8-back">
+                    <rail:trackTopology>
+                        <rail:trackBegin id="toy-edge-8-back-begin" pos="0">
+                            <rail:macroscopicNode ocpRef="toy-node-8" />
+                        </rail:trackBegin>
+                        <rail:trackEnd id="toy-edge-8-back-end" pos="50000">
+                            <rail:macroscopicNode ocpRef="toy-node-6" />
+                        </rail:trackEnd>
+                    </rail:trackTopology>
+                </rail:track>
             </rail:tracks>
             <rail:operationControlPoints>
                 <rail:ocp id="toy-node-1" name="1" description="Eins">
