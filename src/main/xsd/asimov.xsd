@@ -24,6 +24,7 @@
     <xs:element name="agentRef">
         <xs:complexType>
             <xs:attribute name="agent" type="xs:string" use="required" />
+            <xs:attribute name="class" type="xs:string" use="required" />
         </xs:complexType>
     </xs:element>
 

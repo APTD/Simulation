@@ -24,8 +24,8 @@ package com.github.aptd.simulation.scenario;
 
 import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
 import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
-import com.github.aptd.simulation.elements.factory.local.CStation;
 import com.github.aptd.simulation.scenario.generator.CStationGenerator;
+import com.github.aptd.simulation.scenario.model.graph.network.IBaseNetworkNode;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
 import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
 import com.github.aptd.simulation.scenario.reader.CXMLReader;
@@ -115,14 +115,14 @@ public final class TestCXMLScenario
                     .map( i -> {
                         try
                         {
+                            final AgentRef l_agentRef = i.getAny().stream()
+                                    .filter( a -> a instanceof AgentRef )
+                                    .map( a -> (AgentRef) a )
+                                    .findAny()
+                                    .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) );
                             return new CStationGenerator<EOcp>(
-                                IOUtils.toInputStream( m_agent.get( i.getAny().stream()
-                                        .filter( a -> a instanceof AgentRef )
-                                        .map( a -> ( (AgentRef) a ).getAgent() )
-                                        .findAny()
-                                        .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) )
-                                    ), "UTF-8" ),
-                                CStation.class
+                                IOUtils.toInputStream( m_agent.get( l_agentRef.getAgent() ), "UTF-8" ),
+                                    (Class<? extends IBaseNetworkNode<EOcp>>) Class.forName( l_agentRef.getClazz() )
                             ).generatesingle( i.getDescription(), i.getGeoCoord().getCoord().get( 0 ), i.getGeoCoord().getCoord().get( 1 ) );
                         }
                         catch ( final Exception l_exception )
