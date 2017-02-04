@@ -10,3 +10,4 @@
 * [Map API](http://wiki.openstreetmap.org/wiki/OpenRailwayMap/API)
 * [Deegree](http://www.deegree.org/)
 * [3D City DB](http://www.3dcitydb.org/)
+* [CityGML 4 J](https://github.com/citygml4j/citygml4j)
