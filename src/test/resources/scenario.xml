@@ -303,12 +303,14 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                             <rail:times scope="published" departure="10:00:00" />
                             <rail:sectionTT>
                                 <rail:trackRef ref="toy-edge-1" dir="up" />
+                                <rail:runTimes minimalTime="PT00:25:48" />
                             </rail:sectionTT>
                         </rail:ocpTT>
                         <rail:ocpTT ocpRef="toy-node-3" ocpType="stop">
                             <rail:times scope="published" arrival="10:30:00" departure="10:35:00"/>
                             <rail:sectionTT>
                                 <rail:trackRef ref="toy-edge-3" dir="up" />
+                                <rail:runTimes minimalTime="PT00:33:22" />
                             </rail:sectionTT>
                         </rail:ocpTT>
                         <rail:ocpTT ocpRef="toy-node-4" ocpType="stop">
