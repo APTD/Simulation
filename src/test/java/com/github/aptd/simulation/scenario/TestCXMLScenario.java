@@ -31,11 +31,12 @@ import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
 import com.github.aptd.simulation.scenario.reader.CXMLReader;
 import com.github.aptd.simulation.scenario.xml.AgentRef;
 import com.github.aptd.simulation.scenario.xml.Asimov;
-import com.github.aptd.simulation.scenario.xml.Iagent;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.railml.schemas._2016.EOcp;
 
 import java.io.FileInputStream;
@@ -45,6 +46,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -59,7 +61,7 @@ public final class TestCXMLScenario
     /**
      * agent configuration data
      */
-    private Map<String, String> m_agent;
+    private Map<String, ImmutablePair<Class<? extends IAgent<?>>, String>> m_agent;
 
     /**
      * reads a test scenario
@@ -68,9 +70,9 @@ public final class TestCXMLScenario
     public final void initialize()
     {
         try
-        (
-            final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-        )
+            (
+                final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
+            )
         {
 
             m_scenario = new CXMLReader().get( l_stream );
@@ -87,7 +89,22 @@ public final class TestCXMLScenario
             .getInstance()
             .getAgent()
             .parallelStream()
-            .collect( Collectors.toMap( Iagent::getId, i -> i.getConfiguration().getAsl() ) );
+            .collect( Collectors./*<Iagent, String, ImmutablePair<Class<? extends IAgent<?>>, String>>*/toMap(
+                i -> i.getId(),
+                i ->
+                {
+                    Class<? extends IAgent<?>> l_clazz = null;
+                    try
+                    {
+                        l_clazz = (Class<? extends IAgent<?>>) Class.forName( i.getJavaClass() );
+                    }
+                    catch ( final ClassNotFoundException l_exception )
+                    {
+                        fail( "ClassNotFoundException: " + i.getJavaClass() );
+                    }
+                    return new ImmutablePair<>( l_clazz, i.getConfiguration().getAsl() );
+                }
+            ) );
 
         System.out.println( m_agent );
 
@@ -116,19 +133,19 @@ public final class TestCXMLScenario
                         try
                         {
                             final AgentRef l_agentRef = i.getAny().stream()
-                                    .filter( a -> a instanceof AgentRef )
-                                    .map( a -> (AgentRef) a )
-                                    .findAny()
-                                    .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) );
+                                                       .filter( a -> a instanceof AgentRef )
+                                                       .map( a -> (AgentRef) a )
+                                                       .findAny()
+                                                       .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) );
                             return new CStationGenerator<EOcp>(
-                                IOUtils.toInputStream( m_agent.get( l_agentRef.getAgent() ), "UTF-8" ),
-                                    (Class<? extends IBaseNetworkNode<EOcp>>) Class.forName( l_agentRef.getClazz() )
+                                IOUtils.toInputStream( m_agent.get( l_agentRef.getAgent() ).getRight(), "UTF-8" ),
+                                (Class<? extends IBaseNetworkNode<EOcp>>) m_agent.get( l_agentRef.getAgent() ).getLeft()
                             ).generatesingle( i.getDescription(), i.getGeoCoord().getCoord().get( 0 ), i.getGeoCoord().getCoord().get( 1 ) );
                         }
                         catch ( final Exception l_exception )
                         {
                             l_exception.printStackTrace();
-                            assertTrue( l_exception.getMessage(), false );
+                            fail( l_exception.getMessage() );
                             return null;
                         }
                     } )
@@ -143,8 +160,8 @@ public final class TestCXMLScenario
                     .getTrack()
                     .parallelStream()
                     .map( i -> CNetworkEdge.from(
-                            (EOcp) i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
-                            (EOcp) i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
+                        (EOcp) i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
+                        (EOcp) i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
                     ) )
                     .collect( Collectors.toSet() )
 
