@@ -22,9 +22,25 @@
 
 package com.github.aptd.simulation.scenario.model;
 
+import org.lightjason.agentspeak.language.ILiteral;
+
+import java.util.stream.Stream;
+
+
 /**
  * simulation object interface
  */
 public interface IElement
 {
+
+    /**
+     * returns a stream of literals to
+     * define the object structure for
+     * an agent
+     *
+     * @param p_object query object
+     * @return stream with literals
+     */
+    Stream<ILiteral> literal( final IElement p_object );
+
 }

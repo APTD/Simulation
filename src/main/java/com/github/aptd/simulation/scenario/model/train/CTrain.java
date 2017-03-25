@@ -24,11 +24,13 @@ package com.github.aptd.simulation.scenario.model.train;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.error.CSemanticException;
+import com.github.aptd.simulation.scenario.model.IElement;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
 import java.util.Arrays;
@@ -121,6 +123,12 @@ public final class CTrain<T> extends IBaseAgent<ITrain<T>> implements ITrain<T>
             throw new CSemanticException( "train [{0}] cannot be empty", m_id );
 
         return m_wagon.remove( m_wagon.size() - 1 );
+    }
+
+    @Override
+    public final Stream<ILiteral> literal( final IElement p_object )
+    {
+        return Stream.of();
     }
 
     @IAgentActionFilter
