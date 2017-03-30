@@ -2,6 +2,8 @@
 
 
 ![Circle CI](https://circleci.com/gh/APTD/Simulation.svg?style=shield)
+[![Coverage Status](https://coveralls.io/repos/github/APTD/Simulation/badge.svg?branch=master)](https://coveralls.io/github/APTD/Simulation?branch=master)
+
 
 
 ## Tools

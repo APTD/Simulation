@@ -32,7 +32,7 @@ test:
 
     post:
         # documentation and test build
-        - mvn site -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN}
+        - mvn site coveralls:report -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN}
         # create CircleCI reports
         - mkdir -p $CIRCLE_TEST_REPORTS/junit/
         - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
