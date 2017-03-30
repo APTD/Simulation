@@ -130,7 +130,4 @@ public final class CHTTPServer
         INSTANCE.m_restagent.register( p_name, p_agent, p_group );
     }
 
-
-
-
 }

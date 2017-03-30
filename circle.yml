@@ -15,14 +15,9 @@ machine:
     timezone:
         Europe/Berlin
 
-    environment:
-        GIT_AUTHOR_NAME: CircleCI
-        GIT_AUTHOR_EMAIL: info@flashpixx.de
-        GIT_COMMITTER_NAME: CircleCI
-        GIT_COMMITTER_EMAIL: info@flashpixx.de
-
     java:
         version: oraclejdk8
+
 
 dependencies:
     pre:
@@ -30,16 +25,17 @@ dependencies:
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
         - git clone https://github.com/LightJason/REST.git && cd REST && mvn install -DskipTests
 
+
 test:
     override:
-        - mvn -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -DperformRelease=false -DskipTests=true
+        - mvn -Dbuild.number=${CIRCLE_BUILD_NUM} -Dcoverall.token=${COVERALL_TOKEN} -Dbuild.commit=${CIRCLE_SHA1} -DperformRelease=false -DskipTests=true
 
     post:
+        # documentation and test build
+        - mvn site -Dbuild.number=${CIRCLE_BUILD_NUM} -Dbuild.commit=${CIRCLE_SHA1} -Dcoverall.token=${COVERALL_TOKEN}
         # create CircleCI reports
         - mkdir -p $CIRCLE_TEST_REPORTS/junit/
         - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-        # documentation  build
-        - mvn site
 
 
 deployment:

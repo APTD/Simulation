@@ -61,6 +61,11 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <!-- will be set outside (build parameter) -->
+        <build.number></build.number>
+        <build.commit></build.commit>
+        <coverall.token></coverall.token>
+
         <jetty.version>9.4.3.v20170317</jetty.version>
     </properties>
 
@@ -72,7 +77,7 @@
         -->
         <dependency>
             <groupId>org.lightjason</groupId>
-            <artifactId>REST</artifactId>
+            <artifactId>rest</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -236,6 +241,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.7</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -484,6 +495,19 @@
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- coversall report plugin -->
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                    <repoToken>${coverall.token}</repoToken>
+                    <sourceDirectories>
+                        <directory>target/generated-sources/jaxb</directory>
+                    </sourceDirectories>
                 </configuration>
             </plugin>
 
