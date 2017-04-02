@@ -107,6 +107,12 @@
             <version>2.26-b03</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.0.pr2</version>
+        </dependency>
+
 
         <!-- base packages -->
         <dependency>
