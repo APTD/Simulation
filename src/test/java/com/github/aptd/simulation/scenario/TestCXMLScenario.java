@@ -132,14 +132,14 @@ public final class TestCXMLScenario
                     .map( i -> {
                         try
                         {
-                            final AgentRef l_agentRef = i.getAny().stream()
+                            final AgentRef l_agentref = i.getAny().stream()
                                                        .filter( a -> a instanceof AgentRef )
                                                        .map( a -> (AgentRef) a )
                                                        .findAny()
                                                        .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) );
                             return new CStationGenerator<EOcp>(
-                                IOUtils.toInputStream( m_agent.get( l_agentRef.getAgent() ).getRight(), "UTF-8" ),
-                                (Class<? extends IBaseNetworkNode<EOcp>>) m_agent.get( l_agentRef.getAgent() ).getLeft()
+                                IOUtils.toInputStream( m_agent.get( l_agentref.getAgent() ).getRight(), "UTF-8" ),
+                                (Class<? extends IBaseNetworkNode<EOcp>>) m_agent.get( l_agentref.getAgent() ).getLeft()
                             ).generatesingle( i.getDescription(), i.getGeoCoord().getCoord().get( 0 ), i.getGeoCoord().getCoord().get( 1 ) );
                         }
                         catch ( final Exception l_exception )
