@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.scenario;
 
+import com.github.aptd.simulation.IBaseTest;
 import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
 import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
 import com.github.aptd.simulation.scenario.generator.CStationGenerator;
@@ -52,7 +53,7 @@ import static org.junit.Assert.fail;
 /**
  * scenario XML test
  */
-public final class TestCXMLScenario
+public final class TestCXMLScenario extends IBaseTest
 {
     /**
      * configuration object
@@ -177,10 +178,6 @@ public final class TestCXMLScenario
      */
     public static void main( final String[] p_args )
     {
-
-        final TestCXMLScenario l_test = new TestCXMLScenario();
-
-        l_test.initialize();
-        l_test.testNetworkWithAgent();
+        new TestCXMLScenario().invoketest();
     }
 }

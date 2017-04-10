@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.graph;
 
+import com.github.aptd.simulation.IBaseTest;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
 import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
@@ -43,7 +44,7 @@ import java.util.stream.Stream;
 /**
  * network test
  */
-public final class TestCNetwork
+public final class TestCNetwork extends IBaseTest
 {
     /**
      * station generator
@@ -138,9 +139,7 @@ public final class TestCNetwork
      */
     public static void main( final String[] p_args )
     {
-        final TestCNetwork l_networktest = new TestCNetwork();
-        l_networktest.ininitialize();
-        l_networktest.networkbuild();
+        new TestCNetwork().invoketest();
     }
 
 
