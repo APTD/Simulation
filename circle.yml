@@ -21,7 +21,8 @@ machine:
 
 dependencies:
     pre:
-        - sudo apt-get install doxygen graphviz
+        - sudo apt-get install graphviz
+        - wget -O /tmp/doxygen.tar.gz http://ftp.stack.nl/pub/users/dimitri/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz && tar xf /tmp/doxygen.tar.gz -C /tmp
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
         - git clone https://github.com/LightJason/REST.git && cd REST && mvn install -DskipTests
 
