@@ -24,13 +24,10 @@ package com.github.aptd.simulation.elements.graph.network;
 
 
 
-import cern.colt.matrix.DoubleMatrix1D;
-
-
 /**
  * interface of a node, which is a train station
  * @tparam T node identifier type
  */
-public interface IStation<T extends IStation<?>> extends INetworkNode<T>
+public interface IStation<T extends IStation<?>> extends INode<T>
 {
 }

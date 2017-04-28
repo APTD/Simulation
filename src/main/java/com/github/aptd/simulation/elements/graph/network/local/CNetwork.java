@@ -22,18 +22,17 @@
 
 package com.github.aptd.simulation.elements.graph.network.local;
 
-import com.github.aptd.simulation.elements.graph.IEdge;
 import com.github.aptd.simulation.elements.graph.IGraph;
-import com.github.aptd.simulation.elements.graph.INode;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.google.common.base.Function;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 /**
  * graph class with local data
@@ -41,84 +40,41 @@ import java.util.stream.Collectors;
  * @tparam T node identifier type
  * @see http://jung.sourceforge.net/doc/api/edu/uci/ics/jung/graph/package-summary.html
  */
-public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph<T, N, E>
+public class CNetwork implements IGraph<IStation<?>, ITrack<?>>
 {
     /**
      * graph data structure
      */
-    private final DirectedSparseGraph<N, E> m_graph = new DirectedSparseGraph<>();
+    private final DirectedSparseGraph<IStation<?>, ITrack<?>> m_graph = new DirectedSparseGraph<>();
     /**
      * shortest-path algorthm
      */
-    private final DijkstraShortestPath<N, E> m_dijekstra;
-    /**
-     * map with identifier and node objects
-     */
-    private final Map<T, N> m_nodemap;
+    private final DijkstraShortestPath<IStation<?>, ITrack<?>> m_dijekstra;
+
 
 
     /**
      * ctor
      *
-     * @param p_nodes nodes elements
      * @param p_edges edge elements
-     * @todo need to check
      */
-    public CGraph( final Collection<N> p_nodes, final Collection<E> p_edges )
+    public CNetwork( final Collection<ITrack<?>> p_edges )
     {
-        this( p_nodes, p_edges, null );
+        this( p_edges, null );
     }
 
     /**
      * ctor
      *
-     * @param p_nodes nodes elements
      * @param p_edges edge elements
      * @param p_weightfunction weight function
      */
-    public CGraph( final Collection<N> p_nodes, final Collection<E> p_edges, final Function<E, ? extends Number> p_weightfunction )
+    public CNetwork( final Collection<ITrack<?>> p_edges, final Function<ITrack<?>, ? extends Number> p_weightfunction )
     {
-        p_nodes.forEach( m_graph::addVertex );
-
-        m_nodemap = Collections.unmodifiableMap(
-                p_nodes.stream()
-                        .collect( Collectors.toMap( INode::id, i -> i ) )
-        );
-
-        p_edges.stream()
-                .filter( i -> m_nodemap.containsKey( i.from() ) && m_nodemap.containsKey( i.to() ) )
-                .forEach( i -> m_graph.addEdge( i, m_nodemap.get( i.from() ), m_nodemap.get( i.to() ) ) );
-
+        p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
         m_dijekstra = new DijkstraShortestPath<>( m_graph, p_weightfunction );
     }
 
-
-    @Override
-    public final List<E> route( final T p_start, final T p_end )
-    {
-        return m_dijekstra.getPath( this.node( p_start ), this.node( p_end ) );
-    }
-
-    @Override
-    public final N node( final T p_id )
-    {
-        return m_nodemap.get( p_id );
-    }
-
-    @Override
-    public final E edge( final T p_start, final T p_end )
-    {
-        return m_graph.findEdge( this.node( p_start ), this.node( p_end ) );
-    }
-
-    @Override
-    public final Collection<N> neighbours( final T p_id )
-    {
-        final N l_node = this.node( p_id );
-        return ( l_node != null ) && ( m_graph.containsVertex( l_node ) )
-                ? m_graph.getNeighbors( l_node )
-                : Collections.<N>emptySet();
-    }
 
     @Override
     public final int hashCode()
@@ -129,7 +85,7 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
     @Override
     public final boolean equals( final Object p_object )
     {
-        return ( p_object != null ) && ( p_object instanceof IGraph<?, ?, ?> ) && ( p_object.hashCode() == this.hashCode() );
+        return ( p_object != null ) && ( p_object instanceof IGraph<?, ?> ) && ( p_object.hashCode() == this.hashCode() );
     }
 
     @Override
@@ -139,12 +95,41 @@ public class CGraph<T, N extends INode<T>, E extends IEdge<T>> implements IGraph
     }
 
     @Override
-    public final IGraph<T, N, E> call() throws Exception
+    public final List<ITrack<?>> route( final IStation<?> p_start, final IStation<?> p_end )
     {
-        m_nodemap.values()
-                 .parallelStream()
-                 .forEach( INode::execute );
-
-        return this;
+        return m_dijekstra.getPath( p_start, p_end );
     }
+
+    @Override
+    public final ITrack edge( final IStation<?> p_start, final IStation<?> p_end )
+    {
+        return m_graph.findEdge( p_start, p_end );
+    }
+
+    @Override
+    public final Stream<IStation<?>> neighbours( final IStation<?> p_id )
+    {
+        return m_graph.containsVertex( p_id )
+               ? m_graph.getNeighbors( p_id ).stream()
+               : Stream.of();
+    }
+
+    @Override
+    public final boolean containsvertex( final IStation<?> p_id )
+    {
+        return m_graph.containsVertex( p_id );
+    }
+
+    @Override
+    public final boolean containsedge( final IStation<?> p_start, final IStation<?> p_end )
+    {
+        return m_graph.containsEdge( m_graph.findEdge( p_start, p_end ) );
+    }
+
+    @Override
+    public final boolean containsedge( final ITrack<?> p_id )
+    {
+        return m_graph.containsEdge( p_id );
+    }
+
 }

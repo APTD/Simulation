@@ -25,16 +25,15 @@ package com.github.aptd.simulation.elements.graph;
 import com.github.aptd.simulation.IBaseTest;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.local.CNetwork;
 import com.github.aptd.simulation.elements.graph.network.local.CTrack;
-import com.github.aptd.simulation.elements.graph.network.local.CGraph;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
-import com.github.aptd.simulation.elements.graph.network.local.CStationGenerator;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
-import com.github.aptd.simulation.elements.graph.network.INetworkNode;
+import com.github.aptd.simulation.elements.graph.network.INode;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -50,7 +49,12 @@ public final class TestCNetwork extends IBaseTest
     /**
      * station generator
      */
-    private IElement.IGenerator m_station;
+    private IElement.IGenerator<?> m_station;
+    /**
+     * track generator
+     */
+    private IElement.IGenerator<?> m_track;
+
 
     /**
      * initialize test
@@ -66,6 +70,7 @@ public final class TestCNetwork extends IBaseTest
         )
         {
             m_station = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), CConfiguration.INSTANCE.agentaggregation() );
+            m_track = new CTrack.CGenerator( IOUtils.toInputStream( "", "UTF-8" ), CConfiguration.INSTANCE.agentaction(), CConfiguration.INSTANCE.agentaggregation() );
         }
         catch ( final Exception l_exception )
         {
@@ -87,8 +92,8 @@ public final class TestCNetwork extends IBaseTest
         // build 8 node mini scenario, one full-qualified station with
         // different platforms and levels all other only transit station
         System.out.println(
-            new CGraph<String, INetworkNode<String>, ITrack<String>>(
-
+            new CNetwork(
+/*
                 Stream.of(
                     m_station.generatesingle( l_goe, 51.536777, 9.926074 ),
                     m_station.generatesingle( l_kreiensen, 51.850591, 9.969346 ),
@@ -101,32 +106,32 @@ public final class TestCNetwork extends IBaseTest
                     m_station.generatesingle( "Hann Münden", 51.412148, 9.657186 ),
                     m_station.generatesingle( "Witzenhausen", 51.351333, 9.860542 )
                 ).collect( Collectors.toSet() ),
-
+*/
                 Stream.of(
 
-                    CTrack.from( l_goe, "Hann Münden" ),
-                    CTrack.from( l_goe, "Witzenhausen" ),
-                    CTrack.from( l_goe, "Kreiensen" ),
-                    CTrack.from( l_goe, "Heilbad Heiligenstadt" ),
+                    m_track.generatesingle( l_goe, "Hann Münden" ),
+                    m_track.generatesingle( l_goe, "Witzenhausen" ),
+                    m_track.generatesingle( l_goe, "Kreiensen" ),
+                    m_track.generatesingle( l_goe, "Heilbad Heiligenstadt" ),
 
-                    CTrack.from( l_kreiensen, l_goe ),
-                    CTrack.from( l_kreiensen, "Goslar" ),
-                    CTrack.from( l_kreiensen, "Alfeld (Leine)" ),
-                    CTrack.from( l_kreiensen, "Herzberg Harz" ),
+                    m_track.generatesingle( l_kreiensen, l_goe ),
+                    m_track.generatesingle( l_kreiensen, "Goslar" ),
+                    m_track.generatesingle( l_kreiensen, "Alfeld (Leine)" ),
+                    m_track.generatesingle( l_kreiensen, "Herzberg Harz" ),
 
-                    CTrack.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
-                    CTrack.from( "Herzberg Harz", l_kreiensen ),
+                    m_track.generatesingle( "Herzberg Harz", "Heilbad Heiligenstadt" ),
+                    m_track.generatesingle( "Herzberg Harz", l_kreiensen ),
 
-                    CTrack.from( "Heilbad Heiligenstadt", "Herzberg Harz" ),
-                    CTrack.from( "Heilbad Heiligenstadt", l_goe ),
+                    m_track.generatesingle( "Heilbad Heiligenstadt", "Herzberg Harz" ),
+                    m_track.generatesingle( "Heilbad Heiligenstadt", l_goe ),
 
-                    CTrack.from( "Alfeld (Leine)", l_kreiensen ),
+                    m_track.generatesingle( "Alfeld (Leine)", l_kreiensen ),
 
-                    CTrack.from( "Goslar", l_kreiensen ),
+                    m_track.generatesingle( "Goslar", l_kreiensen ),
 
-                    CTrack.from( "Hann Münden", l_goe ),
+                    m_track.generatesingle( "Hann Münden", l_goe ),
 
-                    CTrack.from( "Witzenhausen", l_goe )
+                    m_track.generatesingle( "Witzenhausen", l_goe )
 
                 ).collect( Collectors.toSet() )
             )

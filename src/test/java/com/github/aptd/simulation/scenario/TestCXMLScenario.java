@@ -23,13 +23,11 @@
 package com.github.aptd.simulation.scenario;
 
 import com.github.aptd.simulation.IBaseTest;
-import com.github.aptd.simulation.elements.graph.network.local.CTrack;
-import com.github.aptd.simulation.elements.graph.network.local.CGraph;
-import com.github.aptd.simulation.elements.graph.network.local.CStationGenerator;
-import com.github.aptd.simulation.elements.graph.network.local.IBaseNetworkNode;
+import com.github.aptd.simulation.elements.graph.network.INode;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
-import com.github.aptd.simulation.elements.graph.network.INetworkNode;
-import scenario.CXMLReader;
+import com.github.aptd.simulation.elements.graph.network.local.CNetwork;
+import com.github.aptd.simulation.elements.graph.network.local.CStation;
+import com.github.aptd.simulation.elements.graph.network.local.CTrack;
 import com.github.aptd.simulation.scenario.xml.AgentRef;
 import com.github.aptd.simulation.scenario.xml.Asimov;
 import org.apache.commons.io.IOUtils;
@@ -38,7 +36,10 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.common.CCommon;
+import org.lightjason.agentspeak.language.score.IAggregation;
 import org.railml.schemas._2016.EOcp;
+import scenario.CXMLReader;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -123,7 +124,7 @@ public final class TestCXMLScenario extends IBaseTest
         Assume.assumeNotNull( m_agent );
 
         System.out.println(
-            new CGraph<EOcp, INetworkNode<EOcp>, ITrack<EOcp>>(
+            new CNetwork<EOcp, INode<EOcp>, ITrack<EOcp>>(
                 m_scenario
                     .getNetwork()
                     .getInfrastructure()
@@ -138,9 +139,11 @@ public final class TestCXMLScenario extends IBaseTest
                                                        .map( a -> (AgentRef) a )
                                                        .findAny()
                                                        .orElseThrow( () -> new RuntimeException( "no agentRef on ocp " + i.getId() ) );
-                            return new CStationGenerator<EOcp>(
+
+                            new CStation.CGenerator(
                                 IOUtils.toInputStream( m_agent.get( l_agentref.getAgent() ).getRight(), "UTF-8" ),
-                                (Class<? extends IBaseNetworkNode<EOcp>>) m_agent.get( l_agentref.getAgent() ).getLeft()
+                                CCommon.actionsFromPackage().collect( Collectors.toSet() ),
+                                IAggregation.EMPTY
                             ).generatesingle( i.getDescription(), i.getGeoCoord().getCoord().get( 0 ), i.getGeoCoord().getCoord().get( 1 ) );
                         }
                         catch ( final Exception l_exception )

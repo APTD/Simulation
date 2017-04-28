@@ -22,18 +22,16 @@
 
 package com.github.aptd.simulation.elements.graph;
 
-import com.github.aptd.simulation.elements.IElement;
-
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 /**
  * interface of graphs
  * @tparam V node type
- * @paramtparam E edge type
+ * @tparam E edge type
  */
-public interface IGraph<V, E>
+public interface IGraph<V extends IVertex, E extends IEdge<V>>
 {
 
     /**
@@ -58,8 +56,33 @@ public interface IGraph<V, E>
      * returns the neighbours of a node
      *
      * @param p_id node identifier
-     * @return collection of neighbour nodes
+     * @return stream of neighbour nodes
      */
-    Collection<V> neighbours( final V p_id );
+    Stream<V> neighbours( final V p_id );
+
+    /**
+     * checks if a vertex exist
+     *
+     * @param p_id vertex
+     * @return existing flag
+     */
+    boolean containsvertex( final V p_id );
+
+    /**
+     * checks if an edge exists
+     *
+     * @param p_start start vertex
+     * @param p_end end vertex
+     * @return existing flag
+     */
+    boolean containsedge( final V p_start, final V p_end );
+
+    /***
+     * checks if an edge exist
+     *
+     * @param p_id edge
+     * @return existing flag
+     */
+    boolean containsedge( final E p_id );
 
 }

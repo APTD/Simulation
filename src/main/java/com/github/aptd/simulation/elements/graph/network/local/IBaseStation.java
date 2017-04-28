@@ -20,25 +20,63 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network;
+package com.github.aptd.simulation.elements.graph.network.local;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import com.github.aptd.simulation.common.CGPS;
+import com.github.aptd.simulation.common.IGPS;
+import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.ILiteral;
+
+import java.util.stream.Stream;
 
 
 /**
- * interface of a network node
- *
- * @tparam T node identifier
+ * abstract class of network stations nodes
  */
-public interface INetworkNode<T extends INetworkNode<?>> extends IElement<T>
+public abstract class IBaseStation extends IBaseElement<IStation<?>> implements IStation<IStation<?>>
 {
 
     /**
-     * gps position as vector
-     *
-     * @return 2-dimensional vector (latitude / longitude)
+     * literal functor
      */
-    DoubleMatrix1D gps();
+    protected static final String BASEFUNCTOR = "station";
+    /**
+     * GPS position latitude / longitude
+     */
+    private final IGPS m_position;
+
+
+    /**
+     * ctor
+     *
+     * @param p_configuration agent configuration
+     * @param p_id station identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
+     */
+    protected IBaseStation( final IAgentConfiguration<IStation<?>> p_configuration, final String p_functor, final String p_id,
+                            final double p_longitude, final double p_latitude )
+    {
+        super( p_configuration, p_functor, p_id );
+        m_position = new CGPS( p_longitude, p_latitude );
+
+    }
+
+    @Override
+    public final DoubleMatrix1D gps()
+    {
+        return m_position.matrix();
+    }
+
+    @Override
+    protected final Stream<ILiteral> individualliteral( final Stream<IElement<?>> p_object
+    )
+    {
+        return m_position.literal( p_object );
+    }
 
 }

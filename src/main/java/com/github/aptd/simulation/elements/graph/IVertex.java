@@ -20,15 +20,12 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network;
-
-
-import com.github.aptd.simulation.elements.graph.IGraph;
+package com.github.aptd.simulation.elements.graph;
 
 
 /**
- * interface of a network
+ * interface of graph nodes
  */
-public interface INetwork extends IGraph<INetworkNode<?>, ITrack<?>>
+public interface IVertex<T>
 {
 }

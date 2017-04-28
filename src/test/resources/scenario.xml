@@ -42,7 +42,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
-                <asimov:agent id="agent-station-simulated-default" javaClass="com.github.aptd.simulation.elements.graph.network.local.CTransitStation">
+                <asimov:agent id="agent-station-simulated-default" javaClass="com.github.aptd.simulation.elements.graph.network.local.CTransit">
                     <asimov:configuration>
                         <asimov:asl>
                             !main.

@@ -22,12 +22,24 @@
 
 package com.github.aptd.simulation.elements.graph.network;
 
+import cern.colt.matrix.DoubleMatrix1D;
+import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.IVertex;
+
 
 /**
- * platform interface
+ * interface of a network node
+ *
  * @tparam T node identifier
  */
-public interface IPlatform<T extends IPlatform<?>> extends IStation<T>
+public interface INode<T extends INode<?>> extends IVertex, IElement<T>
 {
+
+    /**
+     * gps position as vector
+     *
+     * @return 2-dimensional vector (latitude / longitude)
+     */
+    DoubleMatrix1D gps();
 
 }

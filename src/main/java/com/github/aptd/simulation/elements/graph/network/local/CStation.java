@@ -22,17 +22,11 @@
 
 package com.github.aptd.simulation.elements.graph.network.local;
 
-import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.common.CGPS;
-import com.github.aptd.simulation.common.IGPS;
-import com.github.aptd.simulation.elements.IBaseElement;
-import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
-import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
@@ -45,42 +39,31 @@ import java.util.stream.Stream;
  *
  * @todo add action
  */
-public final class CStation extends IBaseElement<IStation<?>> implements IStation<IStation<?>>
+public final class CStation extends IBaseStation
 {
     /**
      * literal functor
      */
     private static final String FUNCTOR = "station";
-    /**
-     * GPS position latitude / longitude
-     */
-    private final IGPS m_position;
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id station identifier
+     * @param p_longitude longitude
+     * @param p_latitude latitude
      */
-    private CStation( final IAgentConfiguration<IStation<?>> p_configuration, final String p_id, final double p_longitude, final double p_latitude )
-    {
-        super( p_configuration, FUNCTOR, p_id );
-        m_position = new CGPS( p_longitude, p_latitude );
-
-    }
-
-    @Override
-    public final DoubleMatrix1D gps()
-    {
-        return m_position.matrix();
-    }
-
-    @Override
-    protected final Stream<ILiteral> individualliteral( final Stream<IElement<?>> p_object
+    private CStation(
+        final IAgentConfiguration<IStation<?>> p_configuration,
+        final String p_id,
+        final double p_longitude,
+        final double p_latitude
     )
     {
-        return m_position.literal( p_object );
+        super( p_configuration, FUNCTOR, p_id, p_longitude, p_latitude );
     }
+
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -108,7 +91,7 @@ public final class CStation extends IBaseElement<IStation<?>> implements IStatio
         {
             return new ImmutablePair<>(
                 new CStation( m_configuration, p_data[0].toString(), (double) p_data[1], (double) p_data[1] ),
-                Stream.of( FUNCTOR )
+                Stream.of( FUNCTOR, BASEFUNCTOR )
             );
         }
     }

@@ -24,6 +24,7 @@ package com.github.aptd.simulation.elements.graph.network.local;
 
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.google.common.util.concurrent.AtomicDouble;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -55,16 +56,40 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
      * current maximum speed
      */
     private final AtomicDouble m_maximumspeed = new AtomicDouble( Double.MAX_VALUE );
+    /**
+     * from station
+     */
+    private final IStation<?> m_from;
+    /**
+     * to station
+     */
+    private final IStation<?> m_to;
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
      * @param p_id track identifier
+     * @param p_from from station
+     * @param p_to target station
      */
-    private CTrack( final IAgentConfiguration<ITrack<?>> p_configuration, final String p_id )
+    private CTrack( final IAgentConfiguration<ITrack<?>> p_configuration, final String p_id, final IStation<?> p_from, final IStation<?> p_to )
     {
         super( p_configuration, FUNCTOR, p_id );
+        m_from = p_from;
+        m_to = p_to;
+    }
+
+    @Override
+    public final IStation<?> from()
+    {
+        return m_from;
+    }
+
+    @Override
+    public final IStation<?> to()
+    {
+        return m_to;
     }
 
 
@@ -93,16 +118,17 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
          * @param p_aggregation aggregation
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
         {
             super( p_stream, p_actions, p_aggregation, CTrack.class );
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         protected final Pair<ITrack<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CTrack( m_configuration, p_data[0].toString() ),
+                new CTrack( m_configuration, p_data[0].toString(), (IStation<?>) p_data[1], (IStation<?>) p_data[2] ),
                 Stream.of( FUNCTOR )
             );
         }

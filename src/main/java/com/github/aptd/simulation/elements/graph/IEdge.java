@@ -26,7 +26,7 @@ package com.github.aptd.simulation.elements.graph;
 /**
  * interface of edges
  */
-public interface IEdge<T>
+public interface IEdge<T extends IVertex>
 {
 
     /**
@@ -44,20 +44,5 @@ public interface IEdge<T>
      * @return node identifier
      */
     T to();
-
-    /**
-     * returns the weight of the edge
-     *
-     * @return weight
-     */
-    double weight();
-
-    /**
-     * sets the weight
-     *
-     * @param p_weight new weight of the edge
-     * @return self reference
-     */
-    IEdge<T> weight( final double p_weight );
 
 }

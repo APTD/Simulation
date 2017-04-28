@@ -20,98 +20,82 @@
  * @endcond
  */
 
+
 package com.github.aptd.simulation.elements.graph.network.local;
 
-import com.github.aptd.simulation.elements.graph.INode;
-import com.github.aptd.simulation.elements.graph.network.INetworkNode;
-import org.lightjason.agentspeak.agent.IBaseAgent;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.score.IAggregation;
+
+import java.io.InputStream;
+import java.util.Set;
+import java.util.stream.Stream;
 
 
 /**
- * abstract class of a network node
+ * transit station class to define a station without details of tracks
  *
- * @tparam T node type
- * @todo remove print stacktrace
+ * @tparam T identifier type
  */
-public abstract class IBaseNetworkNode<T> extends IBaseAgent<INetworkNode<T>> implements INetworkNode<T>
+public final class CTransit extends IBaseStation
 {
+
     /**
-     * node identifier
+     * literal functor
      */
-    protected final T m_id;
-    /**
-     * longitude
-     */
-    protected final double m_longitude;
-    /**
-     * latitude
-     */
-    protected final double m_latitude;
+    private static final String FUNCTOR = "transit";
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
-     * @param p_id node identifier
+     * @param p_id station identifier
      * @param p_longitude longitude
      * @param p_latitude latitude
      */
-    public IBaseNetworkNode( final IAgentConfiguration<INetworkNode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
+    private CTransit(
+        final IAgentConfiguration<IStation<?>> p_configuration,
+        final String p_id,
+        final double p_longitude,
+        final double p_latitude
+    )
     {
-        super( p_configuration );
-        m_latitude = p_latitude;
-        m_longitude = p_longitude;
-        m_id = p_id;
+        super( p_configuration, FUNCTOR, p_id, p_longitude, p_latitude );
     }
 
-    @Override
-    public final double longitude()
-    {
-        return m_longitude;
-    }
 
-    @Override
-    public final double latitude()
-    {
-        return m_latitude;
-    }
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public final T id()
+    /**
+     * generator
+     */
+    public static final class CGenerator extends IBaseGenerator<IStation<?>>
     {
-        return m_id;
-    }
 
-    @Override
-    public final int hashCode()
-    {
-        return m_id.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof INetworkNode<?> ) && ( m_id.hashCode() == p_object.hashCode() );
-    }
-
-    @Override
-    public String toString()
-    {
-        return m_id.toString();
-    }
-
-    @Override
-    public final INode<T> execute()
-    {
-        try
+        /**
+         * ctor
+         *
+         * @param p_stream stream
+         * @param p_actions action
+         * @param p_aggregation aggregation
+         * @throws Exception on any error
+         */
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
         {
-            this.call();
+            super( p_stream, p_actions, p_aggregation, CStation.class );
         }
-        catch ( final Exception l_exception )
+
+        @Override
+        protected final Pair<IStation<?>, Stream<String>> generate( final Object... p_data )
         {
-            l_exception.printStackTrace();
+            return new ImmutablePair<>(
+                new CTransit( m_configuration, p_data[0].toString(), (double) p_data[1], (double) p_data[1] ),
+                Stream.of( FUNCTOR, BASEFUNCTOR )
+            );
         }
-        return this;
     }
+
 }

@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.elements.graph.network;
 
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.IEdge;
 
 
 /**
@@ -30,7 +31,7 @@ import com.github.aptd.simulation.elements.IElement;
  *
  * @tparam T identifier type
  */
-public interface ITrack<T extends ITrack<?>> extends IElement<T>
+public interface ITrack<T extends ITrack<?>> extends IEdge<IStation<?>>, IElement<T>
 {
 
 }

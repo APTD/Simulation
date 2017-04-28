@@ -24,28 +24,76 @@ package com.github.aptd.simulation.elements.graph.network.local;
 
 
 
-import com.github.aptd.simulation.elements.graph.network.INetworkNode;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.score.IAggregation;
+
+import java.io.InputStream;
+import java.util.Set;
+import java.util.stream.Stream;
 
 
 /**
  * virtual node
  */
-public final class CVirtualNetworkNode<T> extends IBaseNetworkNode<T>
+public final class CVirtual extends IBaseStation
 {
+    /**
+     * literal functor
+     */
+    private static final String FUNCTOR = "virtual";
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
-     * @param p_id node identifier
+     * @param p_id station identifier
      * @param p_longitude longitude
      * @param p_latitude latitude
      */
-    public CVirtualNetworkNode( final IAgentConfiguration<INetworkNode<T>> p_configuration, final T p_id, final double p_longitude, final double p_latitude )
+    private CVirtual(
+        final IAgentConfiguration<IStation<?>> p_configuration,
+        final String p_id,
+        final double p_longitude,
+        final double p_latitude
+    )
     {
-        super( p_configuration, p_id, p_longitude, p_latitude );
+        super( p_configuration, FUNCTOR, p_id, p_longitude, p_latitude );
     }
 
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * generator
+     */
+    public static final class CGenerator extends IBaseGenerator<IStation<?>>
+    {
+
+        /**
+         * ctor
+         *
+         * @param p_stream stream
+         * @param p_actions action
+         * @param p_aggregation aggregation
+         * @throws Exception on any error
+         */
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
+        {
+            super( p_stream, p_actions, p_aggregation, CStation.class );
+        }
+
+        @Override
+        protected final Pair<IStation<?>, Stream<String>> generate( final Object... p_data )
+        {
+            return new ImmutablePair<>(
+                new CVirtual( m_configuration, p_data[0].toString(), (double) p_data[1], (double) p_data[1] ),
+                Stream.of( FUNCTOR, BASEFUNCTOR )
+            );
+        }
+    }
 
 }
