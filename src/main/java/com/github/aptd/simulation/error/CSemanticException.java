@@ -27,9 +27,8 @@ import java.text.MessageFormat;
 
 /**
  * semantic exception to define internal errors
- *
- * @warning exception will not properagte outside
  */
+@SuppressWarnings( "serial" )
 public final class CSemanticException extends RuntimeException
 {
 

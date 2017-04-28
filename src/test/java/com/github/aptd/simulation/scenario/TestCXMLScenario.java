@@ -23,13 +23,13 @@
 package com.github.aptd.simulation.scenario;
 
 import com.github.aptd.simulation.IBaseTest;
-import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
-import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
-import com.github.aptd.simulation.scenario.generator.CStationGenerator;
-import com.github.aptd.simulation.scenario.model.graph.network.IBaseNetworkNode;
-import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
-import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
-import com.github.aptd.simulation.scenario.reader.CXMLReader;
+import com.github.aptd.simulation.elements.graph.network.local.CTrack;
+import com.github.aptd.simulation.elements.graph.network.local.CGraph;
+import com.github.aptd.simulation.elements.graph.network.local.CStationGenerator;
+import com.github.aptd.simulation.elements.graph.network.local.IBaseNetworkNode;
+import com.github.aptd.simulation.elements.graph.network.ITrack;
+import com.github.aptd.simulation.elements.graph.network.INetworkNode;
+import scenario.CXMLReader;
 import com.github.aptd.simulation.scenario.xml.AgentRef;
 import com.github.aptd.simulation.scenario.xml.Asimov;
 import org.apache.commons.io.IOUtils;
@@ -123,7 +123,7 @@ public final class TestCXMLScenario extends IBaseTest
         Assume.assumeNotNull( m_agent );
 
         System.out.println(
-            new CSparseGraph<EOcp, INetworkNode<EOcp>, INetworkEdge<EOcp>>(
+            new CGraph<EOcp, INetworkNode<EOcp>, ITrack<EOcp>>(
                 m_scenario
                     .getNetwork()
                     .getInfrastructure()
@@ -160,7 +160,7 @@ public final class TestCXMLScenario extends IBaseTest
                     .getTracks()
                     .getTrack()
                     .parallelStream()
-                    .map( i -> CNetworkEdge.from(
+                    .map( i -> CTrack.from(
                         (EOcp) i.getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef(),
                         (EOcp) i.getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef()
                     ) )

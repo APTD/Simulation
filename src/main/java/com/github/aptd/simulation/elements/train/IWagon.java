@@ -20,46 +20,63 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.elements.train;
 
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.passenger.IPassenger;
+import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * wagon interface
  */
-public interface IGraph<V, E>
+public interface IWagon<T extends IWagon<?>> extends IElement<T>
 {
 
     /**
-     * calculate a route
+     * unused places
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * @return places
      */
-    List<E> route( final V p_start, final V p_end );
+    int free();
 
     /**
-     * returns an edge
+     * number of free placeses
      *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
+     * @return size
      */
-    E edge( final V p_start, final V p_end );
+    int size();
 
     /**
-     * returns the neighbours of a node
+     * anouncement for all agents within the wagon
      *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
+     * @param p_trigger announcement trigger
+     * @return self reference
      */
-    Collection<V> neighbours( final V p_id );
+    IWagon<T> announcement( final ITrigger p_trigger );
+
+    /**
+     * adds a passenger to the wagon
+     *
+     * @param p_passenger passanger agent
+     * @return self reference
+     */
+    IWagon<T> add( final IPassenger<?> p_passenger );
+
+    /**
+     * removes a passenger from the wagon
+     * @param p_passenger passenger
+     * @return self reference
+     */
+    IWagon<T> remove( final IPassenger<?> p_passenger );
+
+    /**
+     * stream over all passenger
+     *
+     * @return passenger stream
+     */
+    Stream<IPassenger<?>> passenger();
 
 }

@@ -29,20 +29,4 @@ package com.github.aptd.simulation.elements.graph;
  */
 public interface INode<T>
 {
-
-    /**
-     * returns the identifier of the node
-     *
-     * @return identifier
-     */
-    T id();
-
-    /**
-     * executes a node
-     *
-     * @warning node can be an agent, but callable cannot be overload
-     * with different arguments, so define an own executable call
-     * @return self reference
-     */
-    INode<T> execute();
 }

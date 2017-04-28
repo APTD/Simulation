@@ -20,46 +20,25 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package scenario;
 
-import com.github.aptd.simulation.elements.IElement;
-
-import java.util.Collection;
-import java.util.List;
+import java.io.InputStream;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * scenario reader interface
+ *
+ * @tparam T scenario instance type
  */
-public interface IGraph<V, E>
+public interface IReader<T>
 {
 
     /**
-     * calculate a route
-     *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * reader call of a scenario
+     * @param p_stream any input stream
+     * @return scenario
+     * @throws Exception any exception on deserializing
      */
-    List<E> route( final V p_start, final V p_end );
-
-    /**
-     * returns an edge
-     *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
-     */
-    E edge( final V p_start, final V p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
-     */
-    Collection<V> neighbours( final V p_id );
+    T get( final InputStream p_stream ) throws Exception;
 
 }

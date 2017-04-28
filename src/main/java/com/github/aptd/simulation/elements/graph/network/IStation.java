@@ -20,46 +20,17 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.elements.graph.network;
 
-import com.github.aptd.simulation.elements.IElement;
 
-import java.util.Collection;
-import java.util.List;
+
+import cern.colt.matrix.DoubleMatrix1D;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * interface of a node, which is a train station
+ * @tparam T node identifier type
  */
-public interface IGraph<V, E>
+public interface IStation<T extends IStation<?>> extends INetworkNode<T>
 {
-
-    /**
-     * calculate a route
-     *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
-     */
-    List<E> route( final V p_start, final V p_end );
-
-    /**
-     * returns an edge
-     *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
-     */
-    E edge( final V p_start, final V p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
-     */
-    Collection<V> neighbours( final V p_id );
-
 }

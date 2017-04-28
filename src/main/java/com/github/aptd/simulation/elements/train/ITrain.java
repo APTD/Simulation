@@ -20,46 +20,40 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.elements.train;
+
+
 
 import com.github.aptd.simulation.elements.IElement;
 
-import java.util.Collection;
-import java.util.List;
-
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * interface of train
  */
-public interface IGraph<V, E>
+public interface ITrain<T extends ITrain<?>> extends IElement<T>
 {
 
     /**
-     * calculate a route
+     * wagon number
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * @return wagon number
      */
-    List<E> route( final V p_start, final V p_end );
+    int wagon();
 
     /**
-     * returns an edge
+     * adds a new wagon
      *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
+     * @param p_wagon wagon
+     * @return self reference
      */
-    E edge( final V p_start, final V p_end );
+    ITrain<T> addwagon( final IWagon<?> p_wagon );
 
     /**
-     * returns the neighbours of a node
+     * removes the last wagon
      *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
+     * @return last wagon
      */
-    Collection<V> neighbours( final V p_id );
+    IWagon<?> removewagon();
+
 
 }

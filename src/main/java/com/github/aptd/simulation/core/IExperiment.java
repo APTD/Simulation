@@ -20,46 +20,46 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.core;
 
-import com.github.aptd.simulation.elements.IElement;
+import org.lightjason.agentspeak.agent.IAgent;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * a single experiment run
  */
-public interface IGraph<V, E>
+public interface IExperiment
 {
 
     /**
-     * calculate a route
+     * returns a stream of the agents
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * @return agent stream
      */
-    List<E> route( final V p_start, final V p_end );
+    Stream<IAgent<?>> agents();
 
     /**
-     * returns an edge
+     * maximum simulation steps
      *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
+     * @return simulation steps
      */
-    E edge( final V p_start, final V p_end );
+    int simulationsteps();
 
     /**
-     * returns the neighbours of a node
+     * returns tha simulation statistic
      *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
+     * @return statistic
      */
-    Collection<V> neighbours( final V p_id );
+    IStatistic statistic();
+
+    /**
+     * execute agents in parallel
+     *
+     * @return boolean flag for parallel execution
+     */
+    boolean parallel();
 
 }
+

@@ -24,12 +24,13 @@ package com.github.aptd.simulation.elements.graph;
 
 import com.github.aptd.simulation.IBaseTest;
 import com.github.aptd.simulation.common.CConfiguration;
-import com.github.aptd.simulation.elements.factory.local.CNetworkEdge;
-import com.github.aptd.simulation.elements.factory.local.CSparseGraph;
-import com.github.aptd.simulation.elements.factory.local.CStation;
-import com.github.aptd.simulation.scenario.generator.CStationGenerator;
-import com.github.aptd.simulation.scenario.model.graph.network.INetworkEdge;
-import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
+import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.local.CTrack;
+import com.github.aptd.simulation.elements.graph.network.local.CGraph;
+import com.github.aptd.simulation.elements.graph.network.local.CStation;
+import com.github.aptd.simulation.elements.graph.network.local.CStationGenerator;
+import com.github.aptd.simulation.elements.graph.network.ITrack;
+import com.github.aptd.simulation.elements.graph.network.INetworkNode;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public final class TestCNetwork extends IBaseTest
     /**
      * station generator
      */
-    private IBaseAgentGenerator<INetworkNode<String>> m_station;
+    private IElement.IGenerator m_station;
 
     /**
      * initialize test
@@ -64,7 +65,7 @@ public final class TestCNetwork extends IBaseTest
             final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
         )
         {
-            m_station = new CStationGenerator<>( l_station, CStation.class );
+            m_station = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), CConfiguration.INSTANCE.agentaggregation() );
         }
         catch ( final Exception l_exception )
         {
@@ -86,7 +87,7 @@ public final class TestCNetwork extends IBaseTest
         // build 8 node mini scenario, one full-qualified station with
         // different platforms and levels all other only transit station
         System.out.println(
-            new CSparseGraph<String, INetworkNode<String>, INetworkEdge<String>>(
+            new CGraph<String, INetworkNode<String>, ITrack<String>>(
 
                 Stream.of(
                     m_station.generatesingle( l_goe, 51.536777, 9.926074 ),
@@ -103,29 +104,29 @@ public final class TestCNetwork extends IBaseTest
 
                 Stream.of(
 
-                    CNetworkEdge.from( l_goe, "Hann Münden" ),
-                    CNetworkEdge.from( l_goe, "Witzenhausen" ),
-                    CNetworkEdge.from( l_goe, "Kreiensen" ),
-                    CNetworkEdge.from( l_goe, "Heilbad Heiligenstadt" ),
+                    CTrack.from( l_goe, "Hann Münden" ),
+                    CTrack.from( l_goe, "Witzenhausen" ),
+                    CTrack.from( l_goe, "Kreiensen" ),
+                    CTrack.from( l_goe, "Heilbad Heiligenstadt" ),
 
-                    CNetworkEdge.from( l_kreiensen, l_goe ),
-                    CNetworkEdge.from( l_kreiensen, "Goslar" ),
-                    CNetworkEdge.from( l_kreiensen, "Alfeld (Leine)" ),
-                    CNetworkEdge.from( l_kreiensen, "Herzberg Harz" ),
+                    CTrack.from( l_kreiensen, l_goe ),
+                    CTrack.from( l_kreiensen, "Goslar" ),
+                    CTrack.from( l_kreiensen, "Alfeld (Leine)" ),
+                    CTrack.from( l_kreiensen, "Herzberg Harz" ),
 
-                    CNetworkEdge.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
-                    CNetworkEdge.from( "Herzberg Harz", l_kreiensen ),
+                    CTrack.from( "Herzberg Harz", "Heilbad Heiligenstadt" ),
+                    CTrack.from( "Herzberg Harz", l_kreiensen ),
 
-                    CNetworkEdge.from( "Heilbad Heiligenstadt", "Herzberg Harz" ),
-                    CNetworkEdge.from( "Heilbad Heiligenstadt", l_goe ),
+                    CTrack.from( "Heilbad Heiligenstadt", "Herzberg Harz" ),
+                    CTrack.from( "Heilbad Heiligenstadt", l_goe ),
 
-                    CNetworkEdge.from( "Alfeld (Leine)", l_kreiensen ),
+                    CTrack.from( "Alfeld (Leine)", l_kreiensen ),
 
-                    CNetworkEdge.from( "Goslar", l_kreiensen ),
+                    CTrack.from( "Goslar", l_kreiensen ),
 
-                    CNetworkEdge.from( "Hann Münden", l_goe ),
+                    CTrack.from( "Hann Münden", l_goe ),
 
-                    CNetworkEdge.from( "Witzenhausen", l_goe )
+                    CTrack.from( "Witzenhausen", l_goe )
 
                 ).collect( Collectors.toSet() )
             )

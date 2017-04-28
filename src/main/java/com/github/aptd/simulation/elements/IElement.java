@@ -20,46 +20,41 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.elements;
 
-import com.github.aptd.simulation.elements.IElement;
-
-import java.util.Collection;
-import java.util.List;
+import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.generator.IAgentGenerator;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * any object interface
+ *
+ * @tparam T domain specific type
  */
-public interface IGraph<V, E>
+public interface IElement<T extends IAgent<?>> extends IPerceive, IAgent<T>
 {
 
     /**
-     * calculate a route
+     * name of the object
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * @return string name
      */
-    List<E> route( final V p_start, final V p_end );
+    String id();
+
 
     /**
-     * returns an edge
+     * generator interface
      *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
+     * @tparam T element generator
      */
-    E edge( final V p_start, final V p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
-     */
-    Collection<V> neighbours( final V p_id );
+    interface IGenerator<T extends IElement<?>> extends IAgentGenerator<T>
+    {
+        /**
+         * resets the internal counter
+         *
+         * @return self-reference
+         */
+        IGenerator<T> resetcount();
+    }
 
 }

@@ -20,46 +20,45 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.error;
 
-import com.github.aptd.simulation.elements.IElement;
-
-import java.util.Collection;
-import java.util.List;
+import java.text.MessageFormat;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * exception of unmodifyable access
  */
-public interface IGraph<V, E>
+@SuppressWarnings( "serial" )
+public class CUnmodifyableException extends RuntimeException
 {
 
     /**
-     * calculate a route
-     *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * ctor
      */
-    List<E> route( final V p_start, final V p_end );
+    public CUnmodifyableException()
+    {
+        super();
+    }
 
     /**
-     * returns an edge
+     * ctor
      *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
+     * @param p_message any message
+     * @param p_values any object values which are printed
      */
-    E edge( final V p_start, final V p_end );
+    public CUnmodifyableException( final String p_message, final Object... p_values )
+    {
+        super( MessageFormat.format( p_message, p_values ) );
+    }
 
     /**
-     * returns the neighbours of a node
+     * ctor
      *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
+     * @param p_cause any throwable
      */
-    Collection<V> neighbours( final V p_id );
+    public CUnmodifyableException( final Throwable p_cause )
+    {
+        super( p_cause );
+    }
 
 }

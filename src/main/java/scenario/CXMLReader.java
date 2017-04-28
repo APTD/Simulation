@@ -20,46 +20,39 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package scenario;
 
-import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.scenario.xml.AgentRef;
+import com.github.aptd.simulation.scenario.xml.Asimov;
 
-import java.util.Collection;
-import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import java.io.InputStream;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * scenario XML reader
  */
-public interface IGraph<V, E>
+public final class CXMLReader implements IReader<Asimov>
 {
+    /**
+     * Jaxb marshalling / unmarshalling context
+     */
+    private final JAXBContext m_context;
 
     /**
-     * calculate a route
-     *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * ctor
+     * @throws JAXBException is thrown on any jaxb exception
      */
-    List<E> route( final V p_start, final V p_end );
+    public CXMLReader() throws JAXBException
+    {
+        m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
+    }
 
-    /**
-     * returns an edge
-     *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
-     */
-    E edge( final V p_start, final V p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
-     */
-    Collection<V> neighbours( final V p_id );
-
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public final Asimov get( final InputStream p_stream ) throws Exception
+    {
+        return (Asimov) m_context.createUnmarshaller().unmarshal( p_stream );
+    }
 }

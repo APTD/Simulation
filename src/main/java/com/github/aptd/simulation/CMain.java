@@ -25,14 +25,12 @@ package com.github.aptd.simulation;
 
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
-import com.github.aptd.simulation.elements.factory.local.CStation;
-import com.github.aptd.simulation.scenario.generator.CStationGenerator;
-import com.github.aptd.simulation.scenario.model.graph.network.INetworkNode;
+import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -105,7 +103,7 @@ public final class CMain
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            final IAgentGenerator<INetworkNode<String>> l_generator = new CStationGenerator<>( l_station, CStation.class );
+            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), CConfiguration.INSTANCE.agentaggregation() );
 
             l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
             l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );

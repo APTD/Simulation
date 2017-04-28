@@ -20,46 +20,37 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.common;
 
-import com.github.aptd.simulation.elements.IElement;
-
-import java.util.Collection;
-import java.util.List;
+import cern.colt.matrix.DoubleMatrix1D;
+import com.github.aptd.simulation.elements.IPerceive;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * GPS matrix wrapper interface
  */
-public interface IGraph<V, E>
+public interface IGPS extends IPerceive
 {
+    /**
+     * returns longitude
+     *
+     * @return value
+     */
+    double longitude();
 
     /**
-     * calculate a route
+     * returns latitude
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * @return value
      */
-    List<E> route( final V p_start, final V p_end );
+    double latitude();
+
 
     /**
-     * returns an edge
+     * matrix representation of the GPS object
      *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
+     * @return vector with 2 dimensions (longitude / latitude)
      */
-    E edge( final V p_start, final V p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
-     */
-    Collection<V> neighbours( final V p_id );
+    DoubleMatrix1D matrix();
 
 }

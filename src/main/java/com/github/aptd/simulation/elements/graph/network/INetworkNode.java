@@ -20,46 +20,25 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph;
+package com.github.aptd.simulation.elements.graph.network;
 
+import cern.colt.matrix.DoubleMatrix1D;
 import com.github.aptd.simulation.elements.IElement;
-
-import java.util.Collection;
-import java.util.List;
 
 
 /**
- * interface of graphs
- * @tparam V node type
- * @paramtparam E edge type
+ * interface of a network node
+ *
+ * @tparam T node identifier
  */
-public interface IGraph<V, E>
+public interface INetworkNode<T extends INetworkNode<?>> extends IElement<T>
 {
 
     /**
-     * calculate a route
+     * gps position as vector
      *
-     * @param p_start start node identifier
-     * @param p_end end node identifier
-     * @return list of edges to represent the route
+     * @return 2-dimensional vector (latitude / longitude)
      */
-    List<E> route( final V p_start, final V p_end );
-
-    /**
-     * returns an edge
-     *
-     * @param p_start source node identifier
-     * @param p_end target node identifier
-     * @return edge or null if edge not exists
-     */
-    E edge( final V p_start, final V p_end );
-
-    /**
-     * returns the neighbours of a node
-     *
-     * @param p_id node identifier
-     * @return collection of neighbour nodes
-     */
-    Collection<V> neighbours( final V p_id );
+    DoubleMatrix1D gps();
 
 }
