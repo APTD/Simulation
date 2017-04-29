@@ -142,7 +142,6 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
-        <xs:attribute name="javaClass" type="xs:string" use="required" />
     </xs:complexType>
     <xs:complexType name="iinstanceproperty" final="#all">
         <xs:annotation>

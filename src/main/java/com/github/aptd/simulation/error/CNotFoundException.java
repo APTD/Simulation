@@ -20,70 +20,44 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.error;
 
-import com.github.aptd.simulation.IBaseTest;
-import datamodel.CXMLReader;
-import datamodel.IDataModel;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import java.text.MessageFormat;
 
 
 /**
- * scenario XML test
+ * not-found exception to defining details
  */
-public final class TestCXMLScenario extends IBaseTest
+public final class CNotFoundException extends RuntimeException
 {
-    /**
-     * configuration object
-     */
-    private IDataModel m_scenario;
 
     /**
-     * reads a test scenario
+     * ctor
      */
-    @Before
-    public final void initialize()
+    public CNotFoundException()
     {
-        try
-            (
-                final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-            )
-        {
-
-            m_scenario = CXMLReader.from( l_stream );
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
+        super();
     }
 
-
     /**
-     * test graph build with node agents
-     */
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public final void testNetworkWithAgent()
-    {
-        Assume.assumeNotNull( m_scenario );
-    }
-
-
-    /**
-     * run manual test
+     * ctor
      *
-     * @param p_args command-line arguments
+     * @param p_message any message
+     * @param p_values any object values which are printed
      */
-    public static void main( final String[] p_args )
+    public CNotFoundException( final String p_message, final Object... p_values )
     {
-        new TestCXMLScenario().invoketest();
+        super( MessageFormat.format( p_message, p_values ) );
     }
+
+    /**
+     * ctor
+     *
+     * @param p_cause any throwable
+     */
+    public CNotFoundException( final Throwable p_cause )
+    {
+        super( p_cause );
+    }
+
 }

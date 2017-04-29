@@ -20,39 +20,11 @@
  * @endcond
  */
 
-package scenario;
-
-import com.github.aptd.simulation.scenario.xml.AgentRef;
-import com.github.aptd.simulation.scenario.xml.Asimov;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import java.io.InputStream;
-
+package datamodel;
 
 /**
- * scenario XML reader
+ * data model components
  */
-public final class CXMLReader implements IReader<Asimov>
+public interface IDataModel
 {
-    /**
-     * Jaxb marshalling / unmarshalling context
-     */
-    private final JAXBContext m_context;
-
-    /**
-     * ctor
-     * @throws JAXBException is thrown on any jaxb exception
-     */
-    public CXMLReader() throws JAXBException
-    {
-        m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
-    }
-
-    @Override
-    @SuppressWarnings( "unchecked" )
-    public final Asimov get( final InputStream p_stream ) throws Exception
-    {
-        return (Asimov) m_context.createUnmarshaller().unmarshal( p_stream );
-    }
 }

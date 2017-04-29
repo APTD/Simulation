@@ -20,25 +20,44 @@
  * @endcond
  */
 
-package scenario;
+package com.github.aptd.simulation.error;
 
-import java.io.InputStream;
+import java.text.MessageFormat;
 
 
 /**
- * scenario reader interface
- *
- * @tparam T scenario instance type
+ * runtime exception
  */
-public interface IReader<T>
+public final class CRuntimeException extends RuntimeException
 {
 
     /**
-     * reader call of a scenario
-     * @param p_stream any input stream
-     * @return scenario
-     * @throws Exception any exception on deserializing
+     * ctor
      */
-    T get( final InputStream p_stream ) throws Exception;
+    public CRuntimeException()
+    {
+        super();
+    }
+
+    /**
+     * ctor
+     *
+     * @param p_message any message
+     * @param p_values any object values which are printed
+     */
+    public CRuntimeException( final String p_message, final Object... p_values )
+    {
+        super( MessageFormat.format( p_message, p_values ) );
+    }
+
+    /**
+     * ctor
+     *
+     * @param p_cause any throwable
+     */
+    public CRuntimeException( final Throwable p_cause )
+    {
+        super( p_cause );
+    }
 
 }

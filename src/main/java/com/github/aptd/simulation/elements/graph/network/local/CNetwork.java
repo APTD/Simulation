@@ -29,7 +29,6 @@ import com.google.common.base.Function;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -58,7 +57,7 @@ public class CNetwork implements IGraph<IStation<?>, ITrack<?>>
      *
      * @param p_edges edge elements
      */
-    public CNetwork( final Collection<ITrack<?>> p_edges )
+    public CNetwork( final Stream<ITrack<?>> p_edges )
     {
         this( p_edges, null );
     }
@@ -69,7 +68,7 @@ public class CNetwork implements IGraph<IStation<?>, ITrack<?>>
      * @param p_edges edge elements
      * @param p_weightfunction weight function
      */
-    public CNetwork( final Collection<ITrack<?>> p_edges, final Function<ITrack<?>, ? extends Number> p_weightfunction )
+    public CNetwork( final Stream<ITrack<?>> p_edges, final Function<ITrack<?>, ? extends Number> p_weightfunction )
     {
         p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
         m_dijekstra = new DijkstraShortestPath<>( m_graph, p_weightfunction );

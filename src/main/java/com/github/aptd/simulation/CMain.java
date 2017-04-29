@@ -35,6 +35,7 @@ import org.apache.commons.cli.Options;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.LogManager;
 
 
 /**
@@ -42,6 +43,10 @@ import java.io.InputStream;
  */
 public final class CMain
 {
+    static
+    {
+        LogManager.getLogManager().reset();
+    }
 
     /**
      * ctor
@@ -54,7 +59,6 @@ public final class CMain
      * @param p_args command-line parameters
      * @throws IOException error on io errors
      */
-    @SuppressWarnings( "unchecked" )
     public static void main( final String[] p_args ) throws IOException
     {
         // --- define CLI options ------------------------------------------------------------------------------------------------------------------------------
@@ -64,7 +68,7 @@ public final class CMain
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
-        l_clioptions.addOption( "scenario", true, "scenario configuration" );
+        l_clioptions.addOption( "datamodel", true, "scenario configuration" );
         l_clioptions.addOption( "stepbystep", false, "runs simulation on manuell step-by-step execution" );
 
         final CommandLine l_cli;

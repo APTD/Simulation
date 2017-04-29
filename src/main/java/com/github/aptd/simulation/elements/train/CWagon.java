@@ -135,7 +135,7 @@ public final class CWagon extends IBaseElement<IWagon<?>> implements IWagon<IWag
          * @param p_aggregation aggregation
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Stream<IAction> p_actions,
+        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions,
                               final IAggregation p_aggregation ) throws Exception
         {
             super( p_stream, p_actions, p_aggregation, CWagon.class );
