@@ -37,8 +37,6 @@ import java.util.stream.Stream;
  * matrix wrapper of GPS position, position
  * zero contains latitude and one longitude,
  * structure is unmodifyable
- *
- * @bug incomplete
  */
 public class CGPS implements IGPS
 {
