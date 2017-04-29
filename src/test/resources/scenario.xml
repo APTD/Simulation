@@ -17,7 +17,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </asimov:preference>
             </asimov:properties>
             <asimov:instance>
-                <asimov:agent id="oldpassenger" javaClass="com.github.aptd.simulation.elements.graph.network.local.CStation"><!-- TODO Create a passenger class -->
+                <asimov:agent id="oldpassenger">
                     <asimov:configuration>
                         <asimov:motivation id="minimalchanges" distribution="normal" minimum = "0" maximum = "10" moment1 = "5" moment2 = "2" />
                         <asimov:preference id="coffee" distribution="uniform" minimum = "0" maximum = "1" moment1 = "0.3" moment2 = "0.1"/>
@@ -31,7 +31,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
-                <asimov:agent id="agent-station-default" javaClass="com.github.aptd.simulation.elements.graph.network.local.CStation">
+                <asimov:agent id="agent-station-default">
                     <asimov:configuration>
                         <asimov:asl>
                             !main.
@@ -42,7 +42,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         </asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
-                <asimov:agent id="agent-station-simulated-default" javaClass="com.github.aptd.simulation.elements.graph.network.local.CTransit">
+                <asimov:agent id="agent-station-simulated-default">
                     <asimov:configuration>
                         <asimov:asl>
                             !main.
