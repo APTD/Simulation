@@ -20,28 +20,22 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
-
-
-import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.IVertex;
+import com.github.aptd.simulation.elements.graph.IGraph;
+import com.github.aptd.simulation.elements.linearprogram.ILinearProgram;
 
 
 /**
- * interface of a node, which is a train station
- *
- * @tparam T node identifier type
+ * interface event-activity-network
  */
-public interface IStation<T extends IStation<?>> extends IVertex, IElement<T>
+public interface IEventActivityNetwork extends IGraph<INode, IActivity>
 {
 
     /**
-     * gps position as vector
-     *
-     * @return 2-dimensional vector (latitude / longitude)
+     * returns the linear-program of the graph
+     * @return linear-program
      */
-    DoubleMatrix1D gps();
+    ILinearProgram linearprogram();
 
 }

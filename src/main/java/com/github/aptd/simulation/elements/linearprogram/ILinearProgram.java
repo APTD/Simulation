@@ -20,37 +20,11 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.common;
-
-import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.IPerceive;
-
+package com.github.aptd.simulation.elements.linearprogram;
 
 /**
- * GPS matrix wrapper interface
+ * interface of a linear program
  */
-public interface IGPS extends IPerceive
+public interface ILinearProgram
 {
-    /**
-     * returns longitude
-     *
-     * @return value
-     */
-    double longitude();
-
-    /**
-     * returns latitude
-     *
-     * @return value
-     */
-    double latitude();
-
-
-    /**
-     * matrix representation of the GPS object
-     *
-     * @return vector with 2 dimensions (longitude / latitude)
-     */
-    DoubleMatrix1D matrix();
-
 }

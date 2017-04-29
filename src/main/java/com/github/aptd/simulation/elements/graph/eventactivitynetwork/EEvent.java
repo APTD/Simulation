@@ -20,26 +20,16 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network;
-
-import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.IVertex;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
 
 /**
- * interface of a network node
- *
- * @tparam T node identifier
+ * enum with activies
  */
-public interface INode<T extends INode<?>> extends IVertex, IElement<T>
+public enum EEvent
 {
-
-    /**
-     * gps position as vector
-     *
-     * @return 2-dimensional vector (latitude / longitude)
-     */
-    DoubleMatrix1D gps();
-
+    WAIT,
+    DRIVE,
+    TRNSFER,
+    HEADWAY;
 }

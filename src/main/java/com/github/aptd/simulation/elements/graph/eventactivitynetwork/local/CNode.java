@@ -20,28 +20,44 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork.local;
 
-
-
-import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.IVertex;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.INode;
+import com.github.aptd.simulation.elements.graph.network.IStation;
 
 
 /**
- * interface of a node, which is a train station
- *
- * @tparam T node identifier type
+ * node
  */
-public interface IStation<T extends IStation<?>> extends IVertex, IElement<T>
+public class CNode implements INode
 {
+    private final IStation<?> m_station;
 
     /**
-     * gps position as vector
+     * ctor
      *
-     * @return 2-dimensional vector (latitude / longitude)
+     * @param p_station station
      */
-    DoubleMatrix1D gps();
+    public CNode( final IStation<?> p_station )
+    {
+        m_station = p_station;
+    }
 
+    @Override
+    public final IStation<?> station()
+    {
+        return m_station;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        return m_station.hashCode();
+    }
+
+    @Override
+    public final boolean equals( final Object p_object )
+    {
+        return ( p_object != null ) && ( p_object instanceof INode ) && ( p_object.hashCode() == this.hashCode() );
+    }
 }

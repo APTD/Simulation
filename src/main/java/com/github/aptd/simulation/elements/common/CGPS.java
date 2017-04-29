@@ -20,63 +20,79 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network.local;
+package com.github.aptd.simulation.elements.common;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.common.CGPS;
-import com.github.aptd.simulation.elements.common.IGPS;
-import com.github.aptd.simulation.elements.IBaseElement;
+import cern.colt.matrix.impl.DenseDoubleMatrix1D;
 import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.network.IStation;
-import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.lightjason.agentspeak.language.CLiteral;
+import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 
 /**
- * abstract class of network stations nodes
+ * matrix wrapper of GPS position, position
+ * zero contains latitude and one longitude,
+ * structure is unmodifyable
  */
-public abstract class IBaseStation extends IBaseElement<IStation<?>> implements IStation<IStation<?>>
+public class CGPS implements IGPS
 {
-
     /**
-     * literal functor
+     * longitude
      */
-    protected static final String BASEFUNCTOR = "station";
+    private final DoubleMatrix1D m_position;
     /**
-     * GPS position latitude / longitude
+     * literal
      */
-    private final IGPS m_position;
-
+    private final ILiteral m_literal;
 
     /**
      * ctor
      *
-     * @param p_configuration agent configuration
-     * @param p_id station identifier
      * @param p_longitude longitude
      * @param p_latitude latitude
      */
-    protected IBaseStation( final IAgentConfiguration<IStation<?>> p_configuration, final String p_functor, final String p_id,
-                            final double p_longitude, final double p_latitude )
+    public CGPS( final double p_longitude, final double p_latitude )
     {
-        super( p_configuration, p_functor, p_id );
-        m_position = new CGPS( p_longitude, p_latitude );
+        m_position = new DenseDoubleMatrix1D( new double[]{p_longitude, p_latitude} );
+        m_literal = CLiteral.from( "gps",
+                                     CLiteral.from( "longitude", CRawTerm.from( m_position.get( 0 ) ) ),
+                                     CLiteral.from( "latitude", CRawTerm.from( m_position.get( 1 ) ) )
 
+        );
     }
 
     @Override
-    public final DoubleMatrix1D gps()
+    public final double longitude()
     {
-        return m_position.matrix();
+        return m_position.get( 0 );
     }
 
     @Override
-    protected final Stream<ILiteral> individualliteral( final Stream<IElement<?>> p_object
-    )
+    public final double latitude()
     {
-        return m_position.literal( p_object );
+        return m_position.get( 1 );
+    }
+
+    @Override
+    public DoubleMatrix1D matrix()
+    {
+        return null;
+    }
+
+    @Override
+    public final Stream<ILiteral> literal( final IElement<?>... p_object )
+    {
+        return this.literal( Arrays.stream( p_object ) );
+    }
+
+    @Override
+    public final Stream<ILiteral> literal( final Stream<IElement<?>> p_object )
+    {
+        return Stream.of( m_literal );
     }
 
 }

@@ -20,79 +20,74 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.common;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork.local;
 
-import cern.colt.matrix.DoubleMatrix1D;
-import cern.colt.matrix.impl.DenseDoubleMatrix1D;
-import com.github.aptd.simulation.elements.IElement;
-import org.lightjason.agentspeak.language.CLiteral;
-import org.lightjason.agentspeak.language.CRawTerm;
-import org.lightjason.agentspeak.language.ILiteral;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.EEvent;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.INode;
 
 
 /**
- * matrix wrapper of GPS position, position
- * zero contains latitude and one longitude,
- * structure is unmodifyable
+ * activity
  */
-public class CGPS implements IGPS
+public final class CActivity implements IActivity
 {
     /**
-     * longitude
+     * event
      */
-    private final DoubleMatrix1D m_position;
+    private final EEvent m_event;
     /**
-     * literal
+     * from node
      */
-    private final ILiteral m_literal;
+    private final INode m_from;
+    /**
+     * to node
+     */
+    private final INode m_to;
 
     /**
      * ctor
      *
-     * @param p_longitude longitude
-     * @param p_latitude latitude
+     * @param p_event event
+     * @param p_from from node
+     * @param p_to to node
      */
-    public CGPS( final double p_longitude, final double p_latitude )
+    public CActivity( final EEvent p_event, final INode p_from, final INode p_to )
     {
-        m_position = new DenseDoubleMatrix1D( new double[]{p_longitude, p_latitude} );
-        m_literal = CLiteral.from( "gps",
-                                     CLiteral.from( "longitude", CRawTerm.from( m_position.get( 0 ) ) ),
-                                     CLiteral.from( "latitude", CRawTerm.from( m_position.get( 1 ) ) )
+        m_event = p_event;
+        m_from = p_from;
+        m_to = p_to;
+    }
 
-        );
+
+    @Override
+    public final INode from()
+    {
+        return m_from;
     }
 
     @Override
-    public final double longitude()
+    public final INode to()
     {
-        return m_position.get( 0 );
+        return m_to;
     }
 
     @Override
-    public final double latitude()
+    public final EEvent event()
     {
-        return m_position.get( 1 );
+        return m_event;
     }
 
     @Override
-    public DoubleMatrix1D matrix()
+    public final int hashCode()
     {
-        return null;
+        return m_event.hashCode() ^ m_from.hashCode() ^ m_to.hashCode();
     }
 
     @Override
-    public final Stream<ILiteral> literal( final IElement<?>... p_object )
+    public final boolean equals( final Object p_object )
     {
-        return this.literal( Arrays.stream( p_object ) );
+        return ( p_object != null ) && ( p_object instanceof IActivity ) && ( p_object.hashCode() == this.hashCode() );
     }
-
-    @Override
-    public final Stream<ILiteral> literal( final Stream<IElement<?>> p_object )
-    {
-        return Stream.of( m_literal );
-    }
-
 }

@@ -20,28 +20,37 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.network;
-
-
+package com.github.aptd.simulation.elements.common;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.IVertex;
+import com.github.aptd.simulation.elements.IPerceive;
 
 
 /**
- * interface of a node, which is a train station
- *
- * @tparam T node identifier type
+ * GPS matrix wrapper interface
  */
-public interface IStation<T extends IStation<?>> extends IVertex, IElement<T>
+public interface IGPS extends IPerceive
 {
+    /**
+     * returns longitude
+     *
+     * @return value
+     */
+    double longitude();
 
     /**
-     * gps position as vector
+     * returns latitude
      *
-     * @return 2-dimensional vector (latitude / longitude)
+     * @return value
      */
-    DoubleMatrix1D gps();
+    double latitude();
+
+
+    /**
+     * matrix representation of the GPS object
+     *
+     * @return vector with 2 dimensions (longitude / latitude)
+     */
+    DoubleMatrix1D matrix();
 
 }
