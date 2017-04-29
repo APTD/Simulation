@@ -22,8 +22,11 @@
 
 package com.github.aptd.simulation.common;
 
+import com.github.aptd.simulation.elements.IElement;
+import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
+import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.CTrigger;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 
@@ -49,7 +52,49 @@ public final class CAgentTrigger
      */
     public static ITrigger wagonannouncement( final Object p_data )
     {
-        return CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "wagon/announcement", CRawTerm.from( p_data ) ) );
+        return CTrigger.from(
+            ITrigger.EType.ADDGOAL,
+            CLiteral.from( "wagon/announcement", CRawTerm.from( p_data ) )
+        );
     }
+
+    /**
+     * creates the sender structure of a message
+     *
+     * @param p_agent agent
+     * @return sender literal
+     */
+    public static ILiteral messagersender( final IAgent<?> p_agent )
+    {
+        return  CLiteral.from( "from", CRawTerm.from( p_agent.<IElement<?>>raw().id() ) );
+    }
+
+    /**
+     * create a message send trigger
+     *
+     * @param p_message message data
+     * @param p_agent sender agent
+     * @return trigger
+     */
+    public static ITrigger messagesend( final Object p_message, final IAgent<?> p_agent )
+    {
+        return messagesend( p_message, messagersender( p_agent ) );
+    }
+
+    /**
+     * create a message send trigger
+     *
+     * @param p_message message data
+     * @param p_sender sender literal
+     * @return trigger
+     */
+    public static ITrigger messagesend( final Object p_message, final ILiteral p_sender )
+    {
+        return CTrigger.from(
+            ITrigger.EType.ADDGOAL,
+            CLiteral.from( "message/receive", CLiteral.from( "message", CRawTerm.from( p_message ) ), p_sender )
+        );
+    }
+
 
 }

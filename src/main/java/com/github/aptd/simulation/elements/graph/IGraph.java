@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * @tparam V node type
  * @tparam E edge type
  */
-public interface IGraph<V extends IVertex, E extends IEdge<V>>
+public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
 {
 
     /**

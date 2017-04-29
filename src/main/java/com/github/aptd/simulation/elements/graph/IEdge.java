@@ -26,7 +26,7 @@ package com.github.aptd.simulation.elements.graph;
 /**
  * interface of edges
  */
-public interface IEdge<T extends IVertex>
+public interface IEdge<T extends IVertex<?>>
 {
 
     /**

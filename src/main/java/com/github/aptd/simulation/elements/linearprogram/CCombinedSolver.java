@@ -20,45 +20,50 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.error;
+package com.github.aptd.simulation.elements.linearprogram;
+
+import com.github.aptd.simulation.error.CNotFoundException;
+import net.sf.jmpi.main.MpProblem;
+import net.sf.jmpi.main.MpVariable;
 
 import java.text.MessageFormat;
 
 
 /**
- * runtime exception
+ * LP solver component
+ *
+ * @todo messageformat convert to language behaviour
+ * @see http://jmpi.sourceforge.net/
  */
-@SuppressWarnings( "serial" )
-public final class CRuntimeException extends RuntimeException
+public final class CCombinedSolver implements ISolver<MpVariable.Type>
 {
 
-    /**
-     * ctor
-     */
-    public CRuntimeException()
+    @Override
+    public final ISolver<MpVariable.Type> solve( final ILinearProgram p_lp )
     {
-        super();
+        final MpProblem l_problem = new MpProblem();
+
+        p_lp.variable()
+            .map( i -> new MpVariable( i.name(), i.lowerbound(), i.upperbound(), i.type().specific( this ) ) )
+            .forEach( l_problem::addVariable );
+
+        return this;
     }
 
-    /**
-     * ctor
-     *
-     * @param p_message any message
-     * @param p_values any object values which are printed
-     */
-    public CRuntimeException( final String p_message, final Object... p_values )
+    @Override
+    public final MpVariable.Type typespecific( final ILinearProgram.EType p_type )
     {
-        super( MessageFormat.format( p_message, p_values ) );
-    }
+        switch ( p_type )
+        {
+            case BOOLEAN: return MpVariable.Type.BOOL;
 
-    /**
-     * ctor
-     *
-     * @param p_cause any throwable
-     */
-    public CRuntimeException( final Throwable p_cause )
-    {
-        super( p_cause );
+            case INTEGER: return MpVariable.Type.INT;
+
+            case REAL: return MpVariable.Type.REAL;
+
+            default:
+                throw new CNotFoundException( MessageFormat.format( "variable type [{0}] not known", p_type ) );
+        }
     }
 
 }

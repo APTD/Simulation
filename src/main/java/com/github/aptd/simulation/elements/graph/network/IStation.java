@@ -34,7 +34,7 @@ import com.github.aptd.simulation.elements.graph.IVertex;
  *
  * @tparam T node identifier type
  */
-public interface IStation<T extends IStation<?>> extends IVertex, IElement<T>
+public interface IStation<T extends IStation<?>> extends IVertex<T>, IElement<T>
 {
 
     /**

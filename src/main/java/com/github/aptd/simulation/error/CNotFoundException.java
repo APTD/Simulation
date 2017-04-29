@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 /**
  * not-found exception to defining details
  */
+@SuppressWarnings( "serial" )
 public final class CNotFoundException extends RuntimeException
 {
 

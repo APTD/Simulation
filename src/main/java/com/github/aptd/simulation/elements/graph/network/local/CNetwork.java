@@ -100,7 +100,7 @@ public class CNetwork implements IGraph<IStation<?>, ITrack<?>>
     }
 
     @Override
-    public final ITrack edge( final IStation<?> p_start, final IStation<?> p_end )
+    public final ITrack<?> edge( final IStation<?> p_start, final IStation<?> p_end )
     {
         return m_graph.findEdge( p_start, p_end );
     }

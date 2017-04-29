@@ -20,45 +20,31 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.error;
-
-import java.text.MessageFormat;
-
+package com.github.aptd.simulation.elements.linearprogram;
 
 /**
- * runtime exception
+ * interface of a LP solver (external)
+ *
+ * @tparam T solver specific types
  */
-@SuppressWarnings( "serial" )
-public final class CRuntimeException extends RuntimeException
+public interface ISolver<V>
 {
 
     /**
-     * ctor
+     * solves a linear-program
+     *
+     * @param p_lp lp definition
+     * @return self-reference
      */
-    public CRuntimeException()
-    {
-        super();
-    }
+    ISolver<V> solve( final ILinearProgram p_lp );
 
     /**
-     * ctor
+     * converts the lear-program type
+     * to the solver specific type
      *
-     * @param p_message any message
-     * @param p_values any object values which are printed
+     * @param p_type type
+     * @return specific type
      */
-    public CRuntimeException( final String p_message, final Object... p_values )
-    {
-        super( MessageFormat.format( p_message, p_values ) );
-    }
-
-    /**
-     * ctor
-     *
-     * @param p_cause any throwable
-     */
-    public CRuntimeException( final Throwable p_cause )
-    {
-        super( p_cause );
-    }
+    V typespecific( final ILinearProgram.EType p_type );
 
 }
