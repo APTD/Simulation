@@ -1,7 +1,17 @@
+# open browsers window on start-up
 openbrowser : true
 
+
+# HTPP server binding for UI
 httpserver:
     enable: true
     port: 8000
     host: localhost
+
+
+# simulation units
+units:
+
+    cellsize_in_meter: 1.5
+    time_in_minutes: 1.25
 

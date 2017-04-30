@@ -120,13 +120,23 @@ public final class CJPSPlusStatic implements IRouting
         IntStream.rangeClosed( -1, 1 )
                  .forEach( i -> IntStream.rangeClosed( -1, 1 )
                                          .filter( j -> ( i != 0 || j != 0 )
-                                                       && !this.isNotNeighbour( p_objects, p_curnode.coordinate().getQuick( 0 ) + i, p_curnode.coordinate().getQuick( 1 ) + j, p_closedlist )
-                                                       && !this.isOccupied( p_objects, p_curnode.coordinate().getQuick( 0 ) + i, p_curnode.coordinate().getQuick( 1 ) + j ) )
-                                         .forEach( j -> {
-                                             final DoubleMatrix1D l_nextjumpnode = this.jump( p_curnode.coordinate(), p_target, i, j, p_objects );
-                                             this.addsuccessors( l_nextjumpnode, p_closedlist, p_openlist, p_curnode, p_target );
-                                         } )
-                 );
+                                                       && !this.isNotNeighbour(
+                                                               p_objects,
+                                                               p_curnode.coordinate().getQuick( 0 ) + i,
+                                                               p_curnode.coordinate().getQuick( 1 ) + j,
+                                                               p_closedlist
+                                                       )
+                                                       && !this.isOccupied(
+                                                               p_objects,
+                                                               p_curnode.coordinate().getQuick( 0 ) + i,
+                                                               p_curnode.coordinate().getQuick( 1 ) + j )
+                                         )
+                                         .forEach( j ->
+                                             this.addsuccessors(
+                                                 this.jump( p_curnode.coordinate(), p_target, i, j, p_objects ),
+                                                 p_closedlist, p_openlist, p_curnode, p_target
+                                             )
+                                         ) );
     }
 
     /**
@@ -186,9 +196,9 @@ public final class CJPSPlusStatic implements IRouting
                 return l_node;
         }
         else
-        if ( this.horizontal( l_nextrow, l_nextcol, p_row, p_objects, 1 ) || this.horizontal( l_nextrow, l_nextcol, p_row, p_objects, -1 )
-             || this.vertical( l_nextrow, l_nextcol, p_col, p_objects, 1 ) || this.vertical( l_nextrow, l_nextcol, p_col, p_objects, -1 ) )
-            return l_nextnode;
+            if ( this.horizontal( l_nextrow, l_nextcol, p_row, p_objects, 1 ) || this.horizontal( l_nextrow, l_nextcol, p_row, p_objects, -1 )
+                || this.vertical( l_nextrow, l_nextcol, p_col, p_objects, 1 ) || this.vertical( l_nextrow, l_nextcol, p_col, p_objects, -1 ) )
+                return l_nextnode;
 
         return this.jump( l_nextnode, p_target, p_row, p_col, p_objects );
     }
