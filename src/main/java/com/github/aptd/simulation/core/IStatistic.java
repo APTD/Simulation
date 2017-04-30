@@ -24,6 +24,8 @@ package com.github.aptd.simulation.core;
 
 /**
  * statistic evaluation of an experiment
+ *
+ * @bug incomplete
  */
 public interface IStatistic
 {

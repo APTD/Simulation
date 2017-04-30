@@ -20,14 +20,16 @@
  * @endcond
  */
 
-package datamodel;
+package com.github.aptd.simulation.datamodel;
 
+import com.github.aptd.simulation.core.IExperiment;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
+import com.github.aptd.simulation.factory.IFactory;
 import com.github.aptd.simulation.scenario.xml.AgentRef;
 import com.github.aptd.simulation.scenario.xml.Asimov;
 import com.github.aptd.simulation.scenario.xml.Iagent;
@@ -51,6 +53,8 @@ import java.util.stream.Collectors;
 
 /**
  * data-model XML reader
+ *
+ * @bug incomplete
  */
 public final class CXMLReader implements IDataModel
 {
@@ -85,6 +89,12 @@ public final class CXMLReader implements IDataModel
         {
             throw new CRuntimeException( l_exception );
         }
+    }
+
+    @Override
+    public final IExperiment get( final IFactory p_factory )
+    {
+        return null;
     }
 
 

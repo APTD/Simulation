@@ -20,70 +20,25 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
+package com.github.aptd.simulation.datamodel;
 
-import com.github.aptd.simulation.IBaseTest;
-import com.github.aptd.simulation.datamodel.CXMLReader;
-import com.github.aptd.simulation.datamodel.IDataModel;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
+import com.github.aptd.simulation.core.IExperiment;
+import com.github.aptd.simulation.factory.IFactory;
 
 
 /**
- * scenario XML test
+ * data model components
  */
-public final class TestCXMLScenario extends IBaseTest
+public interface IDataModel
 {
-    /**
-     * configuration object
-     */
-    private IDataModel m_scenario;
 
     /**
-     * reads a test scenario
-     */
-    @Before
-    public final void initialize()
-    {
-        try
-            (
-                final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-            )
-        {
-
-            m_scenario = CXMLReader.from( l_stream );
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
-
-
-    /**
-     * test graph build with node agents
-     */
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public final void testNetworkWithAgent()
-    {
-        Assume.assumeNotNull( m_scenario );
-    }
-
-
-    /**
-     * run manual test
+     * transfer the data-model into an experiment
+     * based on given factory
      *
-     * @param p_args command-line arguments
+     * @param p_factory building factory
+     * @return experiment
      */
-    public static void main( final String[] p_args )
-    {
-        new TestCXMLScenario().invoketest();
-    }
+    IExperiment get( final IFactory p_factory );
+
 }

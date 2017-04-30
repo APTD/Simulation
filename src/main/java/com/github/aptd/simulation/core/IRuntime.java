@@ -24,6 +24,8 @@ package com.github.aptd.simulation.core;
 
 /**
  * runtime interface
+ *
+ * @bug incomplete
  */
 public interface IRuntime
 {

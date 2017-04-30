@@ -68,7 +68,7 @@ public final class CMain
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
-        l_clioptions.addOption( "datamodel", true, "scenario configuration" );
+        l_clioptions.addOption( "com/github/aptd/simulation/datamodel", true, "scenario configuration" );
         l_clioptions.addOption( "stepbystep", false, "runs simulation on manuell step-by-step execution" );
 
         final CommandLine l_cli;

@@ -20,70 +20,13 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.scenario;
-
-import com.github.aptd.simulation.IBaseTest;
-import com.github.aptd.simulation.datamodel.CXMLReader;
-import com.github.aptd.simulation.datamodel.IDataModel;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
-
+package com.github.aptd.simulation.factory;
 
 /**
- * scenario XML test
+ * factory to generate all simulation entities
+ *
+ * @bug incomplete
  */
-public final class TestCXMLScenario extends IBaseTest
+public interface IFactory
 {
-    /**
-     * configuration object
-     */
-    private IDataModel m_scenario;
-
-    /**
-     * reads a test scenario
-     */
-    @Before
-    public final void initialize()
-    {
-        try
-            (
-                final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-            )
-        {
-
-            m_scenario = CXMLReader.from( l_stream );
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
-    }
-
-
-    /**
-     * test graph build with node agents
-     */
-    @Test
-    @SuppressWarnings( "unchecked" )
-    public final void testNetworkWithAgent()
-    {
-        Assume.assumeNotNull( m_scenario );
-    }
-
-
-    /**
-     * run manual test
-     *
-     * @param p_args command-line arguments
-     */
-    public static void main( final String[] p_args )
-    {
-        new TestCXMLScenario().invoketest();
-    }
 }

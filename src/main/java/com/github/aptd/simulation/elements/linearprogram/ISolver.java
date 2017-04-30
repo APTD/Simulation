@@ -25,6 +25,7 @@ package com.github.aptd.simulation.elements.linearprogram;
 /**
  * interface of a LP solver (external)
  *
+ * @bug incomplete
  * @tparam T solver specific types
  */
 public interface ISolver<V>

@@ -27,6 +27,8 @@ import java.util.stream.Stream;
 
 /**
  * interface of a linear program
+ *
+ * @bug incompelet
  */
 public interface ILinearProgram
 {

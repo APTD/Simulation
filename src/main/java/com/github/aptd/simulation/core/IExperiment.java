@@ -29,6 +29,8 @@ import java.util.stream.Stream;
 
 /**
  * a single experiment run
+ *
+ * @bug incomplete
  */
 public interface IExperiment
 {

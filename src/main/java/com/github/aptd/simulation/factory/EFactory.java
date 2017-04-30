@@ -20,11 +20,51 @@
  * @endcond
  */
 
-package datamodel;
+package com.github.aptd.simulation.factory;
 
 /**
- * data model components
+ * factory for building simulation entities
+ *
+ * @bug incomplete
  */
-public interface IDataModel
+public enum EFactory
 {
+    LOCAL( null );
+
+
+    /**
+     * factory object
+     */
+    private final IFactory m_factory;
+
+    /**
+     * ctor
+     *
+     * @param p_factory factory instance
+     */
+    EFactory( final IFactory p_factory )
+    {
+        m_factory = p_factory;
+    }
+
+    /**
+     * returns the factory
+     *
+     * @return factory instance
+     */
+    public final IFactory factory()
+    {
+        return m_factory;
+    }
+
+    /**
+     * factory
+     *
+     * @param p_value string value
+     * @return factory object
+     */
+    public static EFactory from( final String p_value )
+    {
+        return EFactory.from( p_value.trim().toUpperCase() );
+    }
 }
