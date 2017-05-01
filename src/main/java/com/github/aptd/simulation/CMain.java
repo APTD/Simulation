@@ -116,6 +116,7 @@ public final class CMain
         final List<IDataModel> l_scenario = Collections.unmodifiableList(
             Arrays.stream( l_cli.getOptionValue( "scenario", "" ).split( "" ) )
                   .map( String::trim )
+                  .filter( i -> !i.isEmpty() )
                   .map( i -> datamodelbyfileextension( i ).get( i ) )
                   .collect( Collectors.toList() )
         );
