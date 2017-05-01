@@ -41,4 +41,11 @@ public interface IRuntime
      */
     IExperiment execute( final IExperiment p_experiment );
 
+    /**
+     * execution call on step-by-step execution
+     *
+     * @return self-reference
+     */
+    IRuntime next();
+
 }

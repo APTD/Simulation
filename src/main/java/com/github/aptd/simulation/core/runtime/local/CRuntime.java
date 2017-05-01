@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 /**
  * local runtime
  * @todo refactor with logger
+ * @todo add step-by-step execution
  */
 public final class CRuntime implements IRuntime
 {
@@ -46,6 +47,13 @@ public final class CRuntime implements IRuntime
 
         return p_experiment;
     }
+
+    @Override
+    public final IRuntime next()
+    {
+        return this;
+    }
+
 
     /**
      * creates an optional parallel stream
