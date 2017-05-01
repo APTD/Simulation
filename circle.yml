@@ -26,6 +26,13 @@ dependencies:
         - git clone https://github.com/LightJason/AgentSpeak.git && cd AgentSpeak && mvn install -DskipTests
         - git clone https://github.com/LightJason/REST.git && cd REST && mvn install -DskipTests
 
+checkout:
+    post:
+        - git clean -xdf
+        - git fetch -p
+        - git gc --prune=now
+        - mvn clean dependency:purge-local-repository -DreResolve=false -DactTransitively=true
+
 
 test:
     override:
