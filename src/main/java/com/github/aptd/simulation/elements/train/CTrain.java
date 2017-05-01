@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.elements.train;
 
 import com.github.aptd.simulation.elements.IBaseElement;
+import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.error.CSemanticException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -56,6 +57,10 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
      * @todo change to map with wagon names and ordering
      */
     private final List<IWagon<?>> m_wagon;
+    /**
+     * current GPS position
+     */
+    private final IGPS m_position = null;
 
 
     /**

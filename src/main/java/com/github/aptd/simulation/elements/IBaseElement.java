@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.elements;
 
-import com.github.aptd.simulation.CHTTPServer;
+import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.agent.IBaseAgent;

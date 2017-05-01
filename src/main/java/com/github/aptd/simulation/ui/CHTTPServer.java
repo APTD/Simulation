@@ -20,10 +20,11 @@
  * @endcond
  */
 
-package com.github.aptd.simulation;
+package com.github.aptd.simulation.ui;
 
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jetty.server.Server;
@@ -33,8 +34,10 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.rest.CApplication;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.stream.Stream;
 
 
@@ -107,9 +110,13 @@ public final class CHTTPServer
             INSTANCE.m_server.join();
 
         }
-        catch ( final Exception l_exception )
+        catch ( final InterruptedException | URISyntaxException | IOException l_exception )
         {
             throw new CSemanticException( l_exception );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CRuntimeException( l_exception );
         }
         finally
         {
@@ -138,8 +145,8 @@ public final class CHTTPServer
      * register agent if server started
      *
      * @param p_agentgroup tupel of agent and stream of group names
-     * @tparam T agent type
      * @return agent object
+     * @tparam T agent type
      */
     public static <T extends IElement<?>> T register( final Pair<T, Stream<String>> p_agentgroup )
     {
