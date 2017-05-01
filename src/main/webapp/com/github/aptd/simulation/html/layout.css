@@ -40,3 +40,18 @@ body {
     margin-left: 0.5em;
 }
 
+
+.mapcontainer {
+    padding: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map {
+    height: 600px;
+    width: 80%;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #ccc;
+}

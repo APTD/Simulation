@@ -52,4 +52,33 @@ jQuery(function() {
         } );
     });
 
+    // OpenLayers
+    // https://openlayers.org/en/latest/doc/quickstart.html
+    // http://codepen.io/payamcf/pen/mEKpQj
+    // http://wiki.openstreetmap.org/wiki/DE:OpenRailwayMap/API#Einbindung_in_OpenLayers_3
+    new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([9.92403, 51.53689]),
+            zoom: 16
+        })
+    }).addLayer(
+          new ol.layer.Tile({
+              title: 'OpenRailwayMap',
+              visible: true,
+              source : new ol.source.XYZ({
+                  url : 'http://{a-c}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
+                  crossOrigin: null,
+                  tilePixelRatio: 2,
+                  maxZoom: 19,
+                  opaque: true
+              })
+          })
+    );
+
 });
