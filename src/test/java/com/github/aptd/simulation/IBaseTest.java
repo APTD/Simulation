@@ -22,6 +22,8 @@
 
 package com.github.aptd.simulation;
 
+import com.github.aptd.simulation.datamodel.CXMLReader;
+import com.github.aptd.simulation.datamodel.IDataModel;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Assert;
 import org.junit.AssumptionViolatedException;
@@ -29,11 +31,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -41,6 +47,29 @@ import java.util.stream.Collectors;
  */
 public abstract class IBaseTest
 {
+
+    /**
+     * read XML scenario defintion
+     *
+     * @param p_xmlfile path to XML file
+     * @return data-model instance
+     */
+    protected static IDataModel scenarioxmlreader( final String p_xmlfile )
+    {
+        try
+            (
+                final InputStream l_stream = new FileInputStream( p_xmlfile );
+            )
+        {
+
+            return CXMLReader.from( l_stream );
+        }
+        catch ( final Exception l_exception )
+        {
+            assertTrue( l_exception.getMessage(), false );
+            return null;
+        }
+    }
 
     /**
      * invoke all test manually

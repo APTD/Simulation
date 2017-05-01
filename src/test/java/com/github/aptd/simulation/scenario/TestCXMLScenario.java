@@ -23,16 +23,10 @@
 package com.github.aptd.simulation.scenario;
 
 import com.github.aptd.simulation.IBaseTest;
-import com.github.aptd.simulation.datamodel.CXMLReader;
 import com.github.aptd.simulation.datamodel.IDataModel;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
-
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -51,18 +45,7 @@ public final class TestCXMLScenario extends IBaseTest
     @Before
     public final void initialize()
     {
-        try
-            (
-                final InputStream l_stream = new FileInputStream( "src/test/resources/scenario.xml" );
-            )
-        {
-
-            m_scenario = CXMLReader.from( l_stream );
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-        }
+        m_scenario = scenarioxmlreader( "src/test/resources/scenario.xml" );
     }
 
 
@@ -70,7 +53,6 @@ public final class TestCXMLScenario extends IBaseTest
      * test graph build with node agents
      */
     @Test
-    @SuppressWarnings( "unchecked" )
     public final void testNetworkWithAgent()
     {
         Assume.assumeNotNull( m_scenario );

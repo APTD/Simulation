@@ -11,6 +11,7 @@ httpserver:
 
 # runtime configuration
 runtime:
+    type: local
     sequential: false
     stepbystep: false
 

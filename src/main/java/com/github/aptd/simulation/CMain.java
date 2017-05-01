@@ -25,6 +25,8 @@ package com.github.aptd.simulation;
 
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
+import com.github.aptd.simulation.datamodel.EDataModel;
+import com.github.aptd.simulation.datamodel.IDataModel;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.ui.CHTTPServer;
@@ -36,7 +38,11 @@ import org.apache.commons.cli.Options;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.LogManager;
+import java.util.stream.Collectors;
 
 
 /**
@@ -107,6 +113,14 @@ public final class CMain
 
 
         // ---- replace by batch scenario process ----
+        final List<IDataModel> l_scenario = Collections.unmodifiableList(
+            Arrays.stream( l_cli.getOptionValue( "scenario", "" ).split( "" ) )
+                  .map( String::trim )
+                  .map( i -> datamodelbyfileextension( i ).get( i ) )
+                  .collect( Collectors.toList() )
+        );
+
+
         try
             (
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
@@ -125,6 +139,19 @@ public final class CMain
 
         // execute server
         CHTTPServer.execute();
+    }
+
+    /**
+     * returns the data-model factory based
+     * on the file-extension
+     *
+     * @param p_file file name
+     * @return data-model
+     */
+    private static EDataModel datamodelbyfileextension( final String p_file )
+    {
+        final String[] l_extension = p_file.split( "." );
+        return EDataModel.from( l_extension[l_extension.length - 1] );
     }
 
 }

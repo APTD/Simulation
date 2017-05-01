@@ -170,11 +170,10 @@ public final class CXMLReader implements IDataModel
     /**
      * get an agent-reference name
      *
+     * @param p_value value of the agent-reference
      * @param p_list object list
      * @return agent-reference name
      * @throws CNotFoundException is thrown on not found
-     *
-     * @todo convert error message to multilanguage support
      */
     @SuppressWarnings( "unchecked" )
     private static <T> Pair<T, String> agentname( final T p_value, final List<Object> p_list )
@@ -186,7 +185,7 @@ public final class CXMLReader implements IDataModel
                   .findAny()
                   .map( a -> (AgentRef) a )
                   .map( AgentRef::getAgent )
-                  .orElseThrow( () -> new CNotFoundException( "no agentRef found " ) )
+                  .orElseThrow( () -> new CNotFoundException( CCommon.languagestring( CXMLReader.class, "agentreferencenotfound" ) ) )
         );
     }
 

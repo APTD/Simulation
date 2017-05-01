@@ -20,49 +20,60 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.linearprogram;
+package com.github.aptd.simulation.datamodel;
 
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.error.CNotFoundException;
-import net.sf.jmpi.main.MpProblem;
-import net.sf.jmpi.main.MpVariable;
+import com.github.aptd.simulation.error.CRuntimeException;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Locale;
 
 
 /**
- * LP solver component
- *
- * @bug incompelete
- * @see http://jmpi.sourceforge.net/
+ * datamodel factory
  */
-public final class CCombinedSolver implements ISolver<MpVariable.Type>
+public enum EDataModel
 {
+    XML;
 
-    @Override
-    public final ISolver<MpVariable.Type> solve( final ILinearProgram p_lp )
+    /**
+     * get data-model from file
+     *
+     * @param p_file file path
+     * @return data-model
+     */
+    public final IDataModel get( final String p_file )
     {
-        final MpProblem l_problem = new MpProblem();
-
-        p_lp.variable()
-            .map( i -> new MpVariable( i.name(), i.lowerbound(), i.upperbound(), i.type().specific( this ) ) )
-            .forEach( l_problem::addVariable );
-
-        return this;
-    }
-
-    @Override
-    public final MpVariable.Type typespecific( final ILinearProgram.EType p_type )
-    {
-        switch ( p_type )
+        try
+        (
+            final InputStream l_stream = new FileInputStream( p_file );
+        )
         {
-            case BOOLEAN: return MpVariable.Type.BOOL;
 
-            case INTEGER: return MpVariable.Type.INT;
+            switch ( this )
+            {
+                case XML: return CXMLReader.from( l_stream );
 
-            case REAL: return MpVariable.Type.REAL;
-
-            default:
-                throw new CNotFoundException( CCommon.languagestring( this, "variabletypenotfound", p_type ) );
+                default:
+                    throw new CNotFoundException( CCommon.languagestring( this, "readernotfound", this ) );
+            }
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CRuntimeException( l_exception );
         }
     }
 
+    /**
+     * factory
+     *
+     * @param p_value data-model name
+     * @return data-model
+     */
+    public static EDataModel from( final String p_value )
+    {
+        return EDataModel.valueOf( p_value.trim().toUpperCase( Locale.ROOT ) );
+    }
 }

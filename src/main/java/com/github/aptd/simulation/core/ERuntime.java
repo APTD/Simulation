@@ -20,49 +20,48 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.linearprogram;
+package com.github.aptd.simulation.core;
 
 import com.github.aptd.simulation.common.CCommon;
+import com.github.aptd.simulation.core.runtime.IRuntime;
+import com.github.aptd.simulation.core.runtime.local.CRuntime;
 import com.github.aptd.simulation.error.CNotFoundException;
-import net.sf.jmpi.main.MpProblem;
-import net.sf.jmpi.main.MpVariable;
+
+import java.util.Locale;
 
 
 /**
- * LP solver component
- *
- * @bug incompelete
- * @see http://jmpi.sourceforge.net/
+ * runtime factory
  */
-public final class CCombinedSolver implements ISolver<MpVariable.Type>
+public enum  ERuntime
 {
+    LOCAL;
 
-    @Override
-    public final ISolver<MpVariable.Type> solve( final ILinearProgram p_lp )
+    /**
+     * creates a new runtime instance
+     *
+     * @return runtime instance
+     */
+    public final IRuntime get()
     {
-        final MpProblem l_problem = new MpProblem();
-
-        p_lp.variable()
-            .map( i -> new MpVariable( i.name(), i.lowerbound(), i.upperbound(), i.type().specific( this ) ) )
-            .forEach( l_problem::addVariable );
-
-        return this;
-    }
-
-    @Override
-    public final MpVariable.Type typespecific( final ILinearProgram.EType p_type )
-    {
-        switch ( p_type )
+        switch ( this )
         {
-            case BOOLEAN: return MpVariable.Type.BOOL;
-
-            case INTEGER: return MpVariable.Type.INT;
-
-            case REAL: return MpVariable.Type.REAL;
+            case LOCAL: return new CRuntime();
 
             default:
-                throw new CNotFoundException( CCommon.languagestring( this, "variabletypenotfound", p_type ) );
+                throw new CNotFoundException( CCommon.languagestring( this, "notfound", this ) );
         }
+    }
+
+    /**
+     * factory
+     *
+     * @param p_value runtime name
+     * @return runtime
+     */
+    public static ERuntime from( final String p_value )
+    {
+        return ERuntime.valueOf( p_value.trim().toUpperCase( Locale.ROOT ) );
     }
 
 }
