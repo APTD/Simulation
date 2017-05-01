@@ -33,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.logging.LogManager;
 import java.util.stream.Collectors;
 
 
@@ -42,11 +41,6 @@ import java.util.stream.Collectors;
  */
 public abstract class IBaseTest
 {
-
-    static
-    {
-        LogManager.getLogManager().reset();
-    }
 
     /**
      * invoke all test manually
@@ -155,4 +149,3 @@ public abstract class IBaseTest
                      .collect( Collectors.toSet() );
     }
 }
-
