@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.datamodel;
 
-import com.github.aptd.simulation.core.IExperiment;
+import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;

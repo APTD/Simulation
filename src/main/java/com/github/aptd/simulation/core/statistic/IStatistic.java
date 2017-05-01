@@ -20,14 +20,13 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core;
+package com.github.aptd.simulation.core.statistic;
 
 /**
- * runtime interface
+ * statistic evaluation of an experiment
  *
  * @bug incomplete
  */
-public interface IRuntime
+public interface IStatistic
 {
-
 }

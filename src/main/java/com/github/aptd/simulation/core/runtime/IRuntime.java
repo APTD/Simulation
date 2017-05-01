@@ -20,13 +20,25 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core;
+package com.github.aptd.simulation.core.runtime;
+
+import com.github.aptd.simulation.core.experiment.IExperiment;
+
 
 /**
- * statistic evaluation of an experiment
+ * runtime interface
  *
  * @bug incomplete
  */
-public interface IStatistic
+public interface IRuntime
 {
+
+    /**
+     * execute experiment
+     *
+     * @param p_experiment experiment
+     * @return executed experiment
+     */
+    IExperiment execute( final IExperiment p_experiment );
+
 }

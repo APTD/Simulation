@@ -9,9 +9,13 @@ httpserver:
     host: localhost
 
 
+# runtime configuration
+runtime:
+    sequential: false
+    stepbystep: false
+
+
 # simulation units
 units:
-
     cellsize_in_meter: 1.5
     time_in_minutes: 1.25
-

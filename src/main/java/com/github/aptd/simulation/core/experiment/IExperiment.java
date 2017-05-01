@@ -20,10 +20,11 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core;
+package com.github.aptd.simulation.core.experiment;
 
-import org.lightjason.agentspeak.agent.IAgent;
+import com.github.aptd.simulation.core.statistic.IStatistic;
 
+import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 
@@ -36,18 +37,18 @@ public interface IExperiment
 {
 
     /**
-     * returns a stream of the agents
+     * returns a stream of all executable objects
      *
-     * @return agent stream
+     * @return callable stream
      */
-    Stream<IAgent<?>> agents();
+    Stream<Callable<?>> objects();
 
     /**
      * maximum simulation steps
      *
      * @return simulation steps
      */
-    int simulationsteps();
+    long simulationsteps();
 
     /**
      * returns tha simulation statistic

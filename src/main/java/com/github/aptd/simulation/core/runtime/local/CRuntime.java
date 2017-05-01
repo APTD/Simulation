@@ -20,25 +20,61 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.datamodel;
+package com.github.aptd.simulation.core.runtime.local;
+
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
-import com.github.aptd.simulation.factory.IFactory;
+import com.github.aptd.simulation.core.runtime.IRuntime;
+
+import java.util.concurrent.Callable;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 
 /**
- * data model components
+ * local runtime
+ * @todo refactor with logger
  */
-public interface IDataModel
+public final class CRuntime implements IRuntime
 {
 
+    @Override
+    public final IExperiment execute( final IExperiment p_experiment )
+    {
+        LongStream.range( 0, p_experiment.simulationsteps() )
+                  .forEach( i -> optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute ) );
+
+        return p_experiment;
+    }
+
     /**
-     * transfer the data-model into an experiment
-     * based on given factory
+     * creates an optional parallel stream
      *
-     * @param p_factory building factory
-     * @return experiment
+     * @param p_stream input stream
+     * @return stream
+     * @tparam T stream element type
      */
-    IExperiment get( final IFactory p_factory );
+    private static <T> Stream<T> optionalparallelstream( final Stream<T> p_stream, final boolean p_parallel )
+    {
+        return p_parallel ? p_stream.parallel() : p_stream;
+    }
+
+
+    /**
+     * execute callable object with catching exception
+     *
+     * @param p_object callable
+     */
+    private static void execute( final Callable<?> p_object )
+    {
+        try
+        {
+            p_object.call();
+        }
+        catch ( final Exception l_exception )
+        {
+            l_exception.printStackTrace();
+        }
+    }
 
 }

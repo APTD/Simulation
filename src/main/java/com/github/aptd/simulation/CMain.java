@@ -67,9 +67,10 @@ public final class CMain
         l_clioptions.addOption( "help", false, "shows this information" );
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
-        l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
-        l_clioptions.addOption( "com/github/aptd/simulation/datamodel", true, "scenario configuration" );
         l_clioptions.addOption( "stepbystep", false, "runs simulation on manuell step-by-step execution" );
+        l_clioptions.addOption( "sequential", false, "agents run in sequential order [default value: parallel]" );
+        l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
+        l_clioptions.addOption( "scenario", true, "comma-separated list of scenario files" );
 
         final CommandLine l_cli;
         try
@@ -102,6 +103,9 @@ public final class CMain
         // load configuration and start the http server (if possible)
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
+
+
+        // ---- replace by batch scenario process ----
         try
             (
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
