@@ -22,12 +22,28 @@
 
 package com.github.aptd.simulation.core.experiment.local;
 
+import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
+import com.github.aptd.simulation.core.writer.IWriter;
+import com.github.aptd.simulation.elements.IElement;
+import org.lightjason.agentspeak.action.IBaseAction;
+import org.lightjason.agentspeak.agent.IAgent;
+import org.lightjason.agentspeak.common.CPath;
+import org.lightjason.agentspeak.common.IPath;
+import org.lightjason.agentspeak.language.CCommon;
+import org.lightjason.agentspeak.language.ILiteral;
+import org.lightjason.agentspeak.language.ITerm;
+import org.lightjason.agentspeak.language.execution.IContext;
+import org.lightjason.agentspeak.language.execution.fuzzy.CFuzzyValue;
+import org.lightjason.agentspeak.language.execution.fuzzy.IFuzzyValue;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -51,7 +67,7 @@ public final class CExperiment implements IExperiment
     /**
      * agents
      */
-    private final Map<String, Callable<?>> m_agents;
+    private final Map<String, IElement<?>> m_agents = new HashMap<>();
 
 
     /**
@@ -60,23 +76,19 @@ public final class CExperiment implements IExperiment
      * @param p_steps number of simulation steps
      * @param p_parallel parallel object execution
      * @param p_statistic statistic objects
-     * @param p_agents agents
      */
-    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic,
-                        final Map<String, Callable<?>> p_agents
-    )
+    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic )
     {
         m_steps = p_steps;
         m_parallel = p_parallel;
         m_statistic = p_statistic;
-        m_agents = p_agents;
     }
 
 
     @Override
     public final Stream<Callable<?>> objects()
     {
-        return m_agents.values().stream();
+        return Stream.of();
     }
 
     @Override
@@ -86,9 +98,10 @@ public final class CExperiment implements IExperiment
     }
 
     @Override
-    public final Stream<IStatistic> statistic()
+    public final IExperiment statistic( final IWriter p_writer )
     {
-        return m_statistic.stream();
+        m_statistic.forEach( i -> i.write( p_writer ) );
+        return this;
     }
 
     @Override
@@ -96,4 +109,48 @@ public final class CExperiment implements IExperiment
     {
         return m_parallel;
     }
+
+
+    /**
+     * agent send action for agent communication
+     */
+    private final class CMessageSendAction extends IBaseAction
+    {
+
+        @Override
+        public final IPath name()
+        {
+            return CPath.from( "asimov/send" );
+        }
+
+        @Override
+        public final int minimalArgumentNumber()
+        {
+            return 1;
+        }
+
+        @Override
+        public final IFuzzyValue<Boolean> execute( final IContext p_context, final boolean p_parallel, final List<ITerm> p_argument,
+                                                   final List<ITerm> p_return, final List<ITerm> p_annotation )
+        {
+            final List<ITerm> l_arguments = CCommon.flatcollection( p_argument ).collect( Collectors.toList() );
+            if ( l_arguments.size() < 2 )
+                return CFuzzyValue.from( false );
+
+            final IAgent<?> l_receiver = m_agents.get( l_arguments.get( 0 ).<String>raw() );
+            if ( l_receiver == null )
+                return CFuzzyValue.from( false );
+
+            final ILiteral l_sender = CAgentTrigger.messagersender( p_context.agent() );
+            l_arguments.stream()
+                       .skip( 1 )
+                       .map( ITerm::raw )
+                       .map( i -> CAgentTrigger.messagesend( i, l_sender ) )
+                       .forEach( i -> l_receiver.trigger( i ) );
+
+            return CFuzzyValue.from( true );
+        }
+
+    }
+
 }

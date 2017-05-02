@@ -70,7 +70,7 @@ public final class CStatistic implements IStatistic
     @Override
     public final Stream<IAction> action()
     {
-        return Stream.of( new CAction() );
+        return Stream.of( new CStatisticAction() );
     }
 
     /**
@@ -107,7 +107,7 @@ public final class CStatistic implements IStatistic
      *
      * @code asimov/statistic( "name", 1.3, 7, 8.9, [1, 2, 3] ); @endcode
      */
-    private final class CAction extends IBaseAction
+    private final class CStatisticAction extends IBaseAction
     {
 
         @Override

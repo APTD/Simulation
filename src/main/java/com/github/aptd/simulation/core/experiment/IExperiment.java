@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.core.experiment;
 
-import com.github.aptd.simulation.core.statistic.IStatistic;
+import com.github.aptd.simulation.core.writer.IWriter;
 
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
@@ -51,11 +51,11 @@ public interface IExperiment
     long simulationsteps();
 
     /**
-     * returns simulation statistics
+     * statistic writer
      *
-     * @return statistic stream
+     * @return self-reference
      */
-    Stream<IStatistic> statistic();
+    IExperiment statistic( final IWriter p_writer );
 
     /**
      * execute agents in parallel
