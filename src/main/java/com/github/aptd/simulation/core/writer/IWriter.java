@@ -20,48 +20,32 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core;
-
-import com.github.aptd.simulation.common.CCommon;
-import com.github.aptd.simulation.core.runtime.IRuntime;
-import com.github.aptd.simulation.core.runtime.local.CRuntime;
-import com.github.aptd.simulation.error.CNotFoundException;
-
-import java.util.Locale;
-
+package com.github.aptd.simulation.core.writer;
 
 /**
- * runtime factory
+ * writer interface to export statistic
  */
-public enum  ERuntime
+public interface IWriter
 {
-    LOCAL;
 
     /**
-     * creates a new runtime instance
+     * add a new section to the out put
      *
-     * @return runtime instance
+     * @param p_depth depth of the section (zero is root)
+     * @param p_description any description
+     * @return self-reference
      */
-    public final IRuntime get()
-    {
-        switch ( this )
-        {
-            case LOCAL: return new CRuntime();
-
-            default:
-                throw new CNotFoundException( CCommon.languagestring( this, "notfound", this ) );
-        }
-    }
+    IWriter section( final int p_depth, final String p_description );
 
     /**
-     * factory
+     * adds a single value
      *
-     * @param p_value runtime name
-     * @return runtime
+     * @param p_description any description
+     * @param p_value value
+     * @tparam T value type
+     * @return self-reference
      */
-    public static ERuntime from( final String p_value )
-    {
-        return ERuntime.valueOf( p_value.trim().toUpperCase( Locale.ROOT ) );
-    }
+    <T> IWriter value( final String p_description, final T p_value );
+
 
 }

@@ -20,25 +20,28 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core.statistic;
+package com.github.aptd.simulation.core.writer.local;
 
 import com.github.aptd.simulation.core.writer.IWriter;
 
 
 /**
- * statistic evaluation of an experiment
+ * YAML writer
  *
- * @bug incomplete
+ * @see https://en.wikipedia.org/wiki/YAML
  */
-public interface IStatistic
+public final class CYaml implements IWriter
 {
 
-    /**
-     * export statistic data
-     *
-     * @param p_writer writer instance
-     * @return self-reference
-     */
-    IStatistic write( final IWriter p_writer );
+    @Override
+    public IWriter section( final int p_depth, final String p_description )
+    {
+        return this;
+    }
 
+    @Override
+    public <T> IWriter value( final String p_description, final T p_value )
+    {
+        return this;
+    }
 }

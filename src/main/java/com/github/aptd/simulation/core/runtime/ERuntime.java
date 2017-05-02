@@ -20,25 +20,47 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core.statistic;
+package com.github.aptd.simulation.core.runtime;
 
-import com.github.aptd.simulation.core.writer.IWriter;
+import com.github.aptd.simulation.common.CCommon;
+import com.github.aptd.simulation.core.runtime.local.CRuntime;
+import com.github.aptd.simulation.error.CNotFoundException;
+
+import java.util.Locale;
 
 
 /**
- * statistic evaluation of an experiment
- *
- * @bug incomplete
+ * runtime factory
  */
-public interface IStatistic
+public enum  ERuntime
 {
+    LOCAL;
 
     /**
-     * export statistic data
+     * creates a new runtime instance
      *
-     * @param p_writer writer instance
-     * @return self-reference
+     * @return runtime instance
      */
-    IStatistic write( final IWriter p_writer );
+    public final IRuntime get()
+    {
+        switch ( this )
+        {
+            case LOCAL: return new CRuntime();
+
+            default:
+                throw new CNotFoundException( CCommon.languagestring( this, "notfound", this ) );
+        }
+    }
+
+    /**
+     * factory
+     *
+     * @param p_value runtime name
+     * @return runtime
+     */
+    public static ERuntime from( final String p_value )
+    {
+        return ERuntime.valueOf( p_value.trim().toUpperCase( Locale.ROOT ) );
+    }
 
 }
