@@ -23,6 +23,9 @@
 package com.github.aptd.simulation.core.statistic;
 
 import com.github.aptd.simulation.core.writer.IWriter;
+import org.lightjason.agentspeak.action.IAction;
+
+import java.util.stream.Stream;
 
 
 /**
@@ -40,5 +43,12 @@ public interface IStatistic
      * @return self-reference
      */
     IStatistic write( final IWriter p_writer );
+
+    /**
+     * agent action of statistic
+     *
+     * @return action stream
+     */
+    Stream<IAction> action();
 
 }

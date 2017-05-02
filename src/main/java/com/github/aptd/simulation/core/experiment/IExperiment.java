@@ -51,11 +51,11 @@ public interface IExperiment
     long simulationsteps();
 
     /**
-     * returns tha simulation statistic
+     * returns simulation statistics
      *
-     * @return statistic
+     * @return statistic stream
      */
-    IStatistic statistic();
+    Stream<IStatistic> statistic();
 
     /**
      * execute agents in parallel

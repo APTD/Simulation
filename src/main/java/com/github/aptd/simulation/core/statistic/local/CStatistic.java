@@ -26,6 +26,7 @@ import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.writer.IWriter;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SynchronizedDescriptiveStatistics;
+import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.IBaseAction;
 import org.lightjason.agentspeak.common.CPath;
 import org.lightjason.agentspeak.common.IPath;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -63,6 +65,12 @@ public final class CStatistic implements IStatistic
         p_writer.section( 0, "agentstatistic" );
         m_data.forEach( ( p_key, p_value ) -> apply( p_writer, p_key, p_value ) );
         return this;
+    }
+
+    @Override
+    public final Stream<IAction> action()
+    {
+        return Stream.of( new CAction() );
     }
 
     /**
@@ -99,7 +107,7 @@ public final class CStatistic implements IStatistic
      *
      * @code asimov/statistic( "name", 1.3, 7, 8.9, [1, 2, 3] ); @endcode
      */
-    public final class CAction extends IBaseAction
+    private final class CAction extends IBaseAction
     {
 
         @Override

@@ -20,38 +20,80 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core.writer;
+package com.github.aptd.simulation.core.experiment.local;
+
+import com.github.aptd.simulation.core.experiment.IExperiment;
+import com.github.aptd.simulation.core.statistic.IStatistic;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.stream.Stream;
+
 
 /**
- * writer interface to export statistic
+ * experiment definition
  */
-public interface IWriter
+public final class CExperiment implements IExperiment
 {
+    /**
+     * simulation steps
+     */
+    private final long m_steps;
+    /**
+     * parallel execution
+     */
+    private final boolean m_parallel;
+    /**
+     * statistic object
+     */
+    private final Set<IStatistic> m_statistic;
+    /**
+     * agents
+     */
+    private final Map<String, Callable<?>> m_agents;
+
 
     /**
-     * add a new section to the out put
+     * ctor
      *
-     * @param p_depth depth of the section (zero is root)
-     * @param p_description any description
-     * @return self-reference
+     * @param p_steps number of simulation steps
+     * @param p_parallel parallel object execution
+     * @param p_statistic statistic objects
+     * @param p_agents agents
      */
-    IWriter section( final int p_depth, final String p_description );
+    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic,
+                        final Map<String, Callable<?>> p_agents
+    )
+    {
+        m_steps = p_steps;
+        m_parallel = p_parallel;
+        m_statistic = p_statistic;
+        m_agents = p_agents;
+    }
 
-    /**
-     * adds a single value
-     *
-     * @param p_description any description
-     * @param p_value value
-     * @tparam T value type
-     * @return self-reference
-     */
-    <T> IWriter value( final String p_description, final T p_value );
 
-    /**
-     * write data
-     *
-     * @return self-reference
-     */
-    IWriter apply();
+    @Override
+    public final Stream<Callable<?>> objects()
+    {
+        return m_agents.values().stream();
+    }
 
+    @Override
+    public final long simulationsteps()
+    {
+        return m_steps;
+    }
+
+    @Override
+    public final Stream<IStatistic> statistic()
+    {
+        return m_statistic.stream();
+    }
+
+    @Override
+    public final boolean parallel()
+    {
+        return m_parallel;
+    }
 }

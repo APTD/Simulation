@@ -23,6 +23,13 @@
 package com.github.aptd.simulation.core.writer.local;
 
 import com.github.aptd.simulation.core.writer.IWriter;
+import com.github.aptd.simulation.error.CRuntimeException;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -32,6 +39,25 @@ import com.github.aptd.simulation.core.writer.IWriter;
  */
 public final class CYaml implements IWriter
 {
+    /**
+     * output file
+     */
+    private final String m_output;
+    /**
+     * output data
+     */
+    private final Map<String, ?> m_data = new HashMap<>();
+
+    /**
+     * ctor
+     *
+     * @param p_output output name
+     */
+    public CYaml( final String p_output )
+    {
+        m_output = p_output;
+    }
+
 
     @Override
     public IWriter section( final int p_depth, final String p_description )
@@ -42,6 +68,20 @@ public final class CYaml implements IWriter
     @Override
     public <T> IWriter value( final String p_description, final T p_value )
     {
+        return this;
+    }
+
+    @Override
+    public final IWriter apply()
+    {
+        try
+        {
+            new Yaml().dump( m_data, new FileWriter( m_output ) );
+        }
+        catch ( final IOException l_exception )
+        {
+            throw new CRuntimeException( l_exception );
+        }
         return this;
     }
 }

@@ -113,6 +113,9 @@ public final class CMain
 
 
         // ---- replace by batch scenario process ----
+        CHTTPServer.initialize();
+
+
         final List<IDataModel> l_scenario = Collections.unmodifiableList(
             Arrays.stream( l_cli.getOptionValue( "scenario", "" ).split( "" ) )
                   .map( String::trim )
@@ -138,7 +141,6 @@ public final class CMain
             l_exception.printStackTrace();
         }
 
-        // execute server
         CHTTPServer.execute();
     }
 

@@ -20,7 +20,7 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.action;
+package com.github.aptd.simulation.elements.action.local;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
 import org.lightjason.agentspeak.action.IBaseAction;

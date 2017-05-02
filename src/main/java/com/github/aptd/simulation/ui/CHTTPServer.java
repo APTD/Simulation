@@ -88,6 +88,13 @@ public final class CHTTPServer
     }
 
     /**
+     * initialize function to create singletone instance
+     */
+    public static void initialize()
+    {
+    }
+
+    /**
      * execute the server instance
      */
     public static void execute()
@@ -108,7 +115,6 @@ public final class CHTTPServer
                 );
 
             INSTANCE.m_server.join();
-
         }
         catch ( final InterruptedException | URISyntaxException | IOException l_exception )
         {
