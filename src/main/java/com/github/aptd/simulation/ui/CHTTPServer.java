@@ -27,17 +27,21 @@ import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.lightjason.rest.CApplication;
 
+import javax.servlet.DispatcherType;
 import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.EnumSet;
 import java.util.stream.Stream;
 
 
@@ -85,6 +89,7 @@ public final class CHTTPServer
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
         l_webapp.setResourceBase( CHTTPServer.class.getResource( "/com/github/aptd/simulation/html" ).toExternalForm() );
         l_webapp.addServlet( new ServletHolder( new ServletContainer( m_restagent ) ), "/rest/*" );
+        l_webapp.addFilter( new FilterHolder( new CrossOriginFilter() ), "/rest/*", EnumSet.of( DispatcherType.REQUEST ) );
     }
 
     /**
