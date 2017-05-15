@@ -66,7 +66,7 @@
         <build.commit></build.commit>
         <coverall.token></coverall.token>
 
-        <jetty.version>9.4.4.v20170414</jetty.version>
+        <jetty.version>9.4.5.v20170502</jetty.version>
     </properties>
 
     <!-- defines any project dependencies, the items can be found on http://mvnrepository.com/ -->
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <version>22.0-rc1</version>
         </dependency>
 
         <dependency>
@@ -194,7 +194,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.2.3</version>
+            <version>3.2.4</version>
             <scope>test</scope>
         </dependency>
 
