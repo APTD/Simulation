@@ -49,15 +49,6 @@ var Asimov = (function (px_modul) {
                                            : px_modul.literal(i);
                                 }
                        ).join(", ") + ")"
-
-               + "[" + jQuery.map(
-                                po_literal.annotation,
-                                function(i){
-                                    return i.raw
-                                           ? (classof( i.raw, 'string' ) ? '"' + i.raw + '"' : i.raw)
-                                           : px_modul.literal(i);
-                                }
-                            ).join(", ") + "]";
     };
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
