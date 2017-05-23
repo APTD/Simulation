@@ -194,7 +194,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -387,6 +387,7 @@
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
+                    <failOnWarning>true</failOnWarning>
                 </configuration>
             </plugin>
 
