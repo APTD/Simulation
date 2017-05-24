@@ -52,10 +52,10 @@ deployment:
     production:
         branch: master
         commands:
-            - export FILENAME=$(mvn -B help:evaluate -Dexpression=project.build.finalName | grep -vi info) && mv -f target/${FILENAME}.jar /tmp && mv -f target/${FILENAME}-sources.jar /tmp
+            - export FILENAME=$(mvn -B help:evaluate -Dexpression=project.build.finalName | grep -vi info) && mv -f target/${FILENAME}.jar /tmp
             - mv -f target/site /tmp
             # binary deployment to binary
-            - export FILENAME=$(mvn -B help:evaluate -Dexpression=project.build.finalName | grep -vi info) && rm -Rf * && mv -f /tmp/${FILENAME}.jar . && mv -f /tmp/${FILENAME}-sources.jar .
+            - export FILENAME=$(mvn -B help:evaluate -Dexpression=project.build.finalName | grep -vi info) && rm -Rf * && mv -f /tmp/${FILENAME}.jar .
             - git push origin :jar-${CIRCLE_BRANCH} || true
             - git brach -D jar-${CIRCLE_BRANCH} || true
             - git checkout --orphan jar-${CIRCLE_BRANCH}
