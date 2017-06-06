@@ -66,7 +66,7 @@
         <build.commit></build.commit>
         <coverall.token></coverall.token>
 
-        <jetty.version>9.4.5.v20170502</jetty.version>
+        <jetty.version>9.4.6.v20170531</jetty.version>
     </properties>
 
     <!-- defines any project dependencies, the items can be found on http://mvnrepository.com/ -->
@@ -194,7 +194,7 @@
         <dependency>
             <groupId>com.github.javaparser</groupId>
             <artifactId>javaparser-core</artifactId>
-            <version>3.2.5</version>
+            <version>3.2.6</version>
             <scope>test</scope>
         </dependency>
 
