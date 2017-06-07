@@ -34,7 +34,6 @@ import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -132,13 +131,11 @@ public final class CWagon extends IBaseElement<IWagon<?>> implements IWagon<IWag
         /**
          * @param p_stream stream
          * @param p_actions action
-         * @param p_aggregation aggregation
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions,
-                              final IAggregation p_aggregation ) throws Exception
+        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
         {
-            super( p_stream, p_actions, p_aggregation, CWagon.class );
+            super( p_stream, p_actions, CWagon.class );
         }
 
         @Override

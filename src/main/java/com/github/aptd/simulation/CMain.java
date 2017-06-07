@@ -130,7 +130,7 @@ public final class CMain
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), CConfiguration.INSTANCE.agentaggregation() );
+            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction() );
 
             l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
             l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );

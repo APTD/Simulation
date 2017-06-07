@@ -72,14 +72,12 @@ public final class TestCNetwork extends IBaseTest
         {
             m_station = new CStation.CGenerator(
                 l_station,
-                CConfiguration.INSTANCE.agentaction(),
-                CConfiguration.INSTANCE.agentaggregation()
+                CConfiguration.INSTANCE.agentaction()
             );
 
             m_track = new CTrack.CGenerator(
                 IOUtils.toInputStream( "", "UTF-8" ),
-                CConfiguration.INSTANCE.agentaction(),
-                CConfiguration.INSTANCE.agentaggregation()
+                CConfiguration.INSTANCE.agentaction()
             );
         }
         catch ( final Exception l_exception )

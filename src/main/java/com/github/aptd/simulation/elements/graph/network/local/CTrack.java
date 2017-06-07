@@ -34,7 +34,6 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -115,12 +114,11 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
          *
          * @param p_stream stream
          * @param p_actions action
-         * @param p_aggregation aggregation
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
         {
-            super( p_stream, p_actions, p_aggregation, CTrack.class );
+            super( p_stream, p_actions, CTrack.class );
         }
 
         @Override

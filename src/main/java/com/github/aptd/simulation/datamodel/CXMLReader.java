@@ -39,7 +39,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.common.CCommon;
-import org.lightjason.agentspeak.language.score.IAggregation;
 import org.railml.schemas._2016.EOcp;
 
 import javax.xml.bind.JAXBContext;
@@ -152,8 +151,7 @@ public final class CXMLReader implements IDataModel
         {
             return new CStation.CGenerator(
                 IOUtils.toInputStream(  p_agents.get( p_station.getRight() ), "UTF-8" ),
-                CCommon.actionsFromPackage().collect( Collectors.toSet() ),
-                IAggregation.EMPTY
+                CCommon.actionsFromPackage().collect( Collectors.toSet() )
             ).generatesingle(
                 p_station.getLeft().getDescription(),
                 p_station.getLeft().getGeoCoord().getCoord().get( 0 ),

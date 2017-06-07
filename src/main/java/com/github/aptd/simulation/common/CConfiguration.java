@@ -24,7 +24,6 @@ package com.github.aptd.simulation.common;
 
 import com.github.aptd.simulation.error.CSemanticException;
 import org.lightjason.agentspeak.action.IAction;
-import org.lightjason.agentspeak.language.score.IAggregation;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -62,10 +61,6 @@ public final class CConfiguration
      * all global agent actions
      */
     private final Set<IAction> m_agentaction = org.lightjason.agentspeak.common.CCommon.actionsFromPackage().collect( Collectors.toSet() );
-    /**
-     * global agent aggregation function
-     */
-    private final IAggregation m_aggregation = IAggregation.EMPTY;
 
     /**
      * ctor
@@ -186,17 +181,6 @@ public final class CConfiguration
     {
         return Stream.concat( m_agentaction.stream(), p_action ).collect( Collectors.toSet() );
     }
-
-    /**
-     * returns the agent aggregation function
-     *
-     * @return aggregation function
-     */
-    public final IAggregation agentaggregation()
-    {
-        return m_aggregation;
-    }
-
 
     /**
      * returns a configuration value

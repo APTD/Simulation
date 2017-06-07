@@ -43,7 +43,6 @@ import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.execution.action.unify.IUnifier;
 import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
 import org.lightjason.agentspeak.language.instantiable.rule.IRule;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -152,14 +151,13 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
          *
          * @param p_stream stream
          * @param p_actions action
-         * @param p_aggregation aggregation
          * @param p_agentclass agent class with internal actions
          * @throws Exception on any error
          */
         protected IBaseGenerator( final InputStream p_stream, final Set<IAction> p_actions,
-                                  final IAggregation p_aggregation, final Class<? extends N> p_agentclass ) throws Exception
+                                  final Class<? extends N> p_agentclass ) throws Exception
         {
-            super( p_stream, Stream.concat( p_actions.stream(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ), p_aggregation );
+            super( p_stream, Stream.concat( p_actions.stream(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
         }
 
         @Override
@@ -185,11 +183,11 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         @Override
         protected IAgentConfiguration<N> configuration( final IFuzzy<Boolean, N> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans,
                                                         final Set<IRule> p_rules,
-                                                        final ILiteral p_initialgoal, final IUnifier p_unifier, final IAggregation p_aggregation,
+                                                        final ILiteral p_initialgoal, final IUnifier p_unifier,
                                                         final IVariableBuilder p_variablebuilder
         )
         {
-            return new CConfiguration( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_aggregation, p_variablebuilder );
+            return new CConfiguration( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
         }
 
         /**
@@ -199,10 +197,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         {
             public CConfiguration( final IFuzzy<Boolean, N> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans, final Set<IRule> p_rules,
                                    final ILiteral p_initialgoal,
-                                   final IUnifier p_unifier, final IAggregation p_aggregation, final IVariableBuilder p_variablebuilder
+                                   final IUnifier p_unifier, final IVariableBuilder p_variablebuilder
             )
             {
-                super( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_aggregation, p_variablebuilder );
+                super( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
             }
 
             @Override

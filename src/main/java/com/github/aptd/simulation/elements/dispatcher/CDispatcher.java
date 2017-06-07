@@ -29,7 +29,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -77,12 +76,11 @@ public final class CDispatcher extends IBaseElement<IDispatcher<?>> implements I
          *
          * @param p_stream stream
          * @param p_actions action
-         * @param p_aggregation aggregation
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
         {
-            super( p_stream, p_actions, p_aggregation, CDispatcher.class );
+            super( p_stream, p_actions, CDispatcher.class );
         }
 
         @Override

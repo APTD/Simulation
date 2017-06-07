@@ -32,7 +32,6 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.score.IAggregation;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -119,12 +118,11 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
         /**
          * @param p_stream stream
          * @param p_actions action
-         * @param p_aggregation aggregation
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IAggregation p_aggregation ) throws Exception
+        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
         {
-            super( p_stream, p_actions, p_aggregation, CTrain.class );
+            super( p_stream, p_actions, CTrain.class );
         }
 
         @Override
