@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.core.experiment.local;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
+import com.github.aptd.simulation.core.environment.local.CEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.writer.IWriter;
@@ -68,6 +69,11 @@ public final class CExperiment implements IExperiment
      * agents
      */
     private final Map<String, IElement<?>> m_agents = new HashMap<>();
+    /**
+     * environment
+     * @todo decide if only local environment allowed for local experiment, else use interface type
+     */
+    private final CEnvironment m_environment;
 
 
     /**
@@ -77,11 +83,14 @@ public final class CExperiment implements IExperiment
      * @param p_parallel parallel object execution
      * @param p_statistic statistic objects
      */
-    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic )
+    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic, final CEnvironment p_environment,
+                        final Map<String, IElement<?>> p_agents )
     {
         m_steps = p_steps;
         m_parallel = p_parallel;
         m_statistic = p_statistic;
+        m_environment = p_environment;
+        m_agents.putAll( p_agents );
     }
 
 
@@ -130,7 +139,8 @@ public final class CExperiment implements IExperiment
         }
 
         @Override
-        public final IFuzzyValue<Boolean> execute( final IContext p_context, final boolean p_parallel, final List<ITerm> p_argument, final List<ITerm> p_return )
+        public final IFuzzyValue<Boolean> execute( final IContext p_context, final boolean p_parallel, final List<ITerm> p_argument,
+                                                   final List<ITerm> p_return )
         {
             final List<ITerm> l_arguments = CCommon.flatcollection( p_argument ).collect( Collectors.toList() );
             if ( l_arguments.size() < 2 )

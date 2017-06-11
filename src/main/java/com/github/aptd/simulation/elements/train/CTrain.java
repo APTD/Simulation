@@ -116,11 +116,13 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
     {
 
         /**
+         * ctor
+         *
          * @param p_stream stream
          * @param p_actions action
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
         {
             super( p_stream, p_actions, CTrain.class );
         }

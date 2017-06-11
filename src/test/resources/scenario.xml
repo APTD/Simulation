@@ -22,35 +22,48 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         <asimov:motivation id="minimalchanges" distribution="normal" minimum = "0" maximum = "10" moment1 = "5" moment2 = "2" />
                         <asimov:preference id="coffee" distribution="uniform" minimum = "0" maximum = "1" moment1 = "0.3" moment2 = "0.1"/>
                         <asimov:preference id="newspaper" distribution="normal" minimum = "0" maximum = "1" moment1 = "0.7" moment2 = "0.2"/>
-                        <asimov:asl>
+                        <asimov:asl><![CDATA[
                             !main.
-                            
-                            +!main &lt;-
-                            generic/print(&quot;hello world&quot;)
+
+                            +!main <-
+                            generic/print("hello old passenger")
                             .
-                        </asimov:asl>
+                        ]]></asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
                 <asimov:agent id="agent-station-default">
                     <asimov:configuration>
-                        <asimov:asl>
+                        <asimov:asl><![CDATA[
                             !main.
 
-                            +!main &lt;-
-                            generic/print(&quot;hello world&quot;)
+                            +!main <-
+                            generic/print("hello station")
                             .
-                        </asimov:asl>
+
+                        ]]></asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
                 <asimov:agent id="agent-station-simulated-default">
                     <asimov:configuration>
-                        <asimov:asl>
+                        <asimov:asl><![CDATA[
                             !main.
 
-                            +!main &lt;-
-                            generic/print(&quot;hello world&quot;)
+                            +!main <-
+                            generic/print("hello simulated station")
                             .
-                        </asimov:asl>
+
+                        ]]></asimov:asl>
+                    </asimov:configuration>
+                </asimov:agent>
+                <asimov:agent id="agent-train-default">
+                    <asimov:configuration>
+                        <asimov:asl><![CDATA[
+                            !main.
+
+                            +!main <-
+                            generic/print("hello train")
+                            .
+                        ]]></asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
             </asimov:instance>
@@ -321,6 +334,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
             </rail:trainParts>
             <rail:trains>
                 <rail:train id="train-01" type="commercial">
+                    <asimov:agentRef agent="agent-train-default" />
                     <rail:trainPartSequence sequence="1">
                         <rail:trainPartRef ref="train-part-001" position="1"/>
                     </rail:trainPartSequence>

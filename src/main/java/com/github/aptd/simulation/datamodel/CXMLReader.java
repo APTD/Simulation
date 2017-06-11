@@ -26,6 +26,8 @@ import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
+import com.github.aptd.simulation.elements.train.CTrain;
+import com.github.aptd.simulation.elements.train.ITrain;
 import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
@@ -40,11 +42,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.common.CCommon;
 import org.railml.schemas._2016.EOcp;
+import org.railml.schemas._2016.ETrain;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,6 +62,9 @@ import java.util.stream.Collectors;
 public final class CXMLReader implements IDataModel
 {
 
+    final Map<String, IElement<?>> m_agents = new HashMap<>();
+
+
     /**
      * ctor
      * @throws JAXBException is thrown on any jaxb exception
@@ -70,6 +77,10 @@ public final class CXMLReader implements IDataModel
 
         final Map<String, String> l_agents = agents( l_model.getAi() );
         final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents );
+        final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agents );
+        m_agents.putAll( l_station );
+        m_agents.putAll( l_train );
+
     }
 
     /**
@@ -157,6 +168,51 @@ public final class CXMLReader implements IDataModel
                 p_station.getLeft().getGeoCoord().getCoord().get( 0 ),
                 p_station.getLeft().getGeoCoord().getCoord().get( 1 )
             );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
+    }
+
+
+    /**
+     * create the train list
+     *
+     * @param p_network network component
+     * @param p_agents map with agents
+     * @return unmodifiable map with trains
+     */
+    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents )
+    {
+        return Collections.unmodifiableMap(
+                    p_network.getTimetable()
+                             .getTrains()
+                             .getTrain()
+                             .parallelStream()
+                             .filter( i -> hasagentname( i.getAny3() ) )
+                             .map( i -> agentname( i, i.getAny3() ) )
+                             .map( i -> train( i, p_agents ) )
+                             .collect( Collectors.toMap( IElement::id, i -> i ) )
+        );
+    }
+
+
+    /**
+     * creates a train agent
+     *
+     * @param p_train train referenct
+     * @param p_agents agent map
+     * @return train
+     */
+    private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents )
+    {
+        try
+        {
+            return new CTrain.CGenerator(
+                IOUtils.toInputStream( p_agents.get( p_train.getRight() ), "UTF-8" ),
+                CCommon.actionsFromPackage().collect( Collectors.toSet() )
+            ).generatesingle(  );
         }
         catch ( final Exception l_exception )
         {
