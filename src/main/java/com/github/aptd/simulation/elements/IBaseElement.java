@@ -22,9 +22,13 @@
 
 package com.github.aptd.simulation.elements;
 
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
+import org.lightjason.agentspeak.action.binding.IAgentAction;
+import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
+import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.agent.fuzzy.IFuzzy;
 import org.lightjason.agentspeak.beliefbase.CBeliefbasePersistent;
@@ -45,6 +49,9 @@ import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
 import org.lightjason.agentspeak.language.instantiable.rule.IRule;
 
 import java.io.InputStream;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -55,12 +62,17 @@ import java.util.stream.Stream;
 /**
  * base simulation element structure
  */
+@IAgentAction
 public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> implements IElement<N>
 {
     /**
      * agent name
      */
     protected final String m_id;
+    /**
+     * reference to environment
+     */
+    protected final IEnvironment m_environment;
     /**
      * functor definition
      */
@@ -69,17 +81,31 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * reference to external beliefbase
      */
     private final IView<N> m_external;
+    /**
+     * simulated time at which the agent will become active again on its own
+     */
+    private Instant m_nextactivation = Instant.MAX;
+    /**
+     * timezone the agent lives in
+     */
+    private ZoneId m_timezone = ZoneId.systemDefault();
+
 
     /**
      * ctor
      *
      * @param p_configuration agent configuration
+     * @param p_functor ...
+     * @param p_id ...
+     * @param p_environment environment
      */
-    protected IBaseElement( final IAgentConfiguration<N> p_configuration, final String p_functor, final String p_id )
+    protected IBaseElement( final IAgentConfiguration<N> p_configuration, final String p_functor, final String p_id, final IEnvironment p_environment )
     {
         super( p_configuration );
         m_id = p_id;
         m_functor = p_functor;
+
+        m_environment = p_environment;
 
         m_external = m_beliefbase.beliefbase().view( "extern" );
     }
@@ -136,6 +162,43 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     protected abstract Stream<ILiteral> individualliteral( final Stream<IElement<?>> p_object );
 
 
+    @IAgentActionFilter
+    @IAgentActionName( name = "simtime/current" )
+    protected ZonedDateTime currentTime()
+    {
+        return m_environment.currentTime().atZone( m_timezone );
+    }
+
+    @IAgentActionFilter
+    @IAgentActionName( name = "nextactivation/get" )
+    protected ZonedDateTime getNextActivation()
+    {
+        return m_nextactivation.atZone( m_timezone );
+    }
+
+    @IAgentActionFilter
+    @IAgentActionName( name = "nextactivation/set" )
+    protected void setNextActivation( final ZonedDateTime p_datetime ) throws Exception
+    {
+        if ( p_datetime == null ) throw new IllegalArgumentException( "next activation time must not be null" );
+        final Instant l_instant = p_datetime.toInstant();
+        if ( l_instant.compareTo( m_environment.currentTime() ) <= 0 )
+            throw new IllegalArgumentException( "next activation time must be in the future" );
+        m_nextactivation = l_instant;
+    }
+
+    /**
+     * Get the next time this agent will become active
+     * @return current time if agent is still active, next scheduled trigger time instant, or Instant.MAX if none
+     */
+    public Instant nextActivation()
+    {
+        if ( !runningplans().isEmpty() ) return m_environment.currentTime();
+        return m_nextactivation;
+    }
+
+
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -146,18 +209,23 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     protected abstract static class IBaseGenerator<N extends IElement<?>> extends IBaseAgentGenerator<N> implements IGenerator<N>
     {
 
+        protected final IEnvironment m_environment;
+
+
         /**
          * ctor
          *
          * @param p_stream stream
          * @param p_actions action
          * @param p_agentclass agent class with internal actions
+         * @param p_environment environment for the agents
          * @throws Exception on any error
          */
         protected IBaseGenerator( final InputStream p_stream, final Set<IAction> p_actions,
-                                  final Class<? extends N> p_agentclass ) throws Exception
+                                  final Class<? extends N> p_agentclass, final IEnvironment p_environment ) throws Exception
         {
             super( p_stream, Stream.concat( p_actions.stream(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
+            this.m_environment = p_environment;
         }
 
         @Override

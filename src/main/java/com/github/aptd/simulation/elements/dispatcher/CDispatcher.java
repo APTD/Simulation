@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.dispatcher;
 
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -51,9 +52,9 @@ public final class CDispatcher extends IBaseElement<IDispatcher<?>> implements I
      * @param p_configuration agent configuration
      * @param p_id dispatcher identifier
      */
-    private CDispatcher( final IAgentConfiguration<IDispatcher<?>> p_configuration, final String p_id )
+    private CDispatcher( final IAgentConfiguration<IDispatcher<?>> p_configuration, final String p_id, final IEnvironment p_environment )
     {
-        super( p_configuration, FUNCTOR, p_id );
+        super( p_configuration, FUNCTOR, p_id, p_environment );
     }
 
     @Override
@@ -76,18 +77,19 @@ public final class CDispatcher extends IBaseElement<IDispatcher<?>> implements I
          *
          * @param p_stream stream
          * @param p_actions action
+         * @param p_environment environment
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
         {
-            super( p_stream, p_actions, CDispatcher.class );
+            super( p_stream, p_actions, CDispatcher.class, p_environment );
         }
 
         @Override
         protected final Pair<IDispatcher<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CDispatcher( m_configuration, p_data[0].toString() ),
+                new CDispatcher( m_configuration, p_data[0].toString(), m_environment ),
                 Stream.of( FUNCTOR )
             );
         }

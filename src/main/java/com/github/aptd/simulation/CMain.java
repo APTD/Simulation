@@ -25,6 +25,8 @@ package com.github.aptd.simulation;
 
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
+import com.github.aptd.simulation.core.environment.EEnvironment;
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.datamodel.EDataModel;
 import com.github.aptd.simulation.datamodel.IDataModel;
 import com.github.aptd.simulation.elements.IElement;
@@ -130,7 +132,8 @@ public final class CMain
                 final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
             )
         {
-            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction() );
+            final IEnvironment l_environment = EEnvironment.LOCAL.generate();
+            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), l_environment );
 
             l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
             l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );

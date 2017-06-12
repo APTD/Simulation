@@ -25,6 +25,8 @@ package com.github.aptd.simulation.elements.graph;
 import com.codepoetics.protonpack.StreamUtils;
 import com.github.aptd.simulation.IBaseTest;
 import com.github.aptd.simulation.common.CConfiguration;
+import com.github.aptd.simulation.core.environment.EEnvironment;
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
@@ -56,6 +58,10 @@ public final class TestCNetwork extends IBaseTest
      * track generator
      */
     private IElement.IGenerator<ITrack<?>> m_track;
+    /**
+     * environment
+     */
+    private IEnvironment m_environment;
 
 
     /**
@@ -70,14 +76,17 @@ public final class TestCNetwork extends IBaseTest
             final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
         )
         {
+            m_environment = EEnvironment.LOCAL.generate();
             m_station = new CStation.CGenerator(
                 l_station,
-                CConfiguration.INSTANCE.agentaction()
+                CConfiguration.INSTANCE.agentaction(),
+                m_environment
             );
 
             m_track = new CTrack.CGenerator(
                 IOUtils.toInputStream( "", "UTF-8" ),
-                CConfiguration.INSTANCE.agentaction()
+                CConfiguration.INSTANCE.agentaction(),
+                m_environment
             );
         }
         catch ( final Exception l_exception )

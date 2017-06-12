@@ -22,6 +22,8 @@
 
 package com.github.aptd.simulation.datamodel;
 
+import com.github.aptd.simulation.core.environment.EEnvironment;
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
@@ -62,7 +64,7 @@ import java.util.stream.Collectors;
 public final class CXMLReader implements IDataModel
 {
 
-    final Map<String, IElement<?>> m_agents = new HashMap<>();
+    private final Map<String, IElement<?>> m_agents = new HashMap<>();
 
 
     /**
@@ -72,12 +74,15 @@ public final class CXMLReader implements IDataModel
     @SuppressWarnings( "unchecked" )
     private CXMLReader( final InputStream p_stream ) throws JAXBException
     {
+
         final JAXBContext l_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
         final Asimov l_model = (Asimov) l_context.createUnmarshaller().unmarshal( p_stream );
 
+        final IEnvironment l_environment = EEnvironment.LOCAL.generate();
+
         final Map<String, String> l_agents = agents( l_model.getAi() );
-        final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents );
-        final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agents );
+        final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents, l_environment );
+        final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agents, l_environment );
         m_agents.putAll( l_station );
         m_agents.putAll( l_train );
 
@@ -130,9 +135,10 @@ public final class CXMLReader implements IDataModel
      *
      * @param p_network network component
      * @param p_agents map with agents
+     * @param p_environment environment
      * @return unmodifyable map with stations
      */
-    private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents )
+    private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents, final IEnvironment p_environment )
     {
         return Collections.unmodifiableMap(
                    p_network.getInfrastructure()
@@ -141,7 +147,7 @@ public final class CXMLReader implements IDataModel
                             .parallelStream()
                             .filter( i -> hasagentname( i.getAny() ) )
                             .map( i -> agentname( i, i.getAny() ) )
-                            .map( i -> station( i, p_agents ) )
+                            .map( i -> station( i, p_agents, p_environment ) )
                             .collect( Collectors.toMap( IElement::id, i -> i ) )
         );
 
@@ -153,16 +159,18 @@ public final class CXMLReader implements IDataModel
      *
      * @param p_station station reference
      * @param p_agents agent map
+     * @param p_environment environment
      * @return station
      * @todo replace with factory
      */
-    private static IStation<?> station( final Pair<EOcp, String> p_station, final Map<String, String> p_agents )
+    private static IStation<?> station( final Pair<EOcp, String> p_station, final Map<String, String> p_agents, final IEnvironment p_environment )
     {
         try
         {
             return new CStation.CGenerator(
                 IOUtils.toInputStream(  p_agents.get( p_station.getRight() ), "UTF-8" ),
-                CCommon.actionsFromPackage().collect( Collectors.toSet() )
+                CCommon.actionsFromPackage().collect( Collectors.toSet() ),
+                p_environment
             ).generatesingle(
                 p_station.getLeft().getDescription(),
                 p_station.getLeft().getGeoCoord().getCoord().get( 0 ),
@@ -181,9 +189,10 @@ public final class CXMLReader implements IDataModel
      *
      * @param p_network network component
      * @param p_agents map with agents
+     * @param p_environment environment
      * @return unmodifiable map with trains
      */
-    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents )
+    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IEnvironment p_environment )
     {
         return Collections.unmodifiableMap(
                     p_network.getTimetable()
@@ -192,7 +201,7 @@ public final class CXMLReader implements IDataModel
                              .parallelStream()
                              .filter( i -> hasagentname( i.getAny3() ) )
                              .map( i -> agentname( i, i.getAny3() ) )
-                             .map( i -> train( i, p_agents ) )
+                             .map( i -> train( i, p_agents, p_environment ) )
                              .collect( Collectors.toMap( IElement::id, i -> i ) )
         );
     }
@@ -203,16 +212,18 @@ public final class CXMLReader implements IDataModel
      *
      * @param p_train train referenct
      * @param p_agents agent map
+     * @param p_environment environment
      * @return train
      */
-    private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents )
+    private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents, final IEnvironment p_environment )
     {
         try
         {
             return new CTrain.CGenerator(
                 IOUtils.toInputStream( p_agents.get( p_train.getRight() ), "UTF-8" ),
-                CCommon.actionsFromPackage().collect( Collectors.toSet() )
-            ).generatesingle(  );
+                CCommon.actionsFromPackage().collect( Collectors.toSet() ),
+                p_environment
+            ).generatesingle( p_train.getLeft().getId() );
         }
         catch ( final Exception l_exception )
         {

@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.train;
 
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
@@ -64,10 +65,12 @@ public final class CWagon extends IBaseElement<IWagon<?>> implements IWagon<IWag
      *
      * @param p_configuration agent configuration
      * @param p_id identifier of the wagon
+     * @param p_maximum maximum number of passengers
+     * @param p_environment environment
      */
-    private CWagon( final IAgentConfiguration<IWagon<?>> p_configuration, final String p_id, final int p_maximum )
+    private CWagon( final IAgentConfiguration<IWagon<?>> p_configuration, final String p_id, final int p_maximum, final IEnvironment p_environment )
     {
-        super( p_configuration, FUNCTOR, p_id );
+        super( p_configuration, FUNCTOR, p_id, p_environment );
         m_maximum = p_maximum;
     }
 
@@ -131,18 +134,19 @@ public final class CWagon extends IBaseElement<IWagon<?>> implements IWagon<IWag
         /**
          * @param p_stream stream
          * @param p_actions action
+         * @param p_environment environment
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
+        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
         {
-            super( p_stream, p_actions, CWagon.class );
+            super( p_stream, p_actions, CWagon.class, p_environment );
         }
 
         @Override
         protected final Pair<IWagon<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CWagon( m_configuration, p_data[0].toString(), (int) p_data[1] ),
+                new CWagon( m_configuration, p_data[0].toString(), (int) p_data[1], m_environment ),
                 Stream.of( FUNCTOR )
             );
         }

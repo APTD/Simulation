@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.elements.graph.network.local;
 
 import cern.colt.matrix.DoubleMatrix1D;
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.elements.common.CGPS;
 import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.elements.IBaseElement;
@@ -59,9 +60,9 @@ public abstract class IBaseStation extends IBaseElement<IStation<?>> implements 
      * @param p_latitude latitude
      */
     protected IBaseStation( final IAgentConfiguration<IStation<?>> p_configuration, final String p_functor, final String p_id,
-                            final double p_longitude, final double p_latitude )
+                            final double p_longitude, final double p_latitude, final IEnvironment p_environment )
     {
-        super( p_configuration, p_functor, p_id );
+        super( p_configuration, p_functor, p_id, p_environment );
         m_position = new CGPS( p_longitude, p_latitude );
 
     }

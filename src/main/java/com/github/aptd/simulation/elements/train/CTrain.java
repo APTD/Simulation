@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.train;
 
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.error.CSemanticException;
@@ -68,10 +69,11 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
      * @param p_configuration agent configuration
      * @param p_id train identifier
      * @param p_wagon wagon references
+     * @param p_environment environment
      */
-    private CTrain( final IAgentConfiguration<ITrain<?>> p_configuration, final String p_id, final Stream<IWagon<?>> p_wagon )
+    private CTrain( final IAgentConfiguration<ITrain<?>> p_configuration, final String p_id, final Stream<IWagon<?>> p_wagon, final IEnvironment p_environment )
     {
-        super( p_configuration, p_id, FUNCTOR );
+        super( p_configuration, p_id, FUNCTOR, p_environment );
         m_wagon = p_wagon.collect( Collectors.toList() );
     }
 
@@ -120,11 +122,12 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
          *
          * @param p_stream stream
          * @param p_actions action
+         * @param p_environment environment
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
         {
-            super( p_stream, p_actions, CTrain.class );
+            super( p_stream, p_actions, CTrain.class, p_environment );
         }
 
         @Override
@@ -135,7 +138,8 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
                 new CTrain(
                     m_configuration,
                     p_data[0].toString(),
-                    Arrays.stream( p_data ).skip( 1 ).map( i -> (IWagon<?>) i )
+                    Arrays.stream( p_data ).skip( 1 ).map( i -> (IWagon<?>) i ),
+                    m_environment
                 ),
                 Stream.of( FUNCTOR )
             );

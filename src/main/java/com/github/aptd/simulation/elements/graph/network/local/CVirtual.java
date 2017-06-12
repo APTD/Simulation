@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.graph.network.local;
 
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -50,15 +51,17 @@ public final class CVirtual extends IBaseStation
      * @param p_id station identifier
      * @param p_longitude longitude
      * @param p_latitude latitude
+     * @param p_environment environment
      */
     private CVirtual(
         final IAgentConfiguration<IStation<?>> p_configuration,
         final String p_id,
         final double p_longitude,
-        final double p_latitude
+        final double p_latitude,
+        final IEnvironment p_environment
     )
     {
-        super( p_configuration, FUNCTOR, p_id, p_longitude, p_latitude );
+        super( p_configuration, FUNCTOR, p_id, p_longitude, p_latitude, p_environment );
     }
 
 
@@ -77,16 +80,16 @@ public final class CVirtual extends IBaseStation
          * @param p_actions action
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
         {
-            super( p_stream, p_actions, CStation.class );
+            super( p_stream, p_actions, CStation.class, p_environment );
         }
 
         @Override
         protected final Pair<IStation<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CVirtual( m_configuration, p_data[0].toString(), (double) p_data[1], (double) p_data[1] ),
+                new CVirtual( m_configuration, p_data[0].toString(), (double) p_data[1], (double) p_data[1], m_environment ),
                 Stream.of( FUNCTOR, BASEFUNCTOR )
             );
         }
