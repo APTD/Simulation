@@ -23,9 +23,11 @@
 package com.github.aptd.simulation.core.runtime.local;
 
 
+import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.runtime.IRuntime;
 
+import java.time.Instant;
 import java.util.concurrent.Callable;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -43,11 +45,22 @@ public final class CRuntime implements IRuntime
     public final IExperiment execute( final IExperiment p_experiment )
     {
         LongStream.range( 0, p_experiment.simulationsteps() )
-                  .forEach( i -> optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute ) );
+                  .forEach( i -> {
+                      optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
+                      if ( !p_experiment.objects().parallel().anyMatch( a -> a.nextActivation().equals( p_experiment.environment().currentTime() ) ) )
+                      {
+                          final Instant l_nexttime = p_experiment.objects().map( a -> a.nextActivation() ).min( Instant::compareTo ).orElse( Instant.MAX );
+                          p_experiment.environment().currentTime( l_nexttime );
+                          p_experiment.objects().parallel()
+                                      .filter( a -> a.nextActivation().equals( l_nexttime ) )
+                                      .forEach( a -> a.trigger( CAgentTrigger.ACTIVATE ) );
+                      }
+                  } );
 
         return p_experiment;
     }
 
+    // ??? runtime needs experiment to execute
     @Override
     public final IRuntime next()
     {

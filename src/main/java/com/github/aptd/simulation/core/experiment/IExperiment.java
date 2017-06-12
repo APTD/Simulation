@@ -22,9 +22,10 @@
 
 package com.github.aptd.simulation.core.experiment;
 
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.writer.IWriter;
+import com.github.aptd.simulation.elements.IElement;
 
-import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 
@@ -41,7 +42,7 @@ public interface IExperiment
      *
      * @return callable stream
      */
-    Stream<Callable<?>> objects();
+    Stream<IElement<?>> objects();
 
     /**
      * maximum simulation steps
@@ -49,6 +50,13 @@ public interface IExperiment
      * @return simulation steps
      */
     long simulationsteps();
+
+    /**
+     * returns the environment
+     *
+     * @return environment
+     */
+    IEnvironment environment();
 
     /**
      * statistic writer

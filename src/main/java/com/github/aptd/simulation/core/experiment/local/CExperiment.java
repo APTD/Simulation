@@ -23,7 +23,7 @@
 package com.github.aptd.simulation.core.experiment.local;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
-import com.github.aptd.simulation.core.environment.local.CEnvironment;
+import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.writer.IWriter;
@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,7 +72,7 @@ public final class CExperiment implements IExperiment
      * environment
      * @todo decide if only local environment allowed for local experiment, else use interface type
      */
-    private final CEnvironment m_environment;
+    private final IEnvironment m_environment;
 
 
     /**
@@ -83,7 +82,7 @@ public final class CExperiment implements IExperiment
      * @param p_parallel parallel object execution
      * @param p_statistic statistic objects
      */
-    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic, final CEnvironment p_environment,
+    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic, final IEnvironment p_environment,
                         final Map<String, IElement<?>> p_agents )
     {
         m_steps = p_steps;
@@ -95,15 +94,21 @@ public final class CExperiment implements IExperiment
 
 
     @Override
-    public final Stream<Callable<?>> objects()
+    public final Stream<IElement<?>> objects()
     {
-        return Stream.of();
+        return m_agents.values().stream();
     }
 
     @Override
     public final long simulationsteps()
     {
         return m_steps;
+    }
+
+    @Override
+    public IEnvironment environment()
+    {
+        return m_environment;
     }
 
     @Override

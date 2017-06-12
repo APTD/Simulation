@@ -25,21 +25,16 @@ package com.github.aptd.simulation;
 
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
-import com.github.aptd.simulation.core.environment.EEnvironment;
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.runtime.ERuntime;
 import com.github.aptd.simulation.datamodel.EDataModel;
 import com.github.aptd.simulation.datamodel.IDataModel;
-import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -119,7 +114,7 @@ public final class CMain
 
 
         final List<IDataModel> l_scenario = Collections.unmodifiableList(
-            Arrays.stream( l_cli.getOptionValue( "scenario", "" ).split( "" ) )
+            Arrays.stream( l_cli.getOptionValue( "scenario", "" ).split( "," ) )
                   .map( String::trim )
                   .filter( i -> !i.isEmpty() )
                   .map( i -> datamodelbyfileextension( i ).get( i ) )
@@ -127,24 +122,28 @@ public final class CMain
         );
 
 
-        try
-            (
-                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
-            )
-        {
-            final IEnvironment l_environment = EEnvironment.LOCAL.generate();
-            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), l_environment );
+        l_scenario.stream().forEach( d -> {
+            ERuntime.from( "local" ).get().execute( d.get( null ) );
+        } );
 
-            l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
-            l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );
-
-        }
-        catch ( final Exception l_exception )
-        {
-            l_exception.printStackTrace();
-        }
-
-        CHTTPServer.execute();
+//        try
+//            (
+//                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
+//            )
+//        {
+//            final IEnvironment l_environment = EEnvironment.LOCAL.generate();
+//            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), l_environment );
+//
+//            l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
+//            l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );
+//
+//        }
+//        catch ( final Exception l_exception )
+//        {
+//            l_exception.printStackTrace();
+//        }
+//
+//        CHTTPServer.execute();
     }
 
     /**
@@ -156,7 +155,8 @@ public final class CMain
      */
     private static EDataModel datamodelbyfileextension( final String p_file )
     {
-        final String[] l_extension = p_file.split( "." );
+        final String[] l_extension = p_file.split( "\\." );
+        System.out.println( p_file );
         return EDataModel.from( l_extension[l_extension.length - 1] );
     }
 

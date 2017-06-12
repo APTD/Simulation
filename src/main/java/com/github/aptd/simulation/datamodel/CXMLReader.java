@@ -25,6 +25,8 @@ package com.github.aptd.simulation.datamodel;
 import com.github.aptd.simulation.core.environment.EEnvironment;
 import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
+import com.github.aptd.simulation.core.experiment.local.CExperiment;
+import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
@@ -51,6 +53,7 @@ import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,6 +68,8 @@ public final class CXMLReader implements IDataModel
 {
 
     private final Map<String, IElement<?>> m_agents = new HashMap<>();
+
+    private final IExperiment m_experiment;
 
 
     /**
@@ -85,6 +90,9 @@ public final class CXMLReader implements IDataModel
         final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agents, l_environment );
         m_agents.putAll( l_station );
         m_agents.putAll( l_train );
+
+        // @todo this whole thing needs much refactoring; constructor should be called from CMain?
+        m_experiment = new CExperiment( 100, false, new HashSet<IStatistic>(), l_environment, m_agents );
 
     }
 
@@ -109,7 +117,7 @@ public final class CXMLReader implements IDataModel
     @Override
     public final IExperiment get( final IFactory p_factory )
     {
-        return null;
+        return m_experiment;
     }
 
 

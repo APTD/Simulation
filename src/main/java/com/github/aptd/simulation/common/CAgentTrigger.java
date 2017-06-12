@@ -37,6 +37,10 @@ import org.lightjason.agentspeak.language.instantiable.plan.trigger.ITrigger;
 public final class CAgentTrigger
 {
 
+
+    public static final ITrigger ACTIVATE = CTrigger.from( ITrigger.EType.ADDGOAL, CLiteral.from( "activate" ) );
+
+
     /**
      * ctor
      */
