@@ -26,7 +26,6 @@ import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.agent.IBaseAgent;
-import org.lightjason.agentspeak.agent.fuzzy.IFuzzy;
 import org.lightjason.agentspeak.beliefbase.CBeliefbasePersistent;
 import org.lightjason.agentspeak.beliefbase.storage.CMultiStorage;
 import org.lightjason.agentspeak.beliefbase.storage.CSingleStorage;
@@ -40,10 +39,13 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.IShallowCopy;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
-import org.lightjason.agentspeak.language.execution.action.unify.IUnifier;
+import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
 import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
 import org.lightjason.agentspeak.language.instantiable.rule.IRule;
+import org.lightjason.agentspeak.language.unify.IUnifier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,6 +59,10 @@ import java.util.stream.Stream;
  */
 public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> implements IElement<N>
 {
+    /**
+     * serial id
+     */
+    private static final long serialVersionUID = 2131082093359879516L;
     /**
      * agent name
      */
@@ -181,10 +187,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         }
 
         @Override
-        protected IAgentConfiguration<N> configuration( final IFuzzy<Boolean, N> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans,
-                                                        final Set<IRule> p_rules,
-                                                        final ILiteral p_initialgoal, final IUnifier p_unifier,
-                                                        final IVariableBuilder p_variablebuilder
+        protected IAgentConfiguration<N> configuration( @Nonnull final IFuzzyBundle<Boolean> p_fuzzy, @Nonnull final Collection<ILiteral> p_initalbeliefs,
+                                                        @Nonnull final Set<IPlan> p_plans, @Nonnull final Set<IRule> p_rules,
+                                                        @Nullable final ILiteral p_initialgoal,
+                                                        @Nonnull final IUnifier p_unifier, @Nonnull final IVariableBuilder p_variablebuilder
         )
         {
             return new CConfiguration( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
@@ -195,14 +201,21 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
          */
         private final class CConfiguration extends CDefaultAgentConfiguration<N>
         {
-            public CConfiguration( final IFuzzy<Boolean, N> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans, final Set<IRule> p_rules,
+
+
+            public CConfiguration( @Nonnull final IFuzzyBundle<Boolean> p_fuzzy,
+                                   @Nonnull final Collection<ILiteral> p_initialbeliefs,
+                                   @Nonnull final Set<IPlan> p_plans,
+                                   @Nonnull final Set<IRule> p_rules,
                                    final ILiteral p_initialgoal,
-                                   final IUnifier p_unifier, final IVariableBuilder p_variablebuilder
+                                   @Nonnull final IUnifier p_unifier,
+                                   @Nonnull final IVariableBuilder p_variablebuilder
             )
             {
-                super( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
+                super( p_fuzzy, p_initialbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
             }
 
+            @Nonnull
             @Override
             @SuppressWarnings( "unchecked" )
             public final IView<N> beliefbase()
