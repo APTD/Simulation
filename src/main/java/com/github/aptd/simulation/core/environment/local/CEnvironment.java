@@ -23,10 +23,10 @@
 package com.github.aptd.simulation.core.environment.local;
 
 import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import org.lightjason.agentspeak.language.ILiteral;
 
-import java.time.Instant;
 import java.util.stream.Stream;
 
 
@@ -36,22 +36,22 @@ import java.util.stream.Stream;
 public final class CEnvironment implements IEnvironment
 {
 
-    private Instant m_currenttime = Instant.MIN;
+    private ITime m_time;
 
-    public Instant currentTime()
+    public ITime time()
     {
-        return m_currenttime;
+        return m_time;
     }
 
     /**
      * set the current simulated time
      *
-     * @param p_currenttime the new current time
+     * @param p_time the new current time
      * @return self
      */
-    public CEnvironment currentTime( final Instant p_currenttime )
+    public CEnvironment time( final ITime p_time )
     {
-        m_currenttime = p_currenttime;
+        m_time = p_time;
         return this;
     }
 

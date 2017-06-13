@@ -32,7 +32,7 @@ import java.util.Locale;
 /**
  * runtime factory
  */
-public enum  ERuntime
+public enum ERuntime
 {
     LOCAL;
 

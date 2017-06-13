@@ -22,10 +22,10 @@
 
 package com.github.aptd.simulation.core.environment;
 
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import org.lightjason.agentspeak.language.ILiteral;
 
-import java.time.Instant;
 import java.util.stream.Stream;
 
 /**
@@ -40,15 +40,15 @@ public interface IEnvironment
      * get the current time instant
      * @return the current time instant
      */
-    Instant currentTime();
+    ITime time();
 
 
     /**
      * set the current time
-     * @param p_currenttime the new current time
+     * @param p_time the new current time
      * @return this environment (for chaining)
      */
-    IEnvironment currentTime( final Instant p_currenttime );
+    IEnvironment time( final ITime p_time );
 
 
     /**
