@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements;
 
+import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.lang3.tuple.Pair;
@@ -111,6 +112,14 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     }
 
     @Override
+    public N call() throws Exception
+    {
+        if ( runningplans().isEmpty() && !m_nextactivation.isAfter( m_environment.time().current() ) )
+            this.trigger( CAgentTrigger.ACTIVATE );
+        return super.call();
+    }
+
+    @Override
     public final String id()
     {
         return m_id;
@@ -167,6 +176,13 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     protected ZonedDateTime currentTime()
     {
         return m_environment.time().current().atZone( m_timezone );
+    }
+
+    @IAgentActionFilter
+    @IAgentActionName( name = "simtime/max" )
+    protected ZonedDateTime maxTime()
+    {
+        return Instant.MAX.atZone( m_timezone );
     }
 
     @IAgentActionFilter

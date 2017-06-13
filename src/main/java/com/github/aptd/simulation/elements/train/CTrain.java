@@ -35,6 +35,7 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +63,8 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
      */
     private final IGPS m_position = null;
 
+    private final List<CTimetableEntry> m_timetable;
+
 
     /**
      * ctor
@@ -71,10 +74,13 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
      * @param p_wagon wagon references
      * @param p_environment environment
      */
-    private CTrain( final IAgentConfiguration<ITrain<?>> p_configuration, final String p_id, final Stream<IWagon<?>> p_wagon, final IEnvironment p_environment )
+    private CTrain( final IAgentConfiguration<ITrain<?>> p_configuration, final String p_id, final Stream<CTimetableEntry> p_timetable,
+                    final Stream<IWagon<?>> p_wagon, final IEnvironment p_environment
+    )
     {
         super( p_configuration, p_id, FUNCTOR, p_environment );
         m_wagon = p_wagon.collect( Collectors.toList() );
+        m_timetable = p_timetable.collect( Collectors.toList() );
     }
 
     @Override
@@ -138,12 +144,34 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
                 new CTrain(
                     m_configuration,
                     p_data[0].toString(),
-                    Arrays.stream( p_data ).skip( 1 ).map( i -> (IWagon<?>) i ),
+                    (Stream<CTimetableEntry>) p_data[1],
+                    Arrays.stream( p_data ).skip( 2 ).map( i -> (IWagon<?>) i ),
                     m_environment
                 ),
                 Stream.of( FUNCTOR )
             );
         }
+    }
+
+    /**
+     * an entry in the timetable of the train
+     */
+    public static final class CTimetableEntry
+    {
+
+        private final double m_tracklength;
+        private final String m_stationid;
+        private final Instant m_publishedarrival;
+        private final Instant m_publisheddeparture;
+
+        protected CTimetableEntry( final double p_tracklength, final String p_stationid, final Instant p_publishedarrival, final Instant p_publisheddeparture )
+        {
+            m_tracklength = p_tracklength;
+            m_stationid = p_stationid;
+            m_publishedarrival = p_publishedarrival;
+            m_publisheddeparture = p_publisheddeparture;
+        }
+
     }
 
 }

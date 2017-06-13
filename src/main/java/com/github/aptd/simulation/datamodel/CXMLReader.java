@@ -27,6 +27,7 @@ import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.experiment.local.CExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
+import com.github.aptd.simulation.core.time.local.CStepTime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
@@ -51,12 +52,15 @@ import org.railml.schemas._2016.ETrain;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -83,7 +87,7 @@ public final class CXMLReader implements IDataModel
         final JAXBContext l_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
         final Asimov l_model = (Asimov) l_context.createUnmarshaller().unmarshal( p_stream );
 
-        final IEnvironment l_environment = EEnvironment.LOCAL.generate();
+        final IEnvironment l_environment = EEnvironment.LOCAL.generate().time( new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) ) );
 
         final Map<String, String> l_agents = agents( l_model.getAi() );
         final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents, l_environment );
@@ -231,7 +235,7 @@ public final class CXMLReader implements IDataModel
                 IOUtils.toInputStream( p_agents.get( p_train.getRight() ), "UTF-8" ),
                 CCommon.actionsFromPackage().collect( Collectors.toSet() ),
                 p_environment
-            ).generatesingle( p_train.getLeft().getId() );
+            ).generatesingle( p_train.getLeft().getId(), Stream.of() );
         }
         catch ( final Exception l_exception )
         {
