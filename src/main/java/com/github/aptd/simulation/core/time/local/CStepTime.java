@@ -24,6 +24,7 @@ package com.github.aptd.simulation.core.time.local;
 
 import com.github.aptd.simulation.core.time.IBaseTime;
 
+import java.time.Instant;
 import java.time.temporal.TemporalAmount;
 
 
@@ -38,10 +39,12 @@ public class CStepTime extends IBaseTime
     /**
      * Create a new instance with given stepsize
      *
+     * @param p_starttime initial time
      * @param p_stepsize how long is one simulation cycle in simulated time
      */
-    public CStepTime( final TemporalAmount p_stepsize )
+    public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize )
     {
+        m_currenttime = p_starttime;
         m_stepsize = p_stepsize;
     }
 
