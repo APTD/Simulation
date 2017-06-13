@@ -61,8 +61,45 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                             !main.
 
                             +!main <-
-                            generic/print("hello train")
+                                generic/print("hello train");
+                                !test ( 0 );
+                                !countdown( 5 )
                             .
+
+                            +!test( X ) <-
+                                generic/print( "test", X );
+                                DT = simtime/current();
+                                generic/print( "current time: ", DT );
+                                N = datetime/applyseconds("plus", 20, DT);
+                                generic/print( N );
+                                !countdown ( X );
+                                Y = X + 1;
+                                L = generic/type/parseliteral( string/concat( "test( ", generic/type/tostring( Y ), ")" ) );
+                                L2 = generic/type/parseliteral( string/concat( "test( ", generic/type/tostring( X ), ")" ) );
+                                +nextthing( L );
+                                +nextthing( L2 );
+                                nextactivation/set( N )
+                          .
+
+                            +!countdown( N )
+                            : N > 0 <-
+                                generic/print( N );
+                                M = N - 1;
+                                !countdown( M )
+                            : N <= 0 <-
+                                generic/print( "repair" )
+                            .
+
+                            +!activate
+                            : simtime/current() >= nextactivation/get() <-
+                                nextactivation/set( simtime/max );
+                                >>nextthing( Z );
+                                generic/print( "activate", Z );
+                                -nextthing( Z );
+                                !Z;
+                                !!activate
+                            .
+
                         ]]></asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
