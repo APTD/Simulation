@@ -26,16 +26,16 @@ import java.text.MessageFormat;
 
 
 /**
- * exception of unmodifyable access
+ * exception of unmodifiable access
  */
 @SuppressWarnings( "serial" )
-public class CUnmodifyableException extends RuntimeException
+public class CUnmodifiableException extends RuntimeException
 {
 
     /**
      * ctor
      */
-    public CUnmodifyableException()
+    public CUnmodifiableException()
     {
         super();
     }
@@ -46,7 +46,7 @@ public class CUnmodifyableException extends RuntimeException
      * @param p_message any message
      * @param p_values any object values which are printed
      */
-    public CUnmodifyableException( final String p_message, final Object... p_values )
+    public CUnmodifiableException( final String p_message, final Object... p_values )
     {
         super( MessageFormat.format( p_message, p_values ) );
     }
@@ -56,7 +56,7 @@ public class CUnmodifyableException extends RuntimeException
      *
      * @param p_cause any throwable
      */
-    public CUnmodifyableException( final Throwable p_cause )
+    public CUnmodifiableException( final Throwable p_cause )
     {
         super( p_cause );
     }
