@@ -31,7 +31,6 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
-import org.lightjason.agentspeak.agent.fuzzy.IFuzzy;
 import org.lightjason.agentspeak.beliefbase.CBeliefbasePersistent;
 import org.lightjason.agentspeak.beliefbase.storage.CMultiStorage;
 import org.lightjason.agentspeak.beliefbase.storage.CSingleStorage;
@@ -45,9 +44,10 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.lightjason.agentspeak.language.IShallowCopy;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
-import org.lightjason.agentspeak.language.execution.action.unify.IUnifier;
+import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
 import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
 import org.lightjason.agentspeak.language.instantiable.rule.IRule;
+import org.lightjason.agentspeak.language.unify.IUnifier;
 
 import java.io.InputStream;
 import java.time.Instant;
@@ -265,8 +265,8 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         }
 
         @Override
-        protected IAgentConfiguration<N> configuration( final IFuzzy<Boolean, N> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans,
-                                                        final Set<IRule> p_rules,
+        protected IAgentConfiguration<N> configuration( final IFuzzyBundle<Boolean> p_fuzzy, final Collection<ILiteral> p_initalbeliefs,
+                                                        final Set<IPlan> p_plans, final Set<IRule> p_rules,
                                                         final ILiteral p_initialgoal, final IUnifier p_unifier,
                                                         final IVariableBuilder p_variablebuilder
         )
@@ -279,8 +279,8 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
          */
         private final class CConfiguration extends CDefaultAgentConfiguration<N>
         {
-            public CConfiguration( final IFuzzy<Boolean, N> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans, final Set<IRule> p_rules,
-                                   final ILiteral p_initialgoal,
+            public CConfiguration( final IFuzzyBundle<Boolean> p_fuzzy, final Collection<ILiteral> p_initalbeliefs, final Set<IPlan> p_plans,
+                                   final Set<IRule> p_rules, final ILiteral p_initialgoal,
                                    final IUnifier p_unifier, final IVariableBuilder p_variablebuilder
             )
             {

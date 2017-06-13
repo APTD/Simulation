@@ -213,7 +213,7 @@ public final class CXMLReader implements IDataModel
                              .parallelStream()
                              .filter( i -> hasagentname( i.getAny3() ) )
                              .map( i -> agentname( i, i.getAny3() ) )
-                             .map( i -> train( i, p_agents, p_environment ) )
+                             .map( i -> train( i, p_agents, p_environment, p_network ) )
                              .collect( Collectors.toMap( IElement::id, i -> i ) )
         );
     }
@@ -227,7 +227,8 @@ public final class CXMLReader implements IDataModel
      * @param p_environment environment
      * @return train
      */
-    private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents, final IEnvironment p_environment )
+    private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents, final IEnvironment p_environment,
+                                    final Network p_network )
     {
         try
         {
@@ -242,6 +243,9 @@ public final class CXMLReader implements IDataModel
             throw new CSemanticException( l_exception );
         }
     }
+
+
+    //private static Stream<CTrain.CTimetableEntry> traintimetable( Pair<ETrain> )
 
 
     /**
