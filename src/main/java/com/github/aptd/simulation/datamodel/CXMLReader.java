@@ -142,7 +142,7 @@ public final class CXMLReader implements IDataModel
      */
     private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory )
     {
-        final Map<String, IElement.IGenerator<IStation<?>>> l_generators = new HashMap<>();
+        final Map<String, IElement.IGenerator<IStation<?>>> l_generators = Collections.synchronizedMap( new HashMap<>() );
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         return Collections.unmodifiableMap(
                    p_network.getInfrastructure()
@@ -200,7 +200,7 @@ public final class CXMLReader implements IDataModel
      */
     private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory )
     {
-        final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new HashMap<>();
+        final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = Collections.synchronizedMap( new HashMap<>() );
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         return Collections.unmodifiableMap(
             p_network.getTimetable()
