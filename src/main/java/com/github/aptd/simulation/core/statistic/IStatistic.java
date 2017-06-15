@@ -25,6 +25,7 @@ package com.github.aptd.simulation.core.statistic;
 import com.github.aptd.simulation.core.writer.IWriter;
 import org.lightjason.agentspeak.action.IAction;
 
+import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 
@@ -35,6 +36,22 @@ import java.util.stream.Stream;
  */
 public interface IStatistic
 {
+    IStatistic EMPTY = new IStatistic()
+    {
+        @Nonnull
+        @Override
+        public final IStatistic write( @Nonnull final IWriter p_writer )
+        {
+            return this;
+        }
+
+        @Nonnull
+        @Override
+        public final Stream<IAction> action()
+        {
+            return Stream.empty();
+        }
+    };
 
     /**
      * export statistic data
@@ -42,13 +59,15 @@ public interface IStatistic
      * @param p_writer writer instance
      * @return self-reference
      */
-    IStatistic write( final IWriter p_writer );
+    @Nonnull
+    IStatistic write( @Nonnull final IWriter p_writer );
 
     /**
      * agent action of statistic
      *
      * @return action stream
      */
+    @Nonnull
     Stream<IAction> action();
 
 }

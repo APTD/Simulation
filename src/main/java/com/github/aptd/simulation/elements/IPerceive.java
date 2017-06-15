@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 
 /**
- * Created by pkraus on 28.04.17.
+ * any object which be perceived by an agent
  */
 public interface IPerceive
 {

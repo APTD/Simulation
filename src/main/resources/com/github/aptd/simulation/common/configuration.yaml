@@ -9,10 +9,15 @@ httpserver:
     host: localhost
 
 
+# default elements
+default:
+  datamodel: xml
+  iteration: 10
+
 # runtime configuration
 runtime:
     type: local
-    sequential: false
+    parallel: true
     stepbystep: false
 
 

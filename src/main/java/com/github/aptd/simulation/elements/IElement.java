@@ -26,6 +26,7 @@ import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.generator.IAgentGenerator;
 
 import java.time.Instant;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -33,7 +34,7 @@ import java.time.Instant;
  *
  * @tparam T domain specific type
  */
-public interface IElement<T extends IAgent<?>> extends IPerceive, IAgent<T>
+public interface IElement<T extends IAgent<?>> extends IPerceive, IAgent<T>, Callable<T>
 {
 
     /**

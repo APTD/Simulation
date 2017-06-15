@@ -23,23 +23,32 @@
 package com.github.aptd.simulation;
 
 
+import com.codepoetics.protonpack.StreamUtils;
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
+import com.github.aptd.simulation.core.environment.EEnvironment;
 import com.github.aptd.simulation.core.runtime.ERuntime;
+import com.github.aptd.simulation.core.time.local.CStepTime;
 import com.github.aptd.simulation.datamodel.EDataModel;
-import com.github.aptd.simulation.datamodel.IDataModel;
+import com.github.aptd.simulation.factory.EFactory;
 import com.github.aptd.simulation.ui.CHTTPServer;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 
 /**
@@ -70,10 +79,10 @@ public final class CMain
         final Options l_clioptions = new Options();
         l_clioptions.addOption( "help", false, "shows this information" );
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
-        l_clioptions.addOption( "generatescenario", false, "generate example scenario" );
-        l_clioptions.addOption( "stepbystep", false, "runs simulation on manuell step-by-step execution" );
-        l_clioptions.addOption( "sequential", false, "agents run in sequential order [default value: parallel]" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
+        l_clioptions.addOption( "sequential", false, "run simulation in sequential (default is parallel)" );
+        l_clioptions.addOption( "iteration", true, "number of iterations" );
+        l_clioptions.addOption( "scenariotype", true, "comma-separated list of scenario types (default: xml)" );
         l_clioptions.addOption( "scenario", true, "comma-separated list of scenario files" );
 
         final CommandLine l_cli;
@@ -104,60 +113,63 @@ public final class CMain
             return;
         }
 
-        // load configuration and start the http server (if possible)
+        // load configuration and initialize the http server (if possible)
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
-
-
-
-        // ---- replace by batch scenario process ----
         CHTTPServer.initialize();
 
+        // execute experiments in batch processing and starts http server
+        new Thread( () -> datamodel( l_cli )
+            .map( i -> i.getLeft().model().get(
 
-        final List<IDataModel> l_scenario = Collections.unmodifiableList(
-            Arrays.stream( l_cli.getOptionValue( "scenario", "" ).split( "," ) )
-                  .map( String::trim )
-                  .filter( i -> !i.isEmpty() )
-                  .map( i -> datamodelbyfileextension( i ).get( i ) )
-                  .collect( Collectors.toList() )
-        );
+                EFactory.from( CConfiguration.INSTANCE.getOrDefault( "local", "runtime", "type" ) ).factory().environment(
+                    EEnvironment.LOCAL.generate().time( new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) ) )
+                ),
 
+                i.getRight(),
 
-        l_scenario.stream().forEach( d -> {
-            ERuntime.from( "local" ).get().execute( d.get( null ) );
-        } );
+                l_cli.hasOption( "iteration" )
+                ? Long.parseLong( l_cli.getOptionValue( "iteration" ) )
+                : CConfiguration.INSTANCE.getOrDefault( 0L, "default", "iteration" ),
 
-//        try
-//            (
-//                final InputStream l_station = new FileInputStream( "src/test/resources/asl/station.asl" );
-//            )
-//        {
-//            final IEnvironment l_environment = EEnvironment.LOCAL.generate();
-//            final IElement.IGenerator<?> l_generator = new CStation.CGenerator( l_station, CConfiguration.INSTANCE.agentaction(), l_environment );
-//
-//            l_generator.generatesingle( "Goettingen", 51.536777, 9.926074 );
-//            l_generator.generatesingle( "Hannover", 52.3745113, 9.741969 );
-//
-//        }
-//        catch ( final Exception l_exception )
-//        {
-//            l_exception.printStackTrace();
-//        }
-//
-//        CHTTPServer.execute();
+                !l_cli.hasOption( "sequential" ) && CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "runtime", "parallel" )
+
+            ) )
+            .forEach( i -> ERuntime.LOCAL.get().execute( i ) )
+        ).start();
+
+        CHTTPServer.execute();
     }
+
 
     /**
-     * returns the data-model factory based
-     * on the file-extension
+     * returns the experiment data models
      *
-     * @param p_file file name
-     * @return data-model
+     * @param p_options commandline options
+     * @return stream of experiments
      */
-    private static EDataModel datamodelbyfileextension( final String p_file )
+    private static Stream<Pair<EDataModel, String>> datamodel( final CommandLine p_options )
     {
-        final String[] l_extension = p_file.split( "\\." );
-        System.out.println( p_file );
-        return EDataModel.from( l_extension[l_extension.length - 1] );
+        final List<String> l_instances = Arrays.stream( p_options.getOptionValue( "scenario" ).split( "," ) )
+                                               .map( String::trim )
+                                               .filter( i -> !i.isEmpty() )
+                                               .collect( Collectors.toList() );
+
+        final List<String> l_types = Arrays.stream( p_options.getOptionValue( "scenariotype", "" ).split( "," ) )
+                                            .map( String::trim )
+                                            .filter( i -> !i.isEmpty() )
+                                            .collect( Collectors.toList() );
+
+        return StreamUtils.zip(
+            l_instances.stream(),
+            Stream.concat(
+                l_types.stream(),
+                IntStream.range( 0, l_instances.size() - l_types.size() )
+                         .mapToObj( i -> CConfiguration.INSTANCE.getOrDefault( "xml", "default", "datamodel" ) )
+            ),
+            ( i, j ) -> new ImmutablePair<>( EDataModel.from( j ), i )
+        );
     }
+
+
 
 }

@@ -22,12 +22,6 @@
 
 package com.github.aptd.simulation.datamodel;
 
-import com.github.aptd.simulation.common.CCommon;
-import com.github.aptd.simulation.error.CNotFoundException;
-import com.github.aptd.simulation.error.CRuntimeException;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Locale;
 
 
@@ -36,34 +30,30 @@ import java.util.Locale;
  */
 public enum EDataModel
 {
-    XML;
+    XML( new CXMLReader() );
 
     /**
-     * get data-model from file
-     *
-     * @param p_file file path
-     * @return data-model
+     * model instance
      */
-    public final IDataModel get( final String p_file )
+    private final IDataModel m_model;
+
+    /**
+     * ctor
+     *
+     * @param p_model data-model
+     */
+    EDataModel( final IDataModel p_model )
     {
-        try
-        (
-            final InputStream l_stream = new FileInputStream( p_file );
-        )
-        {
+        m_model = p_model;
+    }
 
-            switch ( this )
-            {
-                case XML: return CXMLReader.from( l_stream );
-
-                default:
-                    throw new CNotFoundException( CCommon.languagestring( this, "readernotfound", this ) );
-            }
-        }
-        catch ( final Exception l_exception )
-        {
-            throw new CRuntimeException( l_exception );
-        }
+    /**
+     * get data-model
+     * @return data-model instance
+     */
+    public final IDataModel model()
+    {
+        return m_model;
     }
 
     /**

@@ -26,6 +26,10 @@ import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.writer.IWriter;
 import com.github.aptd.simulation.elements.IElement;
 
+import org.lightjason.agentspeak.action.IAction;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import java.util.stream.Stream;
 
 
@@ -36,12 +40,17 @@ import java.util.stream.Stream;
  */
 public interface IExperiment
 {
+    /**
+     * empty experiment
+     */
+    IExperiment EMPTY = new CEmptyExperiment();
 
     /**
      * returns a stream of all executable objects
      *
      * @return callable stream
      */
+    @Nonnull
     Stream<IElement<?>> objects();
 
     /**
@@ -49,6 +58,7 @@ public interface IExperiment
      *
      * @return simulation steps
      */
+    @Nonnegative
     long simulationsteps();
 
     /**
@@ -63,7 +73,16 @@ public interface IExperiment
      *
      * @return self-reference
      */
-    IExperiment statistic( final IWriter p_writer );
+    @Nonnull
+    IExperiment statistic( @Nonnull final IWriter p_writer );
+
+    /**
+     * returns internal experiment actions
+     *
+     * @return action stream
+     */
+    @Nonnull
+    Stream<IAction> actions();
 
     /**
      * execute agents in parallel
@@ -71,6 +90,53 @@ public interface IExperiment
      * @return boolean flag for parallel execution
      */
     boolean parallel();
+
+    /**
+     * empty experiment
+     */
+    class CEmptyExperiment implements IExperiment
+    {
+        @Nonnull
+        @Override
+        public final Stream<IElement<?>> objects()
+        {
+            return Stream.empty();
+        }
+
+        @Nonnegative
+        @Override
+        public final long simulationsteps()
+        {
+            return 0;
+        }
+
+        @Override
+        public IEnvironment environment()
+        {
+            return null;
+        }
+
+        @Nonnull
+        @Override
+        public final IExperiment statistic( @Nonnull final IWriter p_writer )
+        {
+            return this;
+        }
+
+        @Nonnull
+        @Override
+        public final Stream<IAction> actions()
+        {
+            return Stream.empty();
+        }
+
+        @Override
+        public final boolean parallel()
+        {
+            return false;
+        }
+    }
+
 
 }
 

@@ -22,12 +22,15 @@
 
 package com.github.aptd.simulation.datamodel;
 
-import com.github.aptd.simulation.core.environment.EEnvironment;
 import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.experiment.local.CExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
-import com.github.aptd.simulation.core.time.local.CStepTime;
+import com.github.aptd.simulation.datamodel.xml.AgentRef;
+import com.github.aptd.simulation.datamodel.xml.Asimov;
+import com.github.aptd.simulation.datamodel.xml.Iagent;
+import com.github.aptd.simulation.datamodel.xml.Iagents;
+import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
@@ -37,11 +40,7 @@ import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
 import com.github.aptd.simulation.factory.IFactory;
-import com.github.aptd.simulation.datamodel.xml.AgentRef;
-import com.github.aptd.simulation.datamodel.xml.Asimov;
-import com.github.aptd.simulation.datamodel.xml.Iagent;
-import com.github.aptd.simulation.datamodel.xml.Iagents;
-import com.github.aptd.simulation.datamodel.xml.Network;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -51,12 +50,9 @@ import org.railml.schemas._2016.ETrain;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.InputStream;
-import java.time.Duration;
-import java.time.Instant;
+import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,47 +66,19 @@ import java.util.stream.Stream;
  */
 public final class CXMLReader implements IDataModel
 {
-
-    private final Map<String, IElement<?>> m_agents = new HashMap<>();
-
-    private final IExperiment m_experiment;
-
+    /**
+     * jaxb context
+     */
+    private final JAXBContext m_context;
 
     /**
      * ctor
-     * @throws JAXBException is thrown on any jaxb exception
      */
-    @SuppressWarnings( "unchecked" )
-    private CXMLReader( final InputStream p_stream ) throws JAXBException
-    {
-
-        final JAXBContext l_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
-        final Asimov l_model = (Asimov) l_context.createUnmarshaller().unmarshal( p_stream );
-
-        final IEnvironment l_environment = EEnvironment.LOCAL.generate().time( new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) ) );
-
-        final Map<String, String> l_agents = agents( l_model.getAi() );
-        final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents, l_environment );
-        final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agents, l_environment );
-        m_agents.putAll( l_station );
-        m_agents.putAll( l_train );
-
-        // @todo this whole thing needs much refactoring; constructor should be called from CMain?
-        m_experiment = new CExperiment( 100, false, new HashSet<IStatistic>(), l_environment, m_agents );
-
-    }
-
-    /**
-     * factory
-     *
-     * @param p_stream input XML stream
-     * @return data-model
-     */
-    public static IDataModel from( final InputStream p_stream )
+    public CXMLReader()
     {
         try
         {
-            return new CXMLReader( p_stream );
+            m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
         }
         catch ( final JAXBException l_exception )
         {
@@ -119,9 +87,33 @@ public final class CXMLReader implements IDataModel
     }
 
     @Override
-    public final IExperiment get( final IFactory p_factory )
+    @SuppressWarnings( "unchecked" )
+    public final IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel )
     {
-        return m_experiment;
+        try
+        (
+            final FileInputStream l_stream = new FileInputStream( p_datamodel );
+        )
+        {
+
+            final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
+
+            final IEnvironment l_environment = p_factory.environment();
+
+            final Map<String, String> l_agentdefs = agents( l_model.getAi() );
+            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, l_environment );
+            final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, l_environment );
+
+            final Map<String, IElement<?>> l_agents = new HashMap<>();
+            l_agents.putAll( l_station );
+            l_agents.putAll( l_train );
+
+            return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_environment, l_agents );
+
+        } catch ( final Exception l_execption )
+        {
+            throw new CRuntimeException( l_execption );
+        }
     }
 
 
@@ -226,6 +218,7 @@ public final class CXMLReader implements IDataModel
      * @param p_agents agent map
      * @param p_environment environment
      * @return train
+     * @todo replace with factory
      */
     private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents, final IEnvironment p_environment,
                                     final Network p_network )

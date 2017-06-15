@@ -36,6 +36,8 @@ import org.lightjason.agentspeak.language.execution.IContext;
 import org.lightjason.agentspeak.language.fuzzy.CFuzzyValue;
 import org.lightjason.agentspeak.language.fuzzy.IFuzzyValue;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,14 +61,16 @@ public final class CStatistic implements IStatistic
     private final Map<String, DescriptiveStatistics> m_data = new ConcurrentHashMap<>();
 
 
+    @Nonnull
     @Override
-    public final IStatistic write( final IWriter p_writer )
+    public final IStatistic write( @Nonnull final IWriter p_writer )
     {
         p_writer.section( 0, "agentstatistic" );
         m_data.forEach( ( p_key, p_value ) -> apply( p_writer, p_key, p_value ) );
         return this;
     }
 
+    @Nonnull
     @Override
     public final Stream<IAction> action()
     {
@@ -109,23 +113,26 @@ public final class CStatistic implements IStatistic
      */
     private final class CStatisticAction extends IBaseAction
     {
-
+        @Nonnull
         @Override
         public final IPath name()
         {
             return CPath.from( "asimov/statistic" );
         }
 
+        @Nonnegative
         @Override
         public final int minimalArgumentNumber()
         {
             return 1;
         }
 
+        @Nonnull
         @Override
-        public final IFuzzyValue<Boolean> execute( final boolean p_parallel, final IContext p_context, final List<ITerm> p_argument, final List<ITerm> p_return )
+        public IFuzzyValue<Boolean> execute( final boolean p_parallel, @Nonnull final IContext p_context,
+                                             @Nonnull final List<ITerm> p_argument, @Nonnull final List<ITerm> p_return )
         {
-            final List<ITerm> l_arguments = CCommon.flatcollection( p_argument ).collect( Collectors.toList() );
+            final List<ITerm> l_arguments = CCommon.flatten( p_argument ).collect( Collectors.toList() );
             if ( l_arguments.size() < 2 )
                 return CFuzzyValue.from( false );
 
