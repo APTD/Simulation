@@ -28,7 +28,9 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -72,15 +74,16 @@ public abstract class IBaseTime implements ITime
     @Override
     public Stream<ILiteral> literal( final Stream<IElement<?>> p_object )
     {
-        return Stream.of( CLiteral.from( "time",
-                                         CLiteral.from( "year", CRawTerm.from( m_currenttime.get( ChronoField.YEAR ) ) ),
-                                         CLiteral.from( "month", CRawTerm.from( m_currenttime.get( ChronoField.MONTH_OF_YEAR ) ) ),
-                                         CLiteral.from( "day", CRawTerm.from( m_currenttime.get( ChronoField.DAY_OF_MONTH ) ) ),
-                                         CLiteral.from( "hours", CRawTerm.from( m_currenttime.get( ChronoField.HOUR_OF_DAY ) ) ),
-                                         CLiteral.from( "minutes", CRawTerm.from( m_currenttime.get( ChronoField.MINUTE_OF_HOUR ) ) ),
-                                         CLiteral.from( "seconds", CRawTerm.from( m_currenttime.get( ChronoField.SECOND_OF_MINUTE ) ) ),
-                                         CLiteral.from( "nanoseconds", CRawTerm.from( m_currenttime.get( ChronoField.NANO_OF_SECOND ) ) )
-                                       )
+        final ZonedDateTime l_time = m_currenttime.atZone( ZoneId.systemDefault() );
+        return Stream.of(
+                             CLiteral.from( "year", CRawTerm.from( l_time.get( ChronoField.YEAR ) ) ),
+                             CLiteral.from( "month", CRawTerm.from( l_time.get( ChronoField.MONTH_OF_YEAR ) ) ),
+                             CLiteral.from( "day", CRawTerm.from( l_time.get( ChronoField.DAY_OF_MONTH ) ) ),
+                             CLiteral.from( "hours", CRawTerm.from( l_time.get( ChronoField.HOUR_OF_DAY ) ) ),
+                             CLiteral.from( "minutes", CRawTerm.from( l_time.get( ChronoField.MINUTE_OF_HOUR ) ) ),
+                             CLiteral.from( "seconds", CRawTerm.from( l_time.get( ChronoField.SECOND_OF_MINUTE ) ) ),
+                             CLiteral.from( "nanoseconds", CRawTerm.from( l_time.get( ChronoField.NANO_OF_SECOND ) ) ),
+                             CLiteral.from( "datetime", CRawTerm.from( l_time ) )
                         );
     }
 }

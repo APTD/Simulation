@@ -32,6 +32,7 @@ import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
 import org.lightjason.agentspeak.beliefbase.CBeliefbasePersistent;
+import org.lightjason.agentspeak.beliefbase.IBeliefbaseOnDemand;
 import org.lightjason.agentspeak.beliefbase.storage.CMultiStorage;
 import org.lightjason.agentspeak.beliefbase.storage.CSingleStorage;
 import org.lightjason.agentspeak.beliefbase.view.IView;
@@ -50,6 +51,7 @@ import org.lightjason.agentspeak.language.instantiable.rule.IRule;
 import org.lightjason.agentspeak.language.unify.IUnifier;
 
 import java.io.InputStream;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -109,6 +111,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         m_environment = p_environment;
 
         m_external = m_beliefbase.beliefbase().view( "extern" );
+        m_beliefbase.add( new CEnvironmentBeliefbase().create( "env", m_beliefbase ) );
     }
 
     @Override
@@ -182,7 +185,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     @IAgentActionName( name = "simtime/max" )
     protected ZonedDateTime maxTime()
     {
-        return Instant.MAX.atZone( m_timezone );
+        return ZonedDateTime.ofInstant( Instant.now().plus( Duration.ofDays( 9999 ) ), m_timezone );
     }
 
     @IAgentActionFilter
@@ -268,8 +271,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         protected IAgentConfiguration<N> configuration( final IFuzzyBundle<Boolean> p_fuzzy, final Collection<ILiteral> p_initalbeliefs,
                                                         final Set<IPlan> p_plans, final Set<IRule> p_rules,
                                                         final ILiteral p_initialgoal, final IUnifier p_unifier,
-                                                        final IVariableBuilder p_variablebuilder
-        )
+                                                        final IVariableBuilder p_variablebuilder )
         {
             return new CConfiguration( p_fuzzy, p_initalbeliefs, p_plans, p_rules, p_initialgoal, p_unifier, p_variablebuilder );
         }
@@ -302,5 +304,52 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
             }
         }
     }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * on-demand beliefbase to get access
+     * to the environment data
+     */
+    private final class CEnvironmentBeliefbase extends IBeliefbaseOnDemand<N>
+    {
+
+        @Override
+        public final Stream<ILiteral> streamLiteral()
+        {
+            return m_environment.literal( IBaseElement.this );
+        }
+
+        @Override
+        public final Collection<ILiteral> literal( final String p_key )
+        {
+            return m_environment.literal( IBaseElement.this )
+                                .filter( i -> p_key.equals( i.functor() ) )
+                                .collect( Collectors.toSet() );
+        }
+
+        @Override
+        public final boolean empty()
+        {
+            return !m_environment.literal( IBaseElement.this )
+                                 .findFirst()
+                                 .isPresent();
+        }
+
+        @Override
+        public final int size()
+        {
+            return (int) m_environment.literal( IBaseElement.this ).count();
+        }
+
+        @Override
+        public final boolean containsLiteral( final String p_key )
+        {
+            return m_environment.literal( IBaseElement.this )
+                                .anyMatch( i -> p_key.equals( i.functor() ) );
+        }
+
+    }
+
 
 }

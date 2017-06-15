@@ -65,7 +65,7 @@ public final class CEnvironment implements IEnvironment
     @Override
     public final Stream<ILiteral> literal( final IBaseElement<?> p_agent )
     {
-        return Stream.of();
+        return m_time.literal( p_agent );
     }
 
 
