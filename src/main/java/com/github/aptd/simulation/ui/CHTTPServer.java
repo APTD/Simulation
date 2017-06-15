@@ -92,12 +92,6 @@ public final class CHTTPServer
         l_webapp.addFilter( new FilterHolder( new CrossOriginFilter() ), "/rest/*", EnumSet.of( DispatcherType.REQUEST ) );
     }
 
-    /**
-     * initialize function to create singletone instance
-     */
-    public static void initialize()
-    {
-    }
 
     /**
      * execute the server instance

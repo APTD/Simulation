@@ -113,9 +113,8 @@ public final class CMain
             return;
         }
 
-        // load configuration and initialize the http server (if possible)
+        // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
-        CHTTPServer.initialize();
 
         // execute experiments in batch processing and starts http server
         new Thread( () -> datamodel( l_cli )
@@ -137,6 +136,7 @@ public final class CMain
             .forEach( i -> ERuntime.LOCAL.get().execute( i ) )
         ).start();
 
+        // start http server if possible
         CHTTPServer.execute();
     }
 
