@@ -27,6 +27,7 @@ import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
+import com.github.aptd.simulation.elements.train.ITrain;
 import com.google.common.base.Function;
 import org.lightjason.agentspeak.action.IAction;
 
@@ -58,6 +59,15 @@ public interface IFactory
      * @return environment
      */
     IEnvironment environment();
+
+    /**
+     * creates a train generator
+     *
+     * @param p_stream ASL stream
+     * @param p_actions default actions
+     * @return generator
+     */
+    IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception;
 
     /**
      * network generating

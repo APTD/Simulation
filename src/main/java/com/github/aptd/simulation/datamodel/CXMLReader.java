@@ -33,8 +33,6 @@ import com.github.aptd.simulation.datamodel.xml.Iagents;
 import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
-import com.github.aptd.simulation.elements.graph.network.local.CStation;
-import com.github.aptd.simulation.elements.train.CTrain;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
@@ -44,9 +42,8 @@ import com.github.aptd.simulation.factory.IFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
-import org.railml.schemas._2016.EOcp;
-import org.railml.schemas._2016.ETrain;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -55,6 +52,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -101,8 +99,8 @@ public final class CXMLReader implements IDataModel
             final IEnvironment l_environment = p_factory.environment();
 
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
-            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, l_environment );
-            final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, l_environment );
+            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory );
+            final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory );
 
             final Map<String, IElement<?>> l_agents = new HashMap<>();
             l_agents.putAll( l_station );
@@ -139,11 +137,13 @@ public final class CXMLReader implements IDataModel
      *
      * @param p_network network component
      * @param p_agents map with agents
-     * @param p_environment environment
+     * @param p_factory factory
      * @return unmodifyable map with stations
      */
-    private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents, final IEnvironment p_environment )
+    private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory )
     {
+        final Map<String, IElement.IGenerator<IStation<?>>> l_generators = new HashMap<>();
+        final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         return Collections.unmodifiableMap(
                    p_network.getInfrastructure()
                             .getOperationControlPoints()
@@ -151,34 +151,36 @@ public final class CXMLReader implements IDataModel
                             .parallelStream()
                             .filter( i -> hasagentname( i.getAny() ) )
                             .map( i -> agentname( i, i.getAny() ) )
-                            .map( i -> station( i, p_agents, p_environment ) )
+                            .map( i -> l_generators.computeIfAbsent(
+                                        i.getRight(),
+                                        a -> stationgenerator( p_factory, p_agents.get( i.getRight() ), l_actions )
+                                        ).generatesingle(
+                                            i.getLeft().getDescription(),
+                                            i.getLeft().getGeoCoord().getCoord().get( 0 ),
+                                            i.getLeft().getGeoCoord().getCoord().get( 1 )
+                                        )
+                                )
                             .collect( Collectors.toMap( IElement::id, i -> i ) )
         );
-
     }
 
 
     /**
-     * creates a station agent
+     * creates a station agent generator
      *
-     * @param p_station station reference
-     * @param p_agents agent map
-     * @param p_environment environment
-     * @return station
-     * @todo replace with factory
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return station generator
      */
-    private static IStation<?> station( final Pair<EOcp, String> p_station, final Map<String, String> p_agents, final IEnvironment p_environment )
+    private static IElement.IGenerator<IStation<?>> stationgenerator( final IFactory p_factory, final String p_asl, final Set<IAction> p_actions )
     {
         try
         {
-            return new CStation.CGenerator(
-                IOUtils.toInputStream(  p_agents.get( p_station.getRight() ), "UTF-8" ),
-                CCommon.actionsFromPackage().collect( Collectors.toSet() ),
-                p_environment
-            ).generatesingle(
-                p_station.getLeft().getDescription(),
-                p_station.getLeft().getGeoCoord().getCoord().get( 0 ),
-                p_station.getLeft().getGeoCoord().getCoord().get( 1 )
+            return p_factory.station(
+                IOUtils.toInputStream( p_asl, "UTF-8" ),
+                p_actions
+                // CCommon.actionsFromPackage().collect( Collectors.toSet())
             );
         }
         catch ( final Exception l_exception )
@@ -193,43 +195,50 @@ public final class CXMLReader implements IDataModel
      *
      * @param p_network network component
      * @param p_agents map with agents
-     * @param p_environment environment
+     * @param p_factory factory
      * @return unmodifiable map with trains
      */
-    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IEnvironment p_environment )
+    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory )
     {
+        final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new HashMap<>();
+        final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         return Collections.unmodifiableMap(
-                    p_network.getTimetable()
-                             .getTrains()
-                             .getTrain()
-                             .parallelStream()
-                             .filter( i -> hasagentname( i.getAny3() ) )
-                             .map( i -> agentname( i, i.getAny3() ) )
-                             .map( i -> train( i, p_agents, p_environment, p_network ) )
-                             .collect( Collectors.toMap( IElement::id, i -> i ) )
+            p_network.getTimetable()
+                     .getTrains()
+                     .getTrain()
+                     .parallelStream()
+                     .filter( i -> hasagentname( i.getAny3() ) )
+                     .map( i -> agentname( i, i.getAny3() ) )
+                     .map( i -> l_generators.computeIfAbsent(
+                         i.getRight(),
+                         a -> traingenerator( p_factory, p_agents.get( i.getRight() ), l_actions )
+                         ).generatesingle(
+                             i.getLeft().getId(),
+                             Stream.of()
+                         )
+                     )
+                     .collect( Collectors.toMap( IElement::id, i -> i ) )
         );
     }
 
 
     /**
-     * creates a train agent
+     * creates a train agent generator
      *
-     * @param p_train train referenct
-     * @param p_agents agent map
-     * @param p_environment environment
-     * @return train
-     * @todo replace with factory
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return train generator
      */
-    private static ITrain<?> train( final Pair<ETrain, String> p_train, final Map<String, String> p_agents, final IEnvironment p_environment,
-                                    final Network p_network )
+    private static IElement.IGenerator<ITrain<?>> traingenerator( final IFactory p_factory, final String p_asl, final Set<IAction> p_actions )
     {
         try
         {
-            return new CTrain.CGenerator(
-                IOUtils.toInputStream( p_agents.get( p_train.getRight() ), "UTF-8" ),
-                CCommon.actionsFromPackage().collect( Collectors.toSet() ),
-                p_environment
-            ).generatesingle( p_train.getLeft().getId(), Stream.of() );
+            return p_factory.train(
+                IOUtils.toInputStream( p_asl, "UTF-8" ),
+                p_actions
+                // CCommon.actionsFromPackage().collect( Collectors.toSet() )
+            );
         }
         catch ( final Exception l_exception )
         {

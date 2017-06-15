@@ -32,6 +32,8 @@ import com.github.aptd.simulation.elements.graph.network.local.CNetwork;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.elements.graph.network.local.CTransit;
 import com.github.aptd.simulation.elements.graph.network.local.CVirtual;
+import com.github.aptd.simulation.elements.train.CTrain;
+import com.github.aptd.simulation.elements.train.ITrain;
 import com.google.common.base.Function;
 import org.lightjason.agentspeak.action.IAction;
 
@@ -61,6 +63,13 @@ public final class CLocal implements IFactory
     public IEnvironment environment()
     {
         return m_environment;
+    }
+
+    @Nonnull
+    @Override
+    public IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception
+    {
+        return new CTrain.CGenerator( p_stream, p_actions, m_environment );
     }
 
     @Nonnull
