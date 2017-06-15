@@ -23,6 +23,9 @@
 package com.github.aptd.simulation.datamodel;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
+import com.github.aptd.simulation.core.experiment.local.CExperiment;
+import com.github.aptd.simulation.core.runtime.local.CRuntime;
+import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
@@ -43,11 +46,13 @@ import org.railml.schemas._2016.EOcp;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -57,32 +62,19 @@ import java.util.stream.Collectors;
  */
 public final class CXMLReader implements IDataModel
 {
+    /**
+     * jaxb context
+     */
+    private final JAXBContext m_context;
 
     /**
      * ctor
-     * @throws JAXBException is thrown on any jaxb exception
      */
-    @SuppressWarnings( "unchecked" )
-    private CXMLReader( final InputStream p_stream ) throws JAXBException
-    {
-        final JAXBContext l_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
-        final Asimov l_model = (Asimov) l_context.createUnmarshaller().unmarshal( p_stream );
-
-        final Map<String, String> l_agents = agents( l_model.getAi() );
-        final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents );
-    }
-
-    /**
-     * factory
-     *
-     * @param p_stream input XML stream
-     * @return data-model
-     */
-    public static IDataModel from( final InputStream p_stream )
+    public CXMLReader()
     {
         try
         {
-            return new CXMLReader( p_stream );
+            m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
         }
         catch ( final JAXBException l_exception )
         {
@@ -91,9 +83,26 @@ public final class CXMLReader implements IDataModel
     }
 
     @Override
-    public final IExperiment get( final IFactory p_factory )
+    @SuppressWarnings( "unchecked" )
+    public final IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel )
     {
-        return null;
+        try
+        (
+            final FileInputStream l_stream = new FileInputStream( p_datamodel );
+        )
+        {
+
+            final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
+
+            final Map<String, String> l_agents = agents( l_model.getAi() );
+            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agents );
+
+            return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_station );
+
+        } catch ( final Exception l_execption )
+        {
+            throw new CRuntimeException( l_execption );
+        }
     }
 
 

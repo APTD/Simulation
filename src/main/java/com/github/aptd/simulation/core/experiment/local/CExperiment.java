@@ -27,6 +27,8 @@ import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.writer.IWriter;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.IBaseAction;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.common.CPath;
@@ -40,11 +42,14 @@ import org.lightjason.agentspeak.language.fuzzy.IFuzzyValue;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,11 +70,15 @@ public final class CExperiment implements IExperiment
     /**
      * statistic object
      */
-    private final Set<IStatistic> m_statistic;
+    private final IStatistic m_statistic;
     /**
      * agents
      */
-    private final Map<String, IElement<?>> m_agents = new HashMap<>();
+    private final Map<String, IElement<?>> m_agents = new ConcurrentHashMap<>();
+    /**
+     * set with actions
+     */
+    private final Set<IAction> m_actions;
 
 
     /**
@@ -77,33 +86,53 @@ public final class CExperiment implements IExperiment
      *
      * @param p_steps number of simulation steps
      * @param p_parallel parallel object execution
-     * @param p_statistic statistic objects
+     * @param p_statistic statistic object
+     * @param p_agents stream with agents
      */
-    public CExperiment( final long p_steps, final boolean p_parallel, final Set<IStatistic> p_statistic )
+    public CExperiment( final long p_steps, final boolean p_parallel, @Nonnull final IStatistic p_statistic,
+                        @Nonnull final Map<String, ?extends IElement<?>> p_agents )
     {
         m_steps = p_steps;
         m_parallel = p_parallel;
         m_statistic = p_statistic;
+        p_agents.forEach( m_agents::put );
+
+        m_actions = Collections.unmodifiableSet(
+            Stream.concat(
+                org.lightjason.agentspeak.common.CCommon.actionsFromPackage(),
+                Stream.of( new CMessageSendAction() )
+            ).collect( Collectors.toSet() )
+        );
     }
 
 
+    @Nonnull
     @Override
     public final Stream<Callable<?>> objects()
     {
         return Stream.of();
     }
 
+    @Nonnegative
     @Override
     public final long simulationsteps()
     {
         return m_steps;
     }
 
+    @Nonnull
     @Override
-    public final IExperiment statistic( final IWriter p_writer )
+    public final IExperiment statistic( @Nonnull final IWriter p_writer )
     {
-        m_statistic.forEach( i -> i.write( p_writer ) );
+        m_statistic.write( p_writer );
         return this;
+    }
+
+    @Nonnull
+    @Override
+    public final Stream<IAction> actions()
+    {
+        return Stream.concat( m_actions.stream(), m_statistic.action() );
     }
 
     @Override
@@ -138,7 +167,7 @@ public final class CExperiment implements IExperiment
         public IFuzzyValue<Boolean> execute( final boolean p_parallel, @Nonnull final IContext p_context,
                                              @Nonnull final List<ITerm> p_argument, @Nonnull final List<ITerm> p_return )
         {
-            final List<ITerm> l_arguments = CCommon.flatcollection( p_argument ).collect( Collectors.toList() );
+            final List<ITerm> l_arguments = CCommon.flatten( p_argument ).collect( Collectors.toList() );
             if ( l_arguments.size() < 2 )
                 return CFuzzyValue.from( false );
 

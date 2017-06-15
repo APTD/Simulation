@@ -24,6 +24,7 @@ package com.github.aptd.simulation;
 
 import com.github.aptd.simulation.datamodel.CXMLReader;
 import com.github.aptd.simulation.datamodel.IDataModel;
+import com.github.aptd.simulation.factory.EFactory;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Assert;
 import org.junit.AssumptionViolatedException;
@@ -47,29 +48,6 @@ import static org.junit.Assert.assertTrue;
  */
 public abstract class IBaseTest
 {
-
-    /**
-     * read XML scenario defintion
-     *
-     * @param p_xmlfile path to XML file
-     * @return data-model instance
-     */
-    protected static IDataModel scenarioxmlreader( final String p_xmlfile )
-    {
-        try
-            (
-                final InputStream l_stream = new FileInputStream( p_xmlfile );
-            )
-        {
-
-            return CXMLReader.from( l_stream );
-        }
-        catch ( final Exception l_exception )
-        {
-            assertTrue( l_exception.getMessage(), false );
-            return null;
-        }
-    }
 
     /**
      * invoke all test manually

@@ -29,7 +29,7 @@ package com.github.aptd.simulation.factory;
  */
 public enum EFactory
 {
-    LOCAL( null );
+    LOCAL( new CLocal() );
 
 
     /**
@@ -65,6 +65,6 @@ public enum EFactory
      */
     public static EFactory from( final String p_value )
     {
-        return EFactory.from( p_value.trim().toUpperCase() );
+        return EFactory.valueOf( p_value.trim().toUpperCase() );
     }
 }

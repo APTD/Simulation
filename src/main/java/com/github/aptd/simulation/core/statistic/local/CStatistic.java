@@ -61,14 +61,16 @@ public final class CStatistic implements IStatistic
     private final Map<String, DescriptiveStatistics> m_data = new ConcurrentHashMap<>();
 
 
+    @Nonnull
     @Override
-    public final IStatistic write( final IWriter p_writer )
+    public final IStatistic write( @Nonnull final IWriter p_writer )
     {
         p_writer.section( 0, "agentstatistic" );
         m_data.forEach( ( p_key, p_value ) -> apply( p_writer, p_key, p_value ) );
         return this;
     }
 
+    @Nonnull
     @Override
     public final Stream<IAction> action()
     {
@@ -130,7 +132,7 @@ public final class CStatistic implements IStatistic
         public IFuzzyValue<Boolean> execute( final boolean p_parallel, @Nonnull final IContext p_context,
                                              @Nonnull final List<ITerm> p_argument, @Nonnull final List<ITerm> p_return )
         {
-            final List<ITerm> l_arguments = CCommon.flatcollection( p_argument ).collect( Collectors.toList() );
+            final List<ITerm> l_arguments = CCommon.flatten( p_argument ).collect( Collectors.toList() );
             if ( l_arguments.size() < 2 )
                 return CFuzzyValue.from( false );
 
