@@ -28,9 +28,6 @@ import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.core.runtime.ERuntime;
 import com.github.aptd.simulation.datamodel.EDataModel;
-import com.github.aptd.simulation.datamodel.IDataModel;
-import com.github.aptd.simulation.elements.IElement;
-import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.factory.EFactory;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.cli.CommandLine;
@@ -40,12 +37,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.stream.Collectors;
@@ -153,7 +146,8 @@ public final class CMain
                                                .map( String::trim )
                                                .filter( i -> !i.isEmpty() )
                                                .collect( Collectors.toList() );
-        final List<String> types = Arrays.stream( p_options.getOptionValue( "scenariotype", "" ).split( "," ) )
+
+        final List<String> l_types = Arrays.stream( p_options.getOptionValue( "scenariotype", "" ).split( "," ) )
                                             .map( String::trim )
                                             .filter( i -> !i.isEmpty() )
                                             .collect( Collectors.toList() );
@@ -161,8 +155,8 @@ public final class CMain
         return StreamUtils.zip(
             l_instances.stream(),
             Stream.concat(
-                types.stream(),
-                IntStream.range( 0, l_instances.size() - types.size() )
+                l_types.stream(),
+                IntStream.range( 0, l_instances.size() - l_types.size() )
                          .mapToObj( i -> CConfiguration.INSTANCE.getOrDefault( "xml", "default", "datamodel" ) )
             ),
             ( i, j ) -> new ImmutablePair<>( EDataModel.from( j ), i )

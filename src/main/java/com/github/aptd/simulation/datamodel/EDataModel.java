@@ -22,12 +22,6 @@
 
 package com.github.aptd.simulation.datamodel;
 
-import com.github.aptd.simulation.common.CCommon;
-import com.github.aptd.simulation.error.CNotFoundException;
-import com.github.aptd.simulation.error.CRuntimeException;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Locale;
 
 

@@ -24,8 +24,12 @@ package com.github.aptd.simulation.datamodel;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.experiment.local.CExperiment;
-import com.github.aptd.simulation.core.runtime.local.CRuntime;
 import com.github.aptd.simulation.core.statistic.IStatistic;
+import com.github.aptd.simulation.datamodel.xml.AgentRef;
+import com.github.aptd.simulation.datamodel.xml.Asimov;
+import com.github.aptd.simulation.datamodel.xml.Iagent;
+import com.github.aptd.simulation.datamodel.xml.Iagents;
+import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
@@ -33,11 +37,6 @@ import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
 import com.github.aptd.simulation.factory.IFactory;
-import com.github.aptd.simulation.datamodel.xml.AgentRef;
-import com.github.aptd.simulation.datamodel.xml.Asimov;
-import com.github.aptd.simulation.datamodel.xml.Iagent;
-import com.github.aptd.simulation.datamodel.xml.Iagents;
-import com.github.aptd.simulation.datamodel.xml.Network;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,12 +46,10 @@ import org.railml.schemas._2016.EOcp;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**

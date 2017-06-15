@@ -24,7 +24,6 @@ package com.github.aptd.simulation.core.experiment;
 
 import com.github.aptd.simulation.core.writer.IWriter;
 import org.lightjason.agentspeak.action.IAction;
-import org.lightjason.agentspeak.language.execution.expression.IExpression;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;

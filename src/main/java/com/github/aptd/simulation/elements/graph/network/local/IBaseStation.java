@@ -23,10 +23,10 @@
 package com.github.aptd.simulation.elements.graph.network.local;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.common.CGPS;
-import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.common.CGPS;
+import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
