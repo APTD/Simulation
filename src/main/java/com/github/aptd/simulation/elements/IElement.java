@@ -25,7 +25,6 @@ package com.github.aptd.simulation.elements;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.generator.IAgentGenerator;
 
-import java.time.Instant;
 import java.util.concurrent.Callable;
 
 
@@ -43,14 +42,6 @@ public interface IElement<T extends IAgent<?>> extends IPerceive, IAgent<T>, Cal
      * @return string name
      */
     String id();
-
-
-    /**
-     * Get the next time this agent will become active
-     *
-     * @return current time if agent is still active, next scheduled trigger time instant, or Instant.MAX if none
-     */
-    public Instant nextActivation();
 
 
     /**

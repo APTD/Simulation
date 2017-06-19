@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 
 
 /**
- * Created by seb on 13.06.17.
+ * time interface
  */
 public interface ITime extends IPerceive, Callable<ITime>
 {
@@ -39,6 +39,14 @@ public interface ITime extends IPerceive, Callable<ITime>
      *
      * @return current time
      */
-    public Instant current();
+    Instant current();
+
+    /**
+     * cast to time instance
+     *
+     * @tparam N time type
+     * @return casted time object
+     */
+    <N extends ITime> N raw();
 
 }

@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.elements.graph.network.local;
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
@@ -72,13 +72,12 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
      * @param p_id track identifier
      * @param p_from from station
      * @param p_to target station
-     * @param p_environment environment
+     * @param p_time time reference
      */
     private CTrack( final IAgentConfiguration<ITrack<?>> p_configuration, final String p_id, final IStation<?> p_from, final IStation<?> p_to,
-                    final IEnvironment p_environment
-    )
+                    final ITime p_time )
     {
-        super( p_configuration, FUNCTOR, p_id, p_environment );
+        super( p_configuration, FUNCTOR, p_id, p_time );
         m_from = p_from;
         m_to = p_to;
     }
@@ -118,12 +117,12 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
          *
          * @param p_stream stream
          * @param p_actions action
-         * @param p_environment environment
+         * @param p_time time reference
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final ITime p_time ) throws Exception
         {
-            super( p_stream, p_actions, CTrack.class, p_environment );
+            super( p_stream, p_actions, CTrack.class, p_time );
         }
 
         @Override
@@ -131,7 +130,7 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
         protected final Pair<ITrack<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CTrack( m_configuration, p_data[0].toString(), (IStation<?>) p_data[1], (IStation<?>) p_data[2], m_environment ),
+                new CTrack( m_configuration, p_data[0].toString(), (IStation<?>) p_data[1], (IStation<?>) p_data[2], m_time ),
                 Stream.of( FUNCTOR )
             );
         }

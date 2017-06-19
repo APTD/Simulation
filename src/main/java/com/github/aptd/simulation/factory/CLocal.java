@@ -23,7 +23,7 @@
 package com.github.aptd.simulation.factory;
 
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.network.IStation;
@@ -50,26 +50,11 @@ import java.util.stream.Stream;
 public final class CLocal implements IFactory
 {
 
-    private IEnvironment m_environment;
-
-    @Override
-    public IFactory environment( @Nonnull final IEnvironment p_environment )
-    {
-        m_environment = p_environment;
-        return this;
-    }
-
-    @Override
-    public IEnvironment environment()
-    {
-        return m_environment;
-    }
-
     @Nonnull
     @Override
-    public IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception
+    public IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
-        return new CTrain.CGenerator( p_stream, p_actions, m_environment );
+        return new CTrain.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
@@ -81,22 +66,22 @@ public final class CLocal implements IFactory
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IStation<?>> station( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception
+    public IElement.IGenerator<IStation<?>> station( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
-        return new CStation.CGenerator( p_stream, p_actions, m_environment );
+        return new CStation.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception
+    public IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
-        return new CTransit.CGenerator( p_stream, p_actions, m_environment );
+        return new CTransit.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception
+    public IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
-        return new CVirtual.CGenerator( p_stream, p_actions, m_environment );
+        return new CVirtual.CGenerator( p_stream, p_actions, p_time );
     }
 }

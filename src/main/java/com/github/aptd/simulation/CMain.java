@@ -26,13 +26,10 @@ package com.github.aptd.simulation;
 import com.codepoetics.protonpack.StreamUtils;
 import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
-import com.github.aptd.simulation.core.environment.EEnvironment;
 import com.github.aptd.simulation.core.runtime.ERuntime;
-import com.github.aptd.simulation.core.time.local.CStepTime;
 import com.github.aptd.simulation.datamodel.EDataModel;
 import com.github.aptd.simulation.factory.EFactory;
 import com.github.aptd.simulation.ui.CHTTPServer;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -41,8 +38,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.LogManager;
@@ -113,6 +108,13 @@ public final class CMain
             return;
         }
 
+        if ( !l_cli.hasOption( "scenario" ) )
+        {
+            System.out.println( CCommon.languagestring( CMain.class, "noscenario", CConfiguration.createdefault() ) );
+            System.exit( -1 );
+            return;
+        }
+
         // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
@@ -120,15 +122,13 @@ public final class CMain
         new Thread( () -> datamodel( l_cli )
             .map( i -> i.getLeft().model().get(
 
-                EFactory.from( CConfiguration.INSTANCE.getOrDefault( "local", "runtime", "type" ) ).factory().environment(
-                    EEnvironment.LOCAL.generate().time( new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) ) )
-                ),
+                EFactory.from( CConfiguration.INSTANCE.getOrDefault( "local", "runtime", "type" ) ).factory(),
 
                 i.getRight(),
 
                 l_cli.hasOption( "iteration" )
                 ? Long.parseLong( l_cli.getOptionValue( "iteration" ) )
-                : CConfiguration.INSTANCE.getOrDefault( 0L, "default", "iteration" ),
+                : (long) CConfiguration.INSTANCE.getOrDefault( 0, "default", "iteration" ),
 
                 !l_cli.hasOption( "sequential" ) && CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "runtime", "parallel" )
 

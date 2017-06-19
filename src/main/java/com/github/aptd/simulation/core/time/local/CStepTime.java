@@ -23,40 +23,54 @@
 package com.github.aptd.simulation.core.time.local;
 
 import com.github.aptd.simulation.core.time.IBaseTime;
+import com.github.aptd.simulation.core.time.ITime;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAmount;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
  * Time mechanism for discrete time advancing with simulation steps (one advance per "call()" invocation)
  */
-public class CStepTime extends IBaseTime
+public final class CStepTime extends IBaseTime
 {
+    /**
+     * time step size
+     */
+    private final AtomicReference<TemporalAmount> m_stepsize;
 
-    private TemporalAmount m_stepsize;
 
     /**
-     * Create a new instance with given stepsize
+     * ctor
      *
      * @param p_starttime initial time
      * @param p_stepsize how long is one simulation cycle in simulated time
      */
     public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize )
     {
-        m_currenttime = p_starttime;
-        m_stepsize = p_stepsize;
+        this( p_starttime, p_stepsize, ZoneId.systemDefault() );
     }
 
     /**
-     * advance the time by one step
+     * Create a new instance with given stepsize
      *
-     * @return self-reference
+     * @param p_starttime initial time
+     * @param p_stepsize how long is one simulation cycle in simulated time
+     * @param p_zone time zone
      */
-    public CStepTime call()
+    public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize, final ZoneId p_zone )
     {
-        super.call();
-        m_currenttime = m_currenttime.plus( m_stepsize );
+        super( p_starttime, p_zone );
+        m_stepsize = new AtomicReference<>( p_stepsize );
+    }
+
+
+    @Override
+    public final ITime call() throws Exception
+    {
+        m_currenttime.set( m_currenttime.get().plus( m_stepsize.get() ) );
         return this;
     }
 
@@ -65,9 +79,9 @@ public class CStepTime extends IBaseTime
      *
      * @return step size
      */
-    public TemporalAmount stepsize()
+    public final TemporalAmount stepsize()
     {
-        return m_stepsize;
+        return m_stepsize.get();
     }
 
     /**
@@ -76,9 +90,9 @@ public class CStepTime extends IBaseTime
      * @param p_stepsize new step size
      * @return self-reference
      */
-    public CStepTime stepsize( final TemporalAmount p_stepsize )
+    public final ITime stepsize( final TemporalAmount p_stepsize )
     {
-        m_stepsize = p_stepsize;
+        m_stepsize.set( p_stepsize );
         return this;
     }
 

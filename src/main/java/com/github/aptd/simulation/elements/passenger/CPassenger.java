@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.elements.passenger;
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -53,11 +53,11 @@ public final class CPassenger extends IBaseElement<IPassenger<?>> implements IPa
      *
      * @param p_configuration agent configuration
      * @param p_id passenger identifier
-     * @param p_environment environment
+     * @param p_time time reference
      */
-    private CPassenger( final IAgentConfiguration<IPassenger<?>> p_configuration, final String p_id, final IEnvironment p_environment )
+    private CPassenger( final IAgentConfiguration<IPassenger<?>> p_configuration, final String p_id, final ITime p_time )
     {
-        super( p_configuration, FUNCTOR, p_id, p_environment );
+        super( p_configuration, FUNCTOR, p_id, p_time );
     }
 
     @Override
@@ -83,19 +83,19 @@ public final class CPassenger extends IBaseElement<IPassenger<?>> implements IPa
         /**
          * @param p_stream stream
          * @param p_actions action
-         * @param p_environment environment
+         * @param p_time time reference
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
+        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final ITime p_time ) throws Exception
         {
-            super( p_stream, p_actions, CPassenger.class, p_environment );
+            super( p_stream, p_actions, CPassenger.class, p_time );
         }
 
         @Override
         protected final Pair<IPassenger<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CPassenger( m_configuration, MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ), m_environment ),
+                new CPassenger( m_configuration, MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ), m_time ),
                 Stream.of( FUNCTOR )
             );
         }

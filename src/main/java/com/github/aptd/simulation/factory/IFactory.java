@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.factory;
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.network.IStation;
@@ -47,27 +47,15 @@ public interface IFactory
 {
 
     /**
-     * set the default environment in which to place new agents
-     *
-     * @param p_environment environment
-     * @return self-reference
-     */
-    IFactory environment( @Nonnull final IEnvironment p_environment );
-
-    /**
-     * get the default environment in which new agents are placed
-     * @return environment
-     */
-    IEnvironment environment();
-
-    /**
      * creates a train generator
      *
      * @param p_stream ASL stream
      * @param p_actions default actions
+     * @param p_time time reference
      * @return generator
+     * @throws Exception is thrown on any error
      */
-    IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception;
+    IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
     /**
      * network generating
@@ -87,10 +75,12 @@ public interface IFactory
      *
      * @param p_stream ASL stream
      * @param p_actions default actions
+     * @param p_time time reference
      * @return generator
+     * @throws Exception is thrown on any error
      */
     @Nonnull
-    IElement.IGenerator<IStation<?>> station( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception;
+    IElement.IGenerator<IStation<?>> station( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
     /**
      * creates a transit station generator,
@@ -98,10 +88,12 @@ public interface IFactory
      *
      * @param p_stream ASL stream
      * @param p_actions default actions
+     * @param p_time time reference
      * @return generator
+     * @throws Exception is thrown on any error
      */
     @Nonnull
-    IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception;
+    IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
     /**
      * creates a virtual station generator,
@@ -109,9 +101,11 @@ public interface IFactory
      *
      * @param p_stream ASL stream
      * @param p_actions default actions
+     * @param p_time time reference
      * @return generator
+     * @throws Exception is thrown on any error
      */
     @Nonnull
-    IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions ) throws Exception;
+    IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
 }

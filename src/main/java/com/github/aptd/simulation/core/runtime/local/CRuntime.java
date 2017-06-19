@@ -44,16 +44,8 @@ public final class CRuntime implements IRuntime
     {
         LongStream.range( 0, p_experiment.simulationsteps() )
                   .forEach( i -> {
-                      CRuntime.execute( p_experiment.environment().time() );
+                      optionalparallelstream( p_experiment.preprocess(), p_experiment.parallel() ).forEach( CRuntime::execute );
                       optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
-//                      if ( !p_experiment.objects().parallel().anyMatch( a -> a.nextActivation().equals( p_experiment.environment().time() ) ) )
-//                      {
-//                          final Instant l_nexttime = p_experiment.objects().map( a -> a.nextActivation() ).min( Instant::compareTo ).orElse( Instant.MAX );
-//                          p_experiment.environment().time().current( l_nexttime );
-//                          p_experiment.objects().parallel()
-//                                      .filter( a -> a.nextActivation().equals( l_nexttime ) )
-//                                      .forEach( a -> a.trigger( CAgentTrigger.ACTIVATE ) );
-//                      }
                   } );
 
         return p_experiment;

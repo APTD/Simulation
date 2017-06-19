@@ -22,10 +22,11 @@
 
 package com.github.aptd.simulation.datamodel;
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.experiment.local.CExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
+import com.github.aptd.simulation.core.time.ITime;
+import com.github.aptd.simulation.core.time.local.CStepTime;
 import com.github.aptd.simulation.datamodel.xml.AgentRef;
 import com.github.aptd.simulation.datamodel.xml.Asimov;
 import com.github.aptd.simulation.datamodel.xml.Iagent;
@@ -38,7 +39,6 @@ import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
 import com.github.aptd.simulation.factory.IFactory;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,11 +48,14 @@ import org.lightjason.agentspeak.common.CCommon;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -93,20 +96,19 @@ public final class CXMLReader implements IDataModel
             final FileInputStream l_stream = new FileInputStream( p_datamodel );
         )
         {
-
             final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
 
-            final IEnvironment l_environment = p_factory.environment();
+            final ITime l_time = new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) );
 
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
-            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory );
-            final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory );
+            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
+            final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
 
             final Map<String, IElement<?>> l_agents = new HashMap<>();
             l_agents.putAll( l_station );
             l_agents.putAll( l_train );
 
-            return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_environment, l_agents );
+            return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents, l_time );
 
         } catch ( final Exception l_execption )
         {
@@ -138,11 +140,13 @@ public final class CXMLReader implements IDataModel
      * @param p_network network component
      * @param p_agents map with agents
      * @param p_factory factory
+     * @param p_time time reference
      * @return unmodifyable map with stations
      */
-    private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory )
+    private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents,
+                                                     final IFactory p_factory, final ITime p_time )
     {
-        final Map<String, IElement.IGenerator<IStation<?>>> l_generators = Collections.synchronizedMap( new HashMap<>() );
+        final Map<String, IElement.IGenerator<IStation<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         return Collections.unmodifiableMap(
                    p_network.getInfrastructure()
@@ -153,7 +157,7 @@ public final class CXMLReader implements IDataModel
                             .map( i -> agentname( i, i.getAny() ) )
                             .map( i -> l_generators.computeIfAbsent(
                                         i.getRight(),
-                                        a -> stationgenerator( p_factory, p_agents.get( i.getRight() ), l_actions )
+                                        a -> stationgenerator( p_factory, p_agents.get( i.getRight() ), l_actions, p_time )
                                         ).generatesingle(
                                             i.getLeft().getDescription(),
                                             i.getLeft().getGeoCoord().getCoord().get( 0 ),
@@ -173,14 +177,15 @@ public final class CXMLReader implements IDataModel
      * @param p_actions actions
      * @return station generator
      */
-    private static IElement.IGenerator<IStation<?>> stationgenerator( final IFactory p_factory, final String p_asl, final Set<IAction> p_actions )
+    private static IElement.IGenerator<IStation<?>> stationgenerator( final IFactory p_factory, final String p_asl,
+                                                                      final Set<IAction> p_actions, final ITime p_time )
     {
         try
         {
             return p_factory.station(
                 IOUtils.toInputStream( p_asl, "UTF-8" ),
-                p_actions
-                // CCommon.actionsFromPackage().collect( Collectors.toSet())
+                p_actions,
+                p_time
             );
         }
         catch ( final Exception l_exception )
@@ -198,9 +203,9 @@ public final class CXMLReader implements IDataModel
      * @param p_factory factory
      * @return unmodifiable map with trains
      */
-    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory )
+    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory, final ITime p_time )
     {
-        final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = Collections.synchronizedMap( new HashMap<>() );
+        final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         return Collections.unmodifiableMap(
             p_network.getTimetable()
@@ -211,7 +216,7 @@ public final class CXMLReader implements IDataModel
                      .map( i -> agentname( i, i.getAny3() ) )
                      .map( i -> l_generators.computeIfAbsent(
                          i.getRight(),
-                         a -> traingenerator( p_factory, p_agents.get( i.getRight() ), l_actions )
+                         a -> traingenerator( p_factory, p_agents.get( i.getRight() ), l_actions, p_time )
                          ).generatesingle(
                              i.getLeft().getId(),
                              Stream.of()
@@ -230,14 +235,15 @@ public final class CXMLReader implements IDataModel
      * @param p_actions actions
      * @return train generator
      */
-    private static IElement.IGenerator<ITrain<?>> traingenerator( final IFactory p_factory, final String p_asl, final Set<IAction> p_actions )
+    private static IElement.IGenerator<ITrain<?>> traingenerator( final IFactory p_factory, final String p_asl,
+                                                                  final Set<IAction> p_actions, final ITime p_time )
     {
         try
         {
             return p_factory.train(
                 IOUtils.toInputStream( p_asl, "UTF-8" ),
-                p_actions
-                // CCommon.actionsFromPackage().collect( Collectors.toSet() )
+                p_actions,
+                p_time
             );
         }
         catch ( final Exception l_exception )
@@ -245,9 +251,6 @@ public final class CXMLReader implements IDataModel
             throw new CSemanticException( l_exception );
         }
     }
-
-
-    //private static Stream<CTrain.CTimetableEntry> traintimetable( Pair<ETrain> )
 
 
     /**

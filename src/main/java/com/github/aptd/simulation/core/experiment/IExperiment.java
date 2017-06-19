@@ -22,14 +22,13 @@
 
 package com.github.aptd.simulation.core.experiment;
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.writer.IWriter;
 import com.github.aptd.simulation.elements.IElement;
-
 import org.lightjason.agentspeak.action.IAction;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 
@@ -54,19 +53,20 @@ public interface IExperiment
     Stream<IElement<?>> objects();
 
     /**
+     * preprocessing objects
+     *
+     * @return object stream
+     */
+    @Nonnull
+    Stream<Callable<?>> preprocess();
+
+    /**
      * maximum simulation steps
      *
      * @return simulation steps
      */
     @Nonnegative
     long simulationsteps();
-
-    /**
-     * returns the environment
-     *
-     * @return environment
-     */
-    IEnvironment environment();
 
     /**
      * statistic writer
@@ -103,17 +103,18 @@ public interface IExperiment
             return Stream.empty();
         }
 
+        @Nonnull
+        @Override
+        public final Stream<Callable<?>> preprocess()
+        {
+            return Stream.empty();
+        }
+
         @Nonnegative
         @Override
         public final long simulationsteps()
         {
             return 0;
-        }
-
-        @Override
-        public IEnvironment environment()
-        {
-            return null;
         }
 
         @Nonnull

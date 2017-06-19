@@ -23,11 +23,11 @@
 package com.github.aptd.simulation.elements.graph.network.local;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.core.environment.IEnvironment;
-import com.github.aptd.simulation.elements.common.CGPS;
-import com.github.aptd.simulation.elements.common.IGPS;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.common.CGPS;
+import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
@@ -58,11 +58,12 @@ public abstract class IBaseStation extends IBaseElement<IStation<?>> implements 
      * @param p_id station identifier
      * @param p_longitude longitude
      * @param p_latitude latitude
+     * @param p_time time reference
      */
     protected IBaseStation( final IAgentConfiguration<IStation<?>> p_configuration, final String p_functor, final String p_id,
-                            final double p_longitude, final double p_latitude, final IEnvironment p_environment )
+                            final double p_longitude, final double p_latitude, final ITime p_time )
     {
-        super( p_configuration, p_functor, p_id, p_environment );
+        super( p_configuration, p_functor, p_id, p_time );
         m_position = new CGPS( p_longitude, p_latitude );
 
     }

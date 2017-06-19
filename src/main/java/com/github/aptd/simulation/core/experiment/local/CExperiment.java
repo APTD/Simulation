@@ -23,9 +23,9 @@
 package com.github.aptd.simulation.core.experiment.local;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
-import com.github.aptd.simulation.core.environment.IEnvironment;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.statistic.IStatistic;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.core.writer.IWriter;
 import com.github.aptd.simulation.elements.IElement;
 import org.lightjason.agentspeak.action.IAction;
@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,7 +72,7 @@ public final class CExperiment implements IExperiment
     /**
      * environment
      */
-    private final IEnvironment m_environment;
+    private final ITime m_time;
     /**
      * agents
      */
@@ -89,14 +90,15 @@ public final class CExperiment implements IExperiment
      * @param p_parallel parallel object execution
      * @param p_statistic statistic object
      * @param p_agents stream with agents
+     * @param p_time time object
      */
-    public CExperiment( final long p_steps, final boolean p_parallel, @Nonnull final IStatistic p_statistic, @Nonnull final IEnvironment p_environment,
-                        @Nonnull final Map<String, ? extends IElement<?>> p_agents )
+    public CExperiment( final long p_steps, final boolean p_parallel, @Nonnull final IStatistic p_statistic,
+                        @Nonnull final Map<String, ? extends IElement<?>> p_agents, @Nonnull final ITime p_time )
     {
         m_steps = p_steps;
         m_parallel = p_parallel;
         m_statistic = p_statistic;
-        m_environment = p_environment;
+        m_time = p_time;
         m_agents.putAll( p_agents );
 
         m_actions = Collections.unmodifiableSet(
@@ -115,6 +117,13 @@ public final class CExperiment implements IExperiment
         return  m_agents.values().stream();
     }
 
+    @Nonnull
+    @Override
+    public final Stream<Callable<?>> preprocess()
+    {
+        return Stream.of( m_time );
+    }
+
     @Nonnegative
     @Override
     public final long simulationsteps()
@@ -123,12 +132,6 @@ public final class CExperiment implements IExperiment
     }
 
     @Nonnull
-    @Override
-    public IEnvironment environment()
-    {
-        return m_environment;
-    }
-
     @Override
     public final IExperiment statistic( @Nonnull final IWriter p_writer )
     {

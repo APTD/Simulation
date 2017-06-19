@@ -23,7 +23,7 @@
 package com.github.aptd.simulation.elements;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
@@ -79,9 +79,9 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      */
     protected final String m_id;
     /**
-     * reference to environment
+     * reference to time
      */
-    protected final IEnvironment m_environment;
+    protected final ITime m_time;
     /**
      * functor definition
      */
@@ -106,24 +106,24 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * @param p_configuration agent configuration
      * @param p_functor ...
      * @param p_id ...
-     * @param p_environment environment
+     * @param p_time time reference
      */
-    protected IBaseElement( final IAgentConfiguration<N> p_configuration, final String p_functor, final String p_id, final IEnvironment p_environment )
+    @SuppressWarnings( "unchecked" )
+    protected IBaseElement( final IAgentConfiguration<N> p_configuration, final String p_functor, final String p_id, final ITime p_time )
     {
         super( p_configuration );
         m_id = p_id;
         m_functor = p_functor;
 
-        m_environment = p_environment;
-
+        m_time = p_time;
         m_external = m_beliefbase.beliefbase().view( "extern" );
-        m_beliefbase.add( new CEnvironmentBeliefbase().create( "env", m_beliefbase ) );
+        m_beliefbase.add( new CTimeBeliefbase().create( "time", m_beliefbase ) );
     }
 
     @Override
     public N call() throws Exception
     {
-        if ( runningplans().isEmpty() && !m_nextactivation.isAfter( m_environment.time().current() ) )
+        if ( runningplans().isEmpty() && !m_nextactivation.isAfter( m_time.current() ) )
             this.trigger( CAgentTrigger.ACTIVATE );
         return super.call();
     }
@@ -184,7 +184,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     @IAgentActionName( name = "simtime/current" )
     protected ZonedDateTime currentTime()
     {
-        return m_environment.time().current().atZone( m_timezone );
+        return m_time.current().atZone( m_timezone );
     }
 
     @IAgentActionFilter
@@ -203,25 +203,17 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
 
     @IAgentActionFilter
     @IAgentActionName( name = "nextactivation/set" )
-    protected void setNextActivation( final ZonedDateTime p_datetime ) throws Exception
+    protected void setNextActivation( @Nullable final ZonedDateTime p_datetime ) throws Exception
     {
-        if ( p_datetime == null ) throw new IllegalArgumentException( "next activation time must not be null" );
+        if ( p_datetime == null )
+            throw new IllegalArgumentException( "next activation time must not be null" );
+
         final Instant l_instant = p_datetime.toInstant();
-        if ( l_instant.compareTo( m_environment.time().current() ) <= 0 )
+        if ( l_instant.compareTo( m_time.current() ) <= 0 )
             throw new IllegalArgumentException( "next activation time must be in the future" );
+
         m_nextactivation = l_instant;
     }
-
-    /**
-     * Get the next time this agent will become active
-     * @return current time if agent is still active, next scheduled trigger time instant, or Instant.MAX if none
-     */
-    public Instant nextActivation()
-    {
-        if ( !runningplans().isEmpty() ) return m_environment.time().current();
-        return m_nextactivation;
-    }
-
 
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -233,9 +225,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      */
     protected abstract static class IBaseGenerator<N extends IElement<?>> extends IBaseAgentGenerator<N> implements IGenerator<N>
     {
-
-        protected final IEnvironment m_environment;
-
+        /**
+         * time reference
+         */
+        protected final ITime m_time;
 
         /**
          * ctor
@@ -243,14 +236,14 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
          * @param p_stream stream
          * @param p_actions action
          * @param p_agentclass agent class with internal actions
-         * @param p_environment environment for the agents
+         * @param p_time time reference
          * @throws Exception on any error
          */
         protected IBaseGenerator( final InputStream p_stream, final Set<IAction> p_actions,
-                                  final Class<? extends N> p_agentclass, final IEnvironment p_environment ) throws Exception
+                                  final Class<? extends N> p_agentclass, final ITime p_time ) throws Exception
         {
             super( p_stream, Stream.concat( p_actions.stream(), CCommon.actionsFromAgentClass( p_agentclass ) ).collect( Collectors.toSet() ) );
-            this.m_environment = p_environment;
+            m_time = p_time;
         }
 
         @Override
@@ -322,45 +315,46 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     /**
-     * on-demand beliefbase to get access
-     * to the environment data
+     * on-demand beliefbase to get access to the time structure
      */
-    private final class CEnvironmentBeliefbase extends IBeliefbaseOnDemand<N>
+    private final class CTimeBeliefbase extends IBeliefbaseOnDemand<N>
     {
 
+        @Nonnull
         @Override
         public final Stream<ILiteral> streamLiteral()
         {
-            return m_environment.literal( IBaseElement.this );
+            return m_time.literal( IBaseElement.this );
         }
 
+        @Nonnull
         @Override
-        public final Collection<ILiteral> literal( final String p_key )
+        public final Collection<ILiteral> literal( @Nonnull final String p_key )
         {
-            return m_environment.literal( IBaseElement.this )
-                                .filter( i -> p_key.equals( i.functor() ) )
-                                .collect( Collectors.toSet() );
+            return m_time.literal( IBaseElement.this )
+                         .filter( i -> p_key.equals( i.functor() ) )
+                         .collect( Collectors.toSet() );
         }
 
         @Override
         public final boolean empty()
         {
-            return !m_environment.literal( IBaseElement.this )
-                                 .findFirst()
-                                 .isPresent();
+            return !m_time.literal( IBaseElement.this )
+                          .findFirst()
+                          .isPresent();
         }
 
         @Override
         public final int size()
         {
-            return (int) m_environment.literal( IBaseElement.this ).count();
+            return (int) m_time.literal( IBaseElement.this ).count();
         }
 
         @Override
-        public final boolean containsLiteral( final String p_key )
+        public final boolean containsLiteral( @Nonnull final String p_key )
         {
-            return m_environment.literal( IBaseElement.this )
-                                .anyMatch( i -> p_key.equals( i.functor() ) );
+            return m_time.literal( IBaseElement.this )
+                         .anyMatch( i -> p_key.equals( i.functor() ) );
         }
 
     }

@@ -28,10 +28,11 @@ import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
-import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 
@@ -40,17 +41,38 @@ import java.util.stream.Stream;
  */
 public abstract class IBaseTime implements ITime
 {
+    /**
+     * current time
+     */
+    protected final AtomicReference<Instant> m_currenttime;
+    /**
+     * time zone
+     */
+    private final ZoneId m_zone;
 
-    protected Instant m_currenttime = Instant.now();
-
-    public Instant current()
+    /**
+     * ctor
+     *
+     * @param p_currenttime current time
+     * @param p_zone time zone
+     */
+    protected IBaseTime( final Instant p_currenttime, final ZoneId p_zone )
     {
-        return m_currenttime;
+        m_currenttime = new AtomicReference<>( p_currenttime );
+        m_zone = p_zone;
     }
 
-    public ITime call()
+    @Override
+    public final Instant current()
     {
-        return this;
+        return m_currenttime.get();
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public final <N extends ITime> N raw()
+    {
+        return (N) this;
     }
 
     /**
@@ -60,7 +82,7 @@ public abstract class IBaseTime implements ITime
      * @return stream of literal representation of current time
      */
     @Override
-    public Stream<ILiteral> literal( final IElement<?>... p_object )
+    public final Stream<ILiteral> literal( final IElement<?>... p_object )
     {
         return this.literal( Arrays.stream( p_object ) );
     }
@@ -74,16 +96,16 @@ public abstract class IBaseTime implements ITime
     @Override
     public Stream<ILiteral> literal( final Stream<IElement<?>> p_object )
     {
-        final ZonedDateTime l_time = m_currenttime.atZone( ZoneId.systemDefault() );
+        final ZonedDateTime l_time = m_currenttime.get().atZone( m_zone );
         return Stream.of(
-                             CLiteral.from( "year", CRawTerm.from( l_time.get( ChronoField.YEAR ) ) ),
-                             CLiteral.from( "month", CRawTerm.from( l_time.get( ChronoField.MONTH_OF_YEAR ) ) ),
-                             CLiteral.from( "day", CRawTerm.from( l_time.get( ChronoField.DAY_OF_MONTH ) ) ),
-                             CLiteral.from( "hours", CRawTerm.from( l_time.get( ChronoField.HOUR_OF_DAY ) ) ),
-                             CLiteral.from( "minutes", CRawTerm.from( l_time.get( ChronoField.MINUTE_OF_HOUR ) ) ),
-                             CLiteral.from( "seconds", CRawTerm.from( l_time.get( ChronoField.SECOND_OF_MINUTE ) ) ),
-                             CLiteral.from( "nanoseconds", CRawTerm.from( l_time.get( ChronoField.NANO_OF_SECOND ) ) ),
-                             CLiteral.from( "datetime", CRawTerm.from( l_time ) )
-                        );
+             CLiteral.from( "year", CRawTerm.from( l_time.get( ChronoField.YEAR ) ) ),
+             CLiteral.from( "month", CRawTerm.from( l_time.get( ChronoField.MONTH_OF_YEAR ) ) ),
+             CLiteral.from( "day", CRawTerm.from( l_time.get( ChronoField.DAY_OF_MONTH ) ) ),
+             CLiteral.from( "hours", CRawTerm.from( l_time.get( ChronoField.HOUR_OF_DAY ) ) ),
+             CLiteral.from( "minutes", CRawTerm.from( l_time.get( ChronoField.MINUTE_OF_HOUR ) ) ),
+             CLiteral.from( "seconds", CRawTerm.from( l_time.get( ChronoField.SECOND_OF_MINUTE ) ) ),
+             CLiteral.from( "nanoseconds", CRawTerm.from( l_time.get( ChronoField.NANO_OF_SECOND ) ) ),
+             CLiteral.from( "datetime", CRawTerm.from( l_time ) )
+        );
     }
 }

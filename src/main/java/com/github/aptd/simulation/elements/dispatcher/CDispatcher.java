@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.elements.dispatcher;
 
-import com.github.aptd.simulation.core.environment.IEnvironment;
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -51,10 +51,11 @@ public final class CDispatcher extends IBaseElement<IDispatcher<?>> implements I
      *
      * @param p_configuration agent configuration
      * @param p_id dispatcher identifier
+     * @param p_time time refernece
      */
-    private CDispatcher( final IAgentConfiguration<IDispatcher<?>> p_configuration, final String p_id, final IEnvironment p_environment )
+    private CDispatcher( final IAgentConfiguration<IDispatcher<?>> p_configuration, final String p_id, final ITime p_time )
     {
-        super( p_configuration, FUNCTOR, p_id, p_environment );
+        super( p_configuration, FUNCTOR, p_id, p_time );
     }
 
     @Override
@@ -77,19 +78,19 @@ public final class CDispatcher extends IBaseElement<IDispatcher<?>> implements I
          *
          * @param p_stream stream
          * @param p_actions action
-         * @param p_environment environment
+         * @param p_time time reference
          * @throws Exception on any error
          */
-        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final IEnvironment p_environment ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final ITime p_time ) throws Exception
         {
-            super( p_stream, p_actions, CDispatcher.class, p_environment );
+            super( p_stream, p_actions, CDispatcher.class, p_time );
         }
 
         @Override
         protected final Pair<IDispatcher<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CDispatcher( m_configuration, p_data[0].toString(), m_environment ),
+                new CDispatcher( m_configuration, p_data[0].toString(), m_time ),
                 Stream.of( FUNCTOR )
             );
         }
