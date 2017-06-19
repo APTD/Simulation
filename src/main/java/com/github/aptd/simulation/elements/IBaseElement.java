@@ -182,28 +182,28 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
 
     @IAgentActionFilter
     @IAgentActionName( name = "simtime/current" )
-    protected ZonedDateTime currentTime()
+    private ZonedDateTime currentTime()
     {
         return m_time.current().atZone( m_timezone );
     }
 
     @IAgentActionFilter
     @IAgentActionName( name = "simtime/max" )
-    protected ZonedDateTime maxTime()
+    private ZonedDateTime maxTime()
     {
         return ZonedDateTime.ofInstant( Instant.now().plus( Duration.ofDays( 9999 ) ), m_timezone );
     }
 
     @IAgentActionFilter
     @IAgentActionName( name = "nextactivation/get" )
-    protected ZonedDateTime getNextActivation()
+    private ZonedDateTime getNextActivation()
     {
         return m_nextactivation.atZone( m_timezone );
     }
 
     @IAgentActionFilter
     @IAgentActionName( name = "nextactivation/set" )
-    protected void setNextActivation( @Nullable final ZonedDateTime p_datetime ) throws Exception
+    private void setNextActivation( @Nullable final ZonedDateTime p_datetime ) throws Exception
     {
         if ( p_datetime == null )
             throw new IllegalArgumentException( "next activation time must not be null" );

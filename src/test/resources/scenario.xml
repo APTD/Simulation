@@ -68,7 +68,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
 
                             +!test( X ) <-
                                 generic/print( "test", X );
-                                >>env/datetime(DT);
+                                >>time/datetime(DT);
                                 generic/print( "current time: ", DT );
                                 N = datetime/applyseconds("plus", 20, DT);
                                 generic/print( N );
