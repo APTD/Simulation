@@ -89,18 +89,23 @@ public final class CXMLReader implements IDataModel
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public final IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel )
+    public final IExperiment get( final IFactory p_factory, final String p_datamodel,
+                                  final long p_simulationsteps, final boolean p_parallel )
     {
         try
         (
-            final FileInputStream l_stream = new FileInputStream( p_datamodel );
+            final FileInputStream l_stream = new FileInputStream( p_datamodel )
         )
         {
             final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
 
+            // time definition
             final ITime l_time = new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) );
 
+            // asl agent definition
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
+
+            // macro (train-network) and microscopic model
             final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
             final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
 
@@ -108,6 +113,7 @@ public final class CXMLReader implements IDataModel
             l_agents.putAll( l_station );
             l_agents.putAll( l_train );
 
+            // experiment (executable model)
             return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents, l_time );
 
         } catch ( final Exception l_execption )
@@ -125,7 +131,7 @@ public final class CXMLReader implements IDataModel
      */
     private static Map<String, String> agents( final Iagents p_ai )
     {
-        return Collections.unmodifiableMap(
+        return Collections.<String, String>unmodifiableMap(
                    p_ai.getAgents()
                        .getInstance()
                        .getAgent()
@@ -148,7 +154,7 @@ public final class CXMLReader implements IDataModel
     {
         final Map<String, IElement.IGenerator<IStation<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
-        return Collections.unmodifiableMap(
+        return Collections.<String, IStation<?>>unmodifiableMap(
                    p_network.getInfrastructure()
                             .getOperationControlPoints()
                             .getOcp()
@@ -207,7 +213,7 @@ public final class CXMLReader implements IDataModel
     {
         final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
-        return Collections.unmodifiableMap(
+        return Collections.<String, ITrain<?>>unmodifiableMap(
             p_network.getTimetable()
                      .getTrains()
                      .getTrain()
