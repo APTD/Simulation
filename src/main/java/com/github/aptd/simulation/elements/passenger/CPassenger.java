@@ -44,6 +44,10 @@ import java.util.stream.Stream;
 public final class CPassenger extends IBaseElement<IPassenger<?>> implements IPassenger<IPassenger<?>>
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = -2850497411803927233L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "passenger";

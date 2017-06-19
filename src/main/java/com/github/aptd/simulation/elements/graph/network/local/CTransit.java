@@ -42,7 +42,10 @@ import java.util.stream.Stream;
  */
 public final class CTransit extends IBaseStation
 {
-
+    /**
+     * serial id
+     */
+    private static final long serialVersionUID = -7158837475002754349L;
     /**
      * literal functor
      */

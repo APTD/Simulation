@@ -50,7 +50,7 @@
     
     <!-- project build configuration -->
     <prerequisites>
-        <maven>3.0.1</maven>
+        <maven>3.1</maven>
     </prerequisites>
 
     <!-- sets the properties for the compiler (Java version) and file encoding -->
@@ -382,7 +382,7 @@
             <!-- compiler settings, we define that all warnings are shown during the compiling call, for write good working code -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.6.1</version>
                 <configuration>
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>

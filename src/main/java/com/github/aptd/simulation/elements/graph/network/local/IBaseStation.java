@@ -40,15 +40,19 @@ import java.util.stream.Stream;
  */
 public abstract class IBaseStation extends IBaseElement<IStation<?>> implements IStation<IStation<?>>
 {
-
     /**
      * literal functor
      */
     protected static final String BASEFUNCTOR = "station";
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = 1448006244531777496L;
+    /**
      * GPS position latitude / longitude
      */
     private final IGPS m_position;
+
 
 
     /**

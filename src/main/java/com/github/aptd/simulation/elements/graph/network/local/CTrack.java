@@ -49,6 +49,10 @@ import java.util.stream.Stream;
 public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITrack<?>>
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = 3557823449504719582L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "track";
@@ -64,6 +68,7 @@ public final class CTrack extends IBaseElement<ITrack<?>> implements ITrack<ITra
      * to station
      */
     private final IStation<?> m_to;
+
 
     /**
      * ctor

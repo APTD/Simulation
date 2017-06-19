@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 /**
  * any object which be perceived by an agent
  */
-public interface IPerceive
+public interface IPerceiveable
 {
 
     /**

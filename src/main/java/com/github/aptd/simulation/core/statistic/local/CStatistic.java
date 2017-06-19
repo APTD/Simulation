@@ -113,6 +113,11 @@ public final class CStatistic implements IStatistic
      */
     private final class CStatisticAction extends IBaseAction
     {
+        /**
+         * serial id
+         */
+        private static final long serialVersionUID = 1392159339151051670L;
+
         @Nonnull
         @Override
         public final IPath name()

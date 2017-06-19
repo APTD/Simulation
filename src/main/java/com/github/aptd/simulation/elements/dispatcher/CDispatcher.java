@@ -42,6 +42,10 @@ import java.util.stream.Stream;
 public final class CDispatcher extends IBaseElement<IDispatcher<?>> implements IDispatcher<IDispatcher<?>>
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = 5004712070861833380L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "dispatcher";

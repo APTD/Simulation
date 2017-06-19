@@ -22,50 +22,46 @@
 
 package com.github.aptd.simulation.elements;
 
+import com.github.aptd.simulation.elements.common.EDirection;
 import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
 
-import java.util.concurrent.Callable;
-
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
- * any object interface
+ * environment interface to define a moveable structure of an agent
  *
- * @tparam T domain specific type
+ * @todo must be refactored based on the agents
  */
-public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>, Callable<T>
+public interface IEnvironment<T extends IAgent<?>, N> extends IPerceiveable
 {
 
     /**
-     * name of the object
+     * calculates the route estimated time
      *
-     * @return string name
+     * @param p_route route
+     * @param p_speed speed
+     * @return estimated time
      */
-    String id();
+    double estimatedtime( final Stream<N> p_route, final double p_speed );
 
     /**
-     * changes the environment of the agent
+     * calculates a route
      *
-     * @param p_environment environment
-     * @return self reference
-     * @todo should be moved - incomplete
+     * @param p_start start position
+     * @param p_end end position
+     * @return list with stopovers and end position, list is defined as (start, end]
      */
-    IElement<T> environment( final IEnvironment<T, ?> p_environment );
-
+    List<N> route( final N p_start, final N p_end );
 
     /**
-     * generator interface
+     * moves an element in the environment
      *
-     * @tparam T element generator
+     * @param p_direction direction
+     * @param p_speed speed of the element
+     * @param p_goal goal position
+     * @return element which should moved or another element which blocks the position
      */
-    interface IGenerator<T extends IElement<?>> extends IAgentGenerator<T>
-    {
-        /**
-         * resets the internal counter
-         *
-         * @return self-reference
-         */
-        IGenerator<T> resetcount();
-    }
+    T move( final T p_element, final EDirection p_direction, final double p_speed, final N p_goal );
 
 }

@@ -40,6 +40,10 @@ import java.util.stream.Stream;
 public final class CVirtual extends IBaseStation
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = -7103541058979258246L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "virtual";

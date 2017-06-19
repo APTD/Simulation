@@ -22,7 +22,7 @@
 
 package com.github.aptd.simulation.core.time;
 
-import com.github.aptd.simulation.elements.IPerceive;
+import com.github.aptd.simulation.elements.IPerceiveable;
 
 import java.time.Instant;
 import java.util.concurrent.Callable;
@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
 /**
  * time interface
  */
-public interface ITime extends IPerceive, Callable<ITime>
+public interface ITime extends IPerceiveable, Callable<ITime>
 {
 
     /**

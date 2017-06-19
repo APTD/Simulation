@@ -49,10 +49,13 @@ import java.util.stream.Stream;
 public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITrain<?>>
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = 7268435045100070725L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "train";
-
     /**
      * list of wagons
      * @todo change to map with wagon names and ordering

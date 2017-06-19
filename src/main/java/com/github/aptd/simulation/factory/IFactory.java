@@ -65,7 +65,7 @@ public interface IFactory
      * @return network graph
      */
     @Nonnull
-    @SuppressWarnings( "varargs" )
+    @SuppressWarnings( {"unchecked", "Guava"} )
     IGraph<IStation<?>, ITrack<?>> network( @Nonnull final Stream<ITrack<?>> p_edge, @Nullable final Function<ITrack<?>, ? extends Number>... p_weight );
 
     /**

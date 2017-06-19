@@ -23,13 +23,13 @@
 package com.github.aptd.simulation.elements.common;
 
 import cern.colt.matrix.DoubleMatrix1D;
-import com.github.aptd.simulation.elements.IPerceive;
+import com.github.aptd.simulation.elements.IPerceiveable;
 
 
 /**
  * GPS matrix wrapper interface
  */
-public interface IGPS extends IPerceive
+public interface IGPS extends IPerceiveable
 {
     /**
      * returns longitude

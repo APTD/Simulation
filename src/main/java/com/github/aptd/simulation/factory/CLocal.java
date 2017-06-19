@@ -52,35 +52,43 @@ public final class CLocal implements IFactory
 
     @Nonnull
     @Override
-    public IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
+    public final IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream,
+                                                       @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CTrain.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
     @Override
-    public IGraph<IStation<?>, ITrack<?>> network( @Nonnull final Stream<ITrack<?>> p_edge, @Nullable final Function<ITrack<?>, ? extends Number>... p_weight )
+    @SafeVarargs
+    @SuppressWarnings( {"varargs", "Guava"} )
+    public final IGraph<IStation<?>, ITrack<?>> network( @Nonnull final Stream<ITrack<?>> p_edge,
+                                                         @Nullable final Function<ITrack<?>, ? extends Number>... p_weight
+    )
     {
         return new CNetwork( p_edge, p_weight == null ? null : p_weight[0] );
     }
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IStation<?>> station( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
+    public IElement.IGenerator<IStation<?>> station( @Nonnull final InputStream p_stream,
+                                                     @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CStation.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
+    public IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream,
+                                                     @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CTransit.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
+    public IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream,
+                                                     @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CVirtual.CGenerator( p_stream, p_actions, p_time );
     }

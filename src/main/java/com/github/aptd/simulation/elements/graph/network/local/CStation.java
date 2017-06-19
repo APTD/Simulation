@@ -42,6 +42,10 @@ import java.util.stream.Stream;
 public final class CStation extends IBaseStation
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = 3792779551221886558L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "station";

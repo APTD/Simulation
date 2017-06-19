@@ -47,6 +47,10 @@ import java.util.stream.Stream;
 public final class CWagon extends IBaseElement<IWagon<?>> implements IWagon<IWagon<?>>
 {
     /**
+     * serial id
+     */
+    private static final long serialVersionUID = -8430529331424623057L;
+    /**
      * literal functor
      */
     private static final String FUNCTOR = "wagon";
@@ -59,6 +63,7 @@ public final class CWagon extends IBaseElement<IWagon<?>> implements IWagon<IWag
      * maximum passanger
      */
     private final int m_maximum;
+
 
     /**
      * ctor

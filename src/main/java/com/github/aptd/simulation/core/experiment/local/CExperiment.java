@@ -57,6 +57,8 @@ import java.util.stream.Stream;
  */
 public final class CExperiment implements IExperiment
 {
+
+
     /**
      * simulation steps
      */
@@ -158,6 +160,10 @@ public final class CExperiment implements IExperiment
      */
     private final class CMessageSendAction extends IBaseAction
     {
+        /**
+         * serial id
+         */
+        private static final long serialVersionUID = -8852526771647323028L;
 
         @Nonnull
         @Override

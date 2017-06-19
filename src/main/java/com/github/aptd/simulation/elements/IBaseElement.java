@@ -43,7 +43,6 @@ import org.lightjason.agentspeak.generator.IBaseAgentGenerator;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
-import org.lightjason.agentspeak.language.IShallowCopy;
 import org.lightjason.agentspeak.language.execution.IVariableBuilder;
 import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
 import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
@@ -60,6 +59,7 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,6 +98,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * timezone the agent lives in
      */
     private ZoneId m_timezone = ZoneId.systemDefault();
+    /**
+     * reference of the environment
+     */
+    private final AtomicReference<IEnvironment<N, ?>> m_environment = new AtomicReference<>();
 
 
     /**
@@ -135,6 +139,13 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     }
 
     @Override
+    public final IElement<N> environment( final IEnvironment<N, ?> p_environment )
+    {
+        m_environment.set( p_environment );
+        return this;
+    }
+
+    @Override
     public final int hashCode()
     {
         return m_id.hashCode();
@@ -163,7 +174,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
                         Stream.of(
                             CLiteral.from( "id", CRawTerm.from( m_id ) )
                         ),
-                        m_external.stream().map( IShallowCopy::shallowcopysuffix ).sorted().sequential()
+                        m_external.stream().map( i -> i.<ILiteral>shallowcopysuffix() ).sorted().sequential()
                     ),
                     this.individualliteral( p_object ).sorted().sequential()
                 )
@@ -179,6 +190,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      */
     protected abstract Stream<ILiteral> individualliteral( final Stream<IElement<?>> p_object );
 
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @IAgentActionFilter
     @IAgentActionName( name = "simtime/current" )
@@ -214,7 +226,6 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
 
         m_nextactivation = l_instant;
     }
-
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
