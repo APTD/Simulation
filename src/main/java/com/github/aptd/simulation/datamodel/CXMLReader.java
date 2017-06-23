@@ -116,7 +116,8 @@ public final class CXMLReader implements IDataModel
             // experiment (executable model)
             return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents, l_time );
 
-        } catch ( final Exception l_execption )
+        }
+        catch ( final Exception l_execption )
         {
             throw new CRuntimeException( l_execption );
         }

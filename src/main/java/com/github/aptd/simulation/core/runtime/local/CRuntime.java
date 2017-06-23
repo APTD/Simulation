@@ -43,7 +43,8 @@ public final class CRuntime implements IRuntime
     public final IExperiment execute( final IExperiment p_experiment )
     {
         LongStream.range( 0, p_experiment.simulationsteps() )
-                  .forEach( i -> {
+                  .forEach( i ->
+                  {
                       optionalparallelstream( p_experiment.preprocess(), p_experiment.parallel() ).forEach( CRuntime::execute );
                       optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
                   } );

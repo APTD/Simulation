@@ -92,7 +92,8 @@ public final class CConfiguration
                 m_configuration.putAll( l_result );
             }
 
-        } catch ( final IOException l_exception )
+        }
+        catch ( final IOException l_exception )
         {
             throw new CSemanticException( l_exception );
         }

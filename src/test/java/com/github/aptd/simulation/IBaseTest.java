@@ -108,7 +108,8 @@ public abstract class IBaseTest
         try
         {
             if ( !p_before.isEmpty() )
-                p_before.forEach( i -> {
+                p_before.forEach( i ->
+                {
                     try
                     {
                         i.invoke( this );

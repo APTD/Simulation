@@ -79,10 +79,7 @@ public final class CMath
      */
     public static Stream<DoubleMatrix1D> matrixconsumer( final Stream<DoubleMatrix1D> p_stream, final Consumer<String> p_consumer )
     {
-        return p_stream.map( i -> {
-            p_consumer.accept( MATRIXFORMAT.toString( i ) + " " );
-            return i;
-        } );
+        return p_stream.peek( i -> p_consumer.accept( MATRIXFORMAT.toString( i ) + " " ) );
     }
 
     /**

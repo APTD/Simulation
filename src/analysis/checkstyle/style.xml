@@ -407,8 +407,9 @@
             <property name = "checkMethods" value = "true" />
         </module>
 
-        <module name = "ReturnCount">
-            <property name = "max" value = "20" />
+        <module name="ReturnCount">
+            <property name="max" value="5"/>
+            <property name="maxForVoid" value="5"/>
         </module>
 
         <module name = "RightCurly">

@@ -31,7 +31,7 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.agent.IBaseAgent;
-import org.lightjason.agentspeak.beliefbase.CBeliefbasePersistent;
+import org.lightjason.agentspeak.beliefbase.CBeliefbase;
 import org.lightjason.agentspeak.beliefbase.IBeliefbaseOnDemand;
 import org.lightjason.agentspeak.beliefbase.storage.CMultiStorage;
 import org.lightjason.agentspeak.beliefbase.storage.CSingleStorage;
@@ -89,7 +89,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     /**
      * reference to external beliefbase
      */
-    private final IView<N> m_external;
+    private final IView m_external;
     /**
      * simulated time at which the agent will become active again on its own
      */
@@ -309,10 +309,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
             @Nonnull
             @Override
             @SuppressWarnings( "unchecked" )
-            public final IView<N> beliefbase()
+            public final IView beliefbase()
             {
-                final IView<N> l_view = new CBeliefbasePersistent<N>( new CMultiStorage<>() ).create( BELIEFBASEROOTNAME );
-                l_view.add( new CBeliefbasePersistent<N>( new CSingleStorage<ILiteral, IView<N>, N>() ).create( "extern", l_view ) );
+                final IView l_view = new CBeliefbase( new CMultiStorage<>() ).create( BELIEFBASEROOTNAME );
+                l_view.add( new CBeliefbase( new CSingleStorage<>() ).create( "extern", l_view ) );
 
                 // add initial beliefs and clear initial beliefbase trigger
                 m_initialbeliefs.parallelStream().forEach( i -> l_view.add( i.shallowcopy() ) );
