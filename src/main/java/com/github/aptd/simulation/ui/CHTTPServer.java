@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.ui;
 
+import com.github.aptd.simulation.common.CCommon;
 import com.github.aptd.simulation.common.CConfiguration;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.error.CRuntimeException;
@@ -40,6 +41,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.stream.Stream;
@@ -87,7 +89,11 @@ public final class CHTTPServer
         l_webapp.setServer( m_server );
         l_webapp.setContextPath( "/" );
         l_webapp.setWelcomeFiles( new String[]{"index.html", "index.htm"} );
-        l_webapp.setResourceBase( CHTTPServer.class.getResource( "/com/github/aptd/simulation/html" ).toExternalForm() );
+        l_webapp.setResourceBase(
+            CHTTPServer.class.getResource(
+                MessageFormat.format( "/{0}/html", CCommon.PACKAGEROOT.replace( ".", "/" ) )
+            ).toExternalForm()
+        );
         l_webapp.addServlet( new ServletHolder( new ServletContainer( m_restagent ) ), "/rest/*" );
         l_webapp.addFilter( new FilterHolder( new CrossOriginFilter() ), "/rest/*", EnumSet.of( DispatcherType.REQUEST ) );
     }
