@@ -57,6 +57,11 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
      */
     private static final String FUNCTOR = "train";
     /**
+     * average driving speed (not considering acceleration and braking at the moment)
+     * @todo make a non-static field for instances
+     */
+    private static final double DRIVING_SPEED = 40.0;
+    /**
      * list of wagons
      * @todo change to map with wagon names and ordering
      */
@@ -66,8 +71,13 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
      */
     private final IGPS m_position = null;
 
-    private final List<CTimetableEntry> m_timetable;
+    private ETrainState m_state;
 
+    private Instant m_laststatechange;
+
+    private final List<CTimetableEntry> m_timetable;
+    private int m_ttindex;
+    private double m_positionontrack;
 
     /**
      * ctor
