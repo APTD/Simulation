@@ -71,6 +71,7 @@ public final class CStepTime extends IBaseTime
     public final ITime call() throws Exception
     {
         m_currenttime.set( m_currenttime.get().plus( m_stepsize.get() ) );
+        // System.out.println( "steptime advanced to " + m_currenttime.get() );
         return this;
     }
 

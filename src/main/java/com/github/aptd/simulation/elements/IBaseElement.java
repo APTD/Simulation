@@ -83,6 +83,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      */
     protected final ITime m_time;
     /**
+     * simulated time at which the agent will become active again on its own
+     */
+    protected Instant m_nextactivation = Instant.MAX;
+    /**
      * functor definition
      */
     private final String m_functor;
@@ -90,10 +94,6 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * reference to external beliefbase
      */
     private final IView m_external;
-    /**
-     * simulated time at which the agent will become active again on its own
-     */
-    private Instant m_nextactivation = Instant.MAX;
     /**
      * timezone the agent lives in
      */

@@ -34,6 +34,7 @@ import com.github.aptd.simulation.datamodel.xml.Iagents;
 import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.CTrain;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
@@ -44,12 +45,18 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
+import org.railml.schemas._2016.EArrivalDepartureTimes;
+import org.railml.schemas._2016.EOcp;
+import org.railml.schemas._2016.EOcpTT;
+import org.railml.schemas._2016.ETrack;
+import org.railml.schemas._2016.ETrainPart;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +64,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -226,7 +232,31 @@ public final class CXMLReader implements IDataModel
                          a -> traingenerator( p_factory, p_agents.get( i.getRight() ), l_actions, p_time )
                          ).generatesingle(
                              i.getLeft().getId(),
-                             Stream.of()
+                             i.getLeft()
+                              .getTrainPartSequence()
+                              .stream()
+                              .flatMap( ref ->
+                              {
+                                  final EOcpTT[] l_tts = ( (ETrainPart) ref.getTrainPartRef().get( 0 ).getRef() )
+                                      .getOcpsTT().getOcpTT().toArray( new EOcpTT[0] );
+                                  final CTrain.CTimetableEntry[] l_entries = new CTrain.CTimetableEntry[l_tts.length];
+                                  for ( int j = 0; j < l_tts.length; j++ )
+                                  {
+                                      final EArrivalDepartureTimes l_times = l_tts[j].getTimes().stream()
+                                                                             .filter( t -> t.getScope().equalsIgnoreCase( "published" ) )
+                                                                             .findAny()
+                                                                             .orElseThrow( () -> new CSemanticException( "missing published times" ) );
+                                      l_entries[j] = new CTrain.CTimetableEntry(
+                                          j < 1 ? 0.0 : ( (ETrack) l_tts[j - 1].getSectionTT().getTrackRef().get( 0 ).getRef() ).getTrackTopology()
+                                                                                                                                .getTrackEnd().getPos()
+                                                                                                                                .doubleValue(),
+                                          ( (EOcp) l_tts[j].getOcpRef() ).getId(),
+                                          l_times.getArrival() == null ? null : l_times.getArrival().toGregorianCalendar().toInstant(),
+                                          l_times.getDeparture() == null ? null : l_times.getDeparture().toGregorianCalendar().toInstant()
+                                      );
+                                  }
+                                  return Arrays.stream( l_entries );
+                              } )
                          )
                      )
                      .collect( Collectors.toMap( IElement::id, i -> i ) )
