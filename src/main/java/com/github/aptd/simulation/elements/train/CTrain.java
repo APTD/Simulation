@@ -98,7 +98,7 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
     private CTrain( final IAgentConfiguration<ITrain<?>> p_configuration, final String p_id, final Stream<CTimetableEntry> p_timetable,
                     final Stream<IWagon<?>> p_wagon, final ITime p_time )
     {
-        super( p_configuration, p_id, FUNCTOR, p_time );
+        super( p_configuration, FUNCTOR, p_id, p_time );
         m_wagon = p_wagon.collect( Collectors.toList() );
         m_timetable = p_timetable.collect( Collectors.toList() );
         // first timetable entry only has departure
