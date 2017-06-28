@@ -22,31 +22,35 @@
 
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
-import com.github.aptd.simulation.elements.graph.IEdge;
 import com.github.aptd.simulation.elements.graph.IVertex;
+
+import javax.annotation.Nonnull;
 
 
 /**
  * interface of an activity
  */
-public interface IActivity<S,T,E> extends IVertex<IActivity<S,T,E>>
+public interface IActivity<S, T, E> extends IVertex<IActivity<S, T, E>>
 {
     /**
      * source of the activity
      * @return source
      */
+    @Nonnull
     S source();
 
     /**
      * target of the activity
      * @return target
      */
+    @Nonnull
     T target();
 
     /**
-     * returns the event of the edge
+     * returns the
      * @return event
      */
+    @Nonnull
     E event();
 
 }

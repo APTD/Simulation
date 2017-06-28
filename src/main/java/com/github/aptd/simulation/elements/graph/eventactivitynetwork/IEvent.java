@@ -24,13 +24,14 @@ package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
 import com.github.aptd.simulation.elements.graph.IEdge;
 
+import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
 
 
 /**
  * event interface
  */
-public interface IEvent<A extends IActivity<?,?,?>> extends IEdge<A>
+public interface IEvent<A extends IActivity<?, ?, ?>> extends IEdge<A>
 {
 
     /**
@@ -38,6 +39,24 @@ public interface IEvent<A extends IActivity<?,?,?>> extends IEdge<A>
      *
      * @return function to define the cost
      */
+    @Nonnull
     BiFunction<A, A, Number> cost();
 
+    /**
+     * event
+     *
+     * @return event reference
+     */
+    @Nonnull
+    EEvent event();
+
+
+    /**
+     * event
+     */
+    enum EEvent
+    {
+        CHANGING,
+        HEADWAY;
+    }
 }

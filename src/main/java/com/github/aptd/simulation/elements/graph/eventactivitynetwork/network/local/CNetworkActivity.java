@@ -24,11 +24,12 @@ package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.l
 
 
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.ENetworkEvent;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.train.ITrain;
+
+import javax.annotation.Nonnull;
+import java.time.Instant;
 
 
 /**
@@ -39,7 +40,7 @@ public final class CNetworkActivity implements INetworkActivity
     /**
      * train
      */
-    private final ITrain m_train;
+    private final ITrain<?> m_train;
     /**
      * station
      */
@@ -47,7 +48,11 @@ public final class CNetworkActivity implements INetworkActivity
     /**
      * event
      */
-    private final INetworkEvent m_event;
+    private final EActivity m_event;
+    /**
+     * time
+     */
+    private final Instant m_time;
 
     /**
      * ctor
@@ -55,33 +60,40 @@ public final class CNetworkActivity implements INetworkActivity
      * @param p_train train
      * @param p_station station
      * @param p_event event
+     * @param p_time time
      */
-    public CNetworkActivity( final ITrain p_train, final IStation<?> p_station, final INetworkEvent p_event )
+    public CNetworkActivity( @Nonnull final ITrain<?> p_train, @Nonnull final IStation<?> p_station,
+                             @Nonnull final EActivity p_event, @Nonnull final Instant p_time )
     {
+        m_time = p_time;
         m_train = p_train;
-        m_station = p_station;
         m_event = p_event;
+        m_station = p_station;
     }
 
 
 
+    @Nonnull
     @Override
-    public final ITrain source()
+    public final ITrain<?> source()
     {
         return m_train;
     }
 
+    @Nonnull
     @Override
     public final IStation<?> target()
     {
         return m_station;
     }
 
+    @Nonnull
     @Override
-    public final INetworkEvent event()
+    public final EActivity event()
     {
         return m_event;
     }
+
 
     @Override
     public final int hashCode()
@@ -92,6 +104,13 @@ public final class CNetworkActivity implements INetworkActivity
     @Override
     public final boolean equals( final Object p_object )
     {
-        return ( p_object != null ) && ( p_object instanceof IActivity<?,?,?> ) && ( p_object.hashCode() == this.hashCode() );
+        return ( p_object != null ) && ( p_object instanceof IActivity<?, ?, ?> ) && ( p_object.hashCode() == this.hashCode() );
+    }
+
+    @Nonnull
+    @Override
+    public final Instant time()
+    {
+        return m_time;
     }
 }

@@ -23,18 +23,14 @@
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local;
 
 import com.github.aptd.simulation.elements.graph.IGraph;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEvent;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEventActivityNetwork;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.INode;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
-import com.github.aptd.simulation.elements.graph.network.IStation;
-import com.github.aptd.simulation.elements.train.ITrain;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.algorithms.shortestpath.ShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -60,10 +56,12 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActi
      *
      * @param p_edges edge elements
      */
-    public CEventActivityNetwork( final Stream<IActivity> p_edges )
+    public CEventActivityNetwork( @Nonnull final Stream<INetworkEvent> p_edges )
     {
-        p_edges.forEach( i -> m_graph.addEdge( i, i. ) );
-        m_shortestpath = new DijkstraShortestPath<>( m_graph, null );
+        p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
+
+        final com.google.common.base.Function<INetworkEvent, Number> l_function = ( i ) -> i.cost().apply( i.from(), i.to() );
+        m_shortestpath = new DijkstraShortestPath<>( m_graph, l_function );
     }
 
     /**
@@ -71,9 +69,10 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActi
      *
      * @param p_edges edge elements
      */
-    public CEventActivityNetwork( final Stream<IActivity> p_edges, final ShortestPath<INetworkActivity, INetworkEvent> p_shortestpath )
+    public CEventActivityNetwork( @Nonnull final Stream<INetworkEvent> p_edges, @Nonnull final ShortestPath<INetworkActivity, INetworkEvent> p_shortestpath )
     {
-
+        m_shortestpath = p_shortestpath;
+        p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
     }
 
 

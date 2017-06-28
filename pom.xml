@@ -485,6 +485,8 @@
                         <exclude>**/*.md</exclude>
                         <exclude>**/*.htm</exclude>
                         <exclude>**/*.doxyfile</exclude>
+                        <exclude>**/*.graffle</exclude>
+                        <exclude>**/*.xjb</exclude>
                         <exclude>target/**</exclude>
                     </excludes>
                     <mapping>

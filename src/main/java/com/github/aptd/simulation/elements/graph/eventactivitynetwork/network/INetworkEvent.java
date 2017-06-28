@@ -23,8 +23,6 @@
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network;
 
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEvent;
-import com.github.aptd.simulation.elements.graph.network.IStation;
-import com.github.aptd.simulation.elements.train.ITrain;
 
 
 /**
