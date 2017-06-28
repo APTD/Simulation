@@ -20,57 +20,58 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.eventactivitynetwork.local;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local;
 
 
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.EEvent;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.INode;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.ITrain;
 
 
 /**
  * activity
  */
-public final class CActivity implements IActivity
+public final class CActivity implements IActivity<ITrain, IStation<?>, EEvent>
 {
+    /**
+     * train
+     */
+    private final ITrain m_train;
+    /**
+     * station
+     */
+    private final IStation<?> m_station;
     /**
      * event
      */
     private final EEvent m_event;
-    /**
-     * from node
-     */
-    private final INode m_from;
-    /**
-     * to node
-     */
-    private final INode m_to;
 
     /**
      * ctor
      *
+     * @param p_train train
+     * @param p_station station
      * @param p_event event
-     * @param p_from from node
-     * @param p_to to node
      */
-    public CActivity( final EEvent p_event, final INode p_from, final INode p_to )
+    public CActivity( final ITrain p_train, final IStation<?> p_station, final EEvent p_event )
     {
+        m_train = p_train;
+        m_station = p_station;
         m_event = p_event;
-        m_from = p_from;
-        m_to = p_to;
     }
 
 
+
     @Override
-    public final INode from()
+    public final ITrain source()
     {
-        return m_from;
+        return m_train;
     }
 
     @Override
-    public final INode to()
+    public final IStation<?> target()
     {
-        return m_to;
+        return null;
     }
 
     @Override
@@ -82,12 +83,12 @@ public final class CActivity implements IActivity
     @Override
     public final int hashCode()
     {
-        return m_event.hashCode() ^ m_from.hashCode() ^ m_to.hashCode();
+        return m_event.hashCode() ^ m_train.hashCode() ^ m_station.hashCode();
     }
 
     @Override
     public final boolean equals( final Object p_object )
     {
-        return ( p_object != null ) && ( p_object instanceof IActivity ) && ( p_object.hashCode() == this.hashCode() );
+        return ( p_object != null ) && ( p_object instanceof IActivity<?,?,?> ) && ( p_object.hashCode() == this.hashCode() );
     }
 }

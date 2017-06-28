@@ -20,13 +20,15 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.eventactivitynetwork.local;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local;
 
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEventActivityNetwork;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.INode;
+import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.linearprogram.ILinearProgram;
+import com.github.aptd.simulation.elements.train.ITrain;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
@@ -39,7 +41,7 @@ import java.util.stream.Stream;
  *
  * @bug incomplete
  */
-public class CEventActivityNetwork implements IEventActivityNetwork
+public class CEventActivityNetwork implements IEventActivityNetwork<ITrain, IStation<?>, EEvent>
 {
     /**
      * graph data structure
@@ -114,9 +116,44 @@ public class CEventActivityNetwork implements IEventActivityNetwork
         return m_graph.containsEdge( p_id );
     }
 
+
     @Override
-    public final ILinearProgram linearprogram()
+    public List<EEvent> route( final IActivity<ITrain, IStation<?>, EEvent> p_start, final IActivity<ITrain, IStation<?>, EEvent> p_end )
     {
         return null;
+    }
+
+    @Override
+    public EEvent edge( final IActivity<ITrain, IStation<?>, EEvent> p_start, final IActivity<ITrain, IStation<?>, EEvent> p_end
+    )
+    {
+        return null;
+    }
+
+    @Override
+    public Stream<IActivity<ITrain, IStation<?>, EEvent>> neighbours( final IActivity<ITrain, IStation<?>, EEvent> p_id
+    )
+    {
+        return null;
+    }
+
+    @Override
+    public boolean containsvertex( final IActivity<ITrain, IStation<?>, EEvent> p_id
+    )
+    {
+        return false;
+    }
+
+    @Override
+    public boolean containsedge( final IActivity<ITrain, IStation<?>, EEvent> p_start, final IActivity<ITrain, IStation<?>, EEvent> p_end
+    )
+    {
+        return false;
+    }
+
+    @Override
+    public boolean containsedge( final EEvent p_id )
+    {
+        return false;
     }
 }

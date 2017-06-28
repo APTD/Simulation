@@ -23,18 +23,30 @@
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
 import com.github.aptd.simulation.elements.graph.IEdge;
+import com.github.aptd.simulation.elements.graph.IVertex;
 
 
 /**
  * interface of an activity
  */
-public interface IActivity extends IEdge<INode>
+public interface IActivity<S,T,E> extends IVertex<IActivity<S,T,E>>
 {
+    /**
+     * source of the activity
+     * @return source
+     */
+    S source();
+
+    /**
+     * target of the activity
+     * @return target
+     */
+    T target();
 
     /**
      * returns the event of the edge
      * @return event
      */
-    EEvent event();
+    E event();
 
 }

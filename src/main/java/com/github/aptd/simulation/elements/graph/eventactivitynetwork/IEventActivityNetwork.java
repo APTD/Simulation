@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
+import com.github.aptd.simulation.elements.graph.IEdge;
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.linearprogram.ILinearProgram;
 
@@ -29,13 +30,7 @@ import com.github.aptd.simulation.elements.linearprogram.ILinearProgram;
 /**
  * interface event-activity-network
  */
-public interface IEventActivityNetwork extends IGraph<INode, IActivity>
+public interface IEventActivityNetwork<S,T,E extends IEdge<IActivity<S,T,E>>> extends IGraph<IActivity<S,T,E>,E>
 {
-
-    /**
-     * returns the linear-program of the graph
-     * @return linear-program
-     */
-    ILinearProgram linearprogram();
 
 }
