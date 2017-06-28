@@ -61,9 +61,9 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                             !main.
 
                             +!main <-
-                                generic/print("hello train");
-                                !test ( 0 );
-                                !countdown( 5 )
+                                generic/print("hello train")
+                                // !test ( 0 );
+                                // !countdown( 5 )
                             .
 
                             +!test( X ) <-
@@ -90,7 +90,11 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                                 generic/print( "repair" )
                             .
 
-                            +!activate
+                            +!activate <-
+                                state/timertransition
+                            .
+
+                            +!activate_bak
                             : simtime/current() >= nextactivation/get() <-
                                 nextactivation/set( simtime/max );
                                 >>nextthing( Z );
