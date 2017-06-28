@@ -48,7 +48,7 @@ public final class CNetworkActivity implements INetworkActivity
     /**
      * event
      */
-    private final EActivity m_event;
+    private final EEvent m_event;
     /**
      * time
      */
@@ -63,7 +63,7 @@ public final class CNetworkActivity implements INetworkActivity
      * @param p_time time
      */
     public CNetworkActivity( @Nonnull final ITrain<?> p_train, @Nonnull final IStation<?> p_station,
-                             @Nonnull final EActivity p_event, @Nonnull final Instant p_time )
+                             @Nonnull final EEvent p_event, @Nonnull final Instant p_time )
     {
         m_time = p_time;
         m_train = p_train;
@@ -89,7 +89,7 @@ public final class CNetworkActivity implements INetworkActivity
 
     @Nonnull
     @Override
-    public final EActivity event()
+    public final EEvent event()
     {
         return m_event;
     }

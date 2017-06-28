@@ -33,7 +33,7 @@ import java.time.Instant;
 /**
  * network activity
  */
-public interface INetworkActivity extends IActivity<ITrain<?>, IStation<?>, INetworkActivity.EActivity>
+public interface INetworkActivity extends IActivity<ITrain<?>, IStation<?>, INetworkActivity.EEvent>
 {
     /**
      * time of the activity
@@ -45,11 +45,11 @@ public interface INetworkActivity extends IActivity<ITrain<?>, IStation<?>, INet
 
 
     /**
-     * activities
+     * events
      */
-    enum EActivity
+    enum EEvent
     {
-        ARRIVAL,
+        ARRIVE,
         DEPATURE;
     }
 

@@ -47,7 +47,7 @@ public interface IActivity<S, T, E> extends IVertex<IActivity<S, T, E>>
     T target();
 
     /**
-     * returns the
+     * returns the event element
      * @return event
      */
     @Nonnull
