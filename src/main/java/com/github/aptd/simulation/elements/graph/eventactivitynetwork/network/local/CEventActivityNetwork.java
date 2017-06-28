@@ -24,12 +24,15 @@ package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.l
 
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEvent;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEventActivityNetwork;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.INode;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
 import com.github.aptd.simulation.elements.graph.network.IStation;
-import com.github.aptd.simulation.elements.linearprogram.ILinearProgram;
 import com.github.aptd.simulation.elements.train.ITrain;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
+import edu.uci.ics.jung.algorithms.shortestpath.ShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 import java.util.List;
@@ -38,19 +41,17 @@ import java.util.stream.Stream;
 
 /**
  * event-activity-network
- *
- * @bug incomplete
  */
-public class CEventActivityNetwork implements IEventActivityNetwork<ITrain, IStation<?>, EEvent>
+public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActivity, INetworkEvent>
 {
     /**
      * graph data structure
      */
-    private final DirectedSparseGraph<INode, IActivity> m_graph = new DirectedSparseGraph<>();
+    private final DirectedSparseGraph<INetworkActivity, INetworkEvent> m_graph = new DirectedSparseGraph<>();
     /**
-     * shortest-path algorthm
+     * shortest-path algorthim
      */
-    private final DijkstraShortestPath<INode, IActivity> m_dijekstra;
+    private final ShortestPath<INetworkActivity, INetworkEvent> m_shortestpath;
 
 
 
@@ -61,8 +62,18 @@ public class CEventActivityNetwork implements IEventActivityNetwork<ITrain, ISta
      */
     public CEventActivityNetwork( final Stream<IActivity> p_edges )
     {
-        p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
-        m_dijekstra = new DijkstraShortestPath<>( m_graph, null );
+        p_edges.forEach( i -> m_graph.addEdge( i, i. ) );
+        m_shortestpath = new DijkstraShortestPath<>( m_graph, null );
+    }
+
+    /**
+     * ctor
+     *
+     * @param p_edges edge elements
+     */
+    public CEventActivityNetwork( final Stream<IActivity> p_edges, final ShortestPath<INetworkActivity, INetworkEvent> p_shortestpath )
+    {
+
     }
 
 
@@ -79,81 +90,40 @@ public class CEventActivityNetwork implements IEventActivityNetwork<ITrain, ISta
     }
 
     @Override
-    public final List<IActivity> route( final INode p_start, final INode p_end )
-    {
-        return m_dijekstra.getPath( p_start, p_end );
-    }
-
-    @Override
-    public final IActivity edge( final INode p_start, final INode p_end )
-    {
-        return m_graph.findEdge( p_start, p_end );
-    }
-
-    @Override
-    public final Stream<INode> neighbours( final INode p_id )
-    {
-        return m_graph.containsVertex( p_id )
-               ? m_graph.getNeighbors( p_id ).stream()
-               : Stream.of();
-    }
-
-    @Override
-    public final boolean containsvertex( final INode p_id )
-    {
-        return m_graph.containsVertex( p_id );
-    }
-
-    @Override
-    public final boolean containsedge( final INode p_start, final INode p_end )
-    {
-        return m_graph.containsEdge( m_graph.findEdge( p_start, p_end ) );
-    }
-
-    @Override
-    public final boolean containsedge( final IActivity p_id )
-    {
-        return m_graph.containsEdge( p_id );
-    }
-
-
-    @Override
-    public List<EEvent> route( final IActivity<ITrain, IStation<?>, EEvent> p_start, final IActivity<ITrain, IStation<?>, EEvent> p_end )
+    public List<INetworkEvent> route( final INetworkActivity p_start, final INetworkActivity p_end )
     {
         return null;
     }
 
     @Override
-    public EEvent edge( final IActivity<ITrain, IStation<?>, EEvent> p_start, final IActivity<ITrain, IStation<?>, EEvent> p_end
-    )
+    public INetworkEvent edge( final INetworkActivity p_start, final INetworkActivity p_end )
     {
         return null;
     }
 
     @Override
-    public Stream<IActivity<ITrain, IStation<?>, EEvent>> neighbours( final IActivity<ITrain, IStation<?>, EEvent> p_id
-    )
+    public Stream<INetworkActivity> neighbours( final INetworkActivity p_id )
     {
         return null;
     }
 
     @Override
-    public boolean containsvertex( final IActivity<ITrain, IStation<?>, EEvent> p_id
+    public boolean containsvertex( final INetworkActivity p_id )
+    {
+        return false;
+    }
+
+    @Override
+    public boolean containsedge( final INetworkActivity p_start, final INetworkActivity p_end
     )
     {
         return false;
     }
 
     @Override
-    public boolean containsedge( final IActivity<ITrain, IStation<?>, EEvent> p_start, final IActivity<ITrain, IStation<?>, EEvent> p_end
-    )
+    public boolean containsedge( final INetworkEvent p_id )
     {
         return false;
     }
 
-    @Override
-    public boolean containsedge( final EEvent p_id )
-    {
-        return false;
-    }
 }

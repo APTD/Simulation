@@ -20,17 +20,16 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
+package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network;
 
-import com.github.aptd.simulation.elements.graph.IEdge;
-import com.github.aptd.simulation.elements.graph.IGraph;
-import com.github.aptd.simulation.elements.linearprogram.ILinearProgram;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEvent;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.ITrain;
 
 
 /**
- * interface event-activity-network
+ * network event
  */
-public interface IEventActivityNetwork<A extends IActivity<?,?,?>, E extends IEvent<A>> extends IGraph<A,E>
+public interface INetworkEvent extends IEvent<INetworkActivity>
 {
-
 }
