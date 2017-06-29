@@ -20,62 +20,43 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
+package com.github.aptd.simulation.elements.graph;
 
-import com.github.aptd.simulation.elements.graph.IEdge;
-
-import javax.annotation.Nonnull;
-import java.util.function.Supplier;
+import com.github.aptd.simulation.IBaseTest;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEventActivityNetwork;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local.CEventActivityNetwork;
+import org.junit.Test;
 
 
 /**
- * event interface
+ * test network EAN
  */
-public interface IActivity<A extends IEvent<?, ?, ?>> extends IEdge<A>
+public final class TestCNetworkEAN extends IBaseTest
 {
-
     /**
-     * cost function
-     *
-     * @return supplier cost
+     * test ean
      */
-    @Nonnull
-    Supplier<Number> cost();
-
-    /**
-     * lower-bound
-     *
-     * @return lower-bound supplier
-     */
-    @Nonnull
-    Supplier<Number> lowerbound();
-
-    /**
-     * upper-bound
-     *
-     * @return upper-bound supplier
-     */
-    @Nonnull
-    Supplier<Number> upperbound();
-
-
-
-
-    /**
-     * event
-     *
-     * @return event reference
-     */
-    @Nonnull
-    EEvent event();
-
-
-    /**
-     * event
-     */
-    enum EEvent
+    @Test
+    public final void ean()
     {
-        CHANGING,
-        HEADWAY;
+        final IEventActivityNetwork<INetworkEvent, INetworkActivity> l_ean = new CEventActivityNetwork();
+
     }
+
+
+    /**
+     * main
+     *
+     * @param p_args arguments
+     */
+    public static void main( final String[] p_args )
+    {
+        new TestCNetworkEAN().invoketest();
+    }
+
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 }

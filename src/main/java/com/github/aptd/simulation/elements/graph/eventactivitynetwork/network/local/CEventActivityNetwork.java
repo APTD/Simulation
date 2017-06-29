@@ -29,14 +29,18 @@ import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.IN
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.algorithms.shortestpath.ShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 
 /**
  * event-activity-network
+ *
+ * @todo upper-bound is not implemented
  */
 public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEvent, INetworkActivity>
 {
@@ -50,6 +54,13 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEven
     private final ShortestPath<INetworkEvent, INetworkActivity> m_shortestpath;
 
 
+    /**
+     * ctor
+     */
+    public CEventActivityNetwork()
+    {
+        m_shortestpath = defaultshortestpath( m_graph );
+    }
 
     /**
      * ctor
@@ -58,10 +69,8 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEven
      */
     public CEventActivityNetwork( @Nonnull final Stream<INetworkActivity> p_edges )
     {
+        m_shortestpath = defaultshortestpath( m_graph );
         p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
-
-        final com.google.common.base.Function<INetworkActivity, Number> l_function = ( i ) -> i.cost().apply( i.from(), i.to() );
-        m_shortestpath = new DijkstraShortestPath<>( m_graph, l_function );
     }
 
     /**
@@ -75,6 +84,17 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEven
         p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
     }
 
+    /**
+     * generates the default shortest-path algorithm
+     *
+     * @param p_graph graph instance
+     * @return shortest-path algorithm
+     */
+    private static ShortestPath<INetworkEvent, INetworkActivity> defaultshortestpath( final Graph<INetworkEvent, INetworkActivity> p_graph )
+    {
+        final com.google.common.base.Function<INetworkActivity, Number> l_function = ( i ) -> i.cost().get().doubleValue() + i.lowerbound().get().doubleValue();
+        return new DijkstraShortestPath<>( p_graph, l_function );
+    }
 
     @Override
     public final int hashCode()
@@ -88,41 +108,52 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEven
         return ( p_object != null ) && ( p_object instanceof IGraph<?, ?> ) && ( p_object.hashCode() == this.hashCode() );
     }
 
+    @Nonnull
     @Override
-    public List<INetworkActivity> route( final INetworkEvent p_start, final INetworkEvent p_end )
+    public List<INetworkActivity> route( @Nonnull final INetworkEvent p_start, @Nonnull final INetworkEvent p_end )
+    {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public INetworkActivity edge( @Nonnull final INetworkEvent p_start, @Nonnull final INetworkEvent p_end )
+    {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public Stream<INetworkEvent> neighbours( @Nonnull final INetworkEvent p_id )
     {
         return null;
     }
 
     @Override
-    public INetworkActivity edge( final INetworkEvent p_start, final INetworkEvent p_end )
-    {
-        return null;
-    }
-
-    @Override
-    public Stream<INetworkEvent> neighbours( final INetworkEvent p_id )
-    {
-        return null;
-    }
-
-    @Override
-    public boolean containsvertex( final INetworkEvent p_id )
+    public boolean containsvertex( @Nonnull final INetworkEvent p_id )
     {
         return false;
     }
 
     @Override
-    public boolean containsedge( final INetworkEvent p_start, final INetworkEvent p_end
+    public boolean containsedge( @Nonnull final INetworkEvent p_start, @Nonnull final INetworkEvent p_end
     )
     {
         return false;
     }
 
     @Override
-    public boolean containsedge( final INetworkActivity p_id )
+    public boolean containsedge( @Nonnull final INetworkActivity p_id )
     {
         return false;
+    }
+
+    @Nonnull
+    @Override
+    public final IGraph<INetworkEvent, INetworkActivity> addedge( @Nonnull final INetworkActivity... p_edges )
+    {
+        Arrays.stream( p_edges ).forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
+        return this;
     }
 
 }

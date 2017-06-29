@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.graph;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -41,7 +42,8 @@ public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
      * @param p_end end node identifier
      * @return list of edges to represent the route
      */
-    List<E> route( final V p_start, final V p_end );
+    @Nonnull
+    List<E> route( @Nonnull final V p_start, @Nonnull final V p_end );
 
     /**
      * returns an edge
@@ -50,7 +52,8 @@ public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
      * @param p_end target node identifier
      * @return edge or null if edge not exists
      */
-    E edge( final V p_start, final V p_end );
+    @Nonnull
+    E edge( @Nonnull final V p_start, @Nonnull final V p_end );
 
     /**
      * returns the neighbours of a node
@@ -58,7 +61,8 @@ public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
      * @param p_id node identifier
      * @return stream of neighbour nodes
      */
-    Stream<V> neighbours( final V p_id );
+    @Nonnull
+    Stream<V> neighbours( @Nonnull final V p_id );
 
     /**
      * checks if a vertex exist
@@ -66,7 +70,7 @@ public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
      * @param p_id vertex
      * @return existing flag
      */
-    boolean containsvertex( final V p_id );
+    boolean containsvertex( @Nonnull final V p_id );
 
     /**
      * checks if an edge exists
@@ -75,7 +79,7 @@ public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
      * @param p_end end vertex
      * @return existing flag
      */
-    boolean containsedge( final V p_start, final V p_end );
+    boolean containsedge( @Nonnull final V p_start, @Nonnull final V p_end );
 
     /***
      * checks if an edge exist
@@ -83,6 +87,16 @@ public interface IGraph<V extends IVertex<?>, E extends IEdge<V>>
      * @param p_id edge
      * @return existing flag
      */
-    boolean containsedge( final E p_id );
+    boolean containsedge( @Nonnull final E p_id );
+
+    /**
+     * adds edges
+     *
+     * @param p_edges edges
+     * @return self reference
+     */
+    @Nonnull
+    @SuppressWarnings( "unchecked" )
+    IGraph<V, E> addedge( @Nonnull final E... p_edges );
 
 }

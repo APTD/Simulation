@@ -29,6 +29,8 @@ import com.google.common.base.Function;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
+import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -93,20 +95,23 @@ public class CNetwork implements IGraph<IStation<?>, ITrack<?>>
         return m_graph.toString();
     }
 
+    @Nonnull
     @Override
-    public final List<ITrack<?>> route( final IStation<?> p_start, final IStation<?> p_end )
+    public final List<ITrack<?>> route( @Nonnull final IStation<?> p_start, @Nonnull final IStation<?> p_end )
     {
         return m_dijekstra.getPath( p_start, p_end );
     }
 
+    @Nonnull
     @Override
-    public final ITrack<?> edge( final IStation<?> p_start, final IStation<?> p_end )
+    public final ITrack<?> edge( @Nonnull final IStation<?> p_start, @Nonnull final IStation<?> p_end )
     {
         return m_graph.findEdge( p_start, p_end );
     }
 
+    @Nonnull
     @Override
-    public final Stream<IStation<?>> neighbours( final IStation<?> p_id )
+    public final Stream<IStation<?>> neighbours( @Nonnull final IStation<?> p_id )
     {
         return m_graph.containsVertex( p_id )
                ? m_graph.getNeighbors( p_id ).stream()
@@ -114,21 +119,29 @@ public class CNetwork implements IGraph<IStation<?>, ITrack<?>>
     }
 
     @Override
-    public final boolean containsvertex( final IStation<?> p_id )
+    public final boolean containsvertex( @Nonnull final IStation<?> p_id )
     {
         return m_graph.containsVertex( p_id );
     }
 
     @Override
-    public final boolean containsedge( final IStation<?> p_start, final IStation<?> p_end )
+    public final boolean containsedge( @Nonnull final IStation<?> p_start, @Nonnull final IStation<?> p_end )
     {
         return m_graph.containsEdge( m_graph.findEdge( p_start, p_end ) );
     }
 
     @Override
-    public final boolean containsedge( final ITrack<?> p_id )
+    public final boolean containsedge( @Nonnull final ITrack<?> p_id )
     {
         return m_graph.containsEdge( p_id );
+    }
+
+    @Nonnull
+    @Override
+    public final IGraph<IStation<?>, ITrack<?>> addedge( @Nonnull final ITrack<?>... p_edges )
+    {
+        Arrays.stream( p_edges ).forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
+        return this;
     }
 
 }

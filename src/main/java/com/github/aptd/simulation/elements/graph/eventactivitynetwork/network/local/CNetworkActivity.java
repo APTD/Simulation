@@ -27,7 +27,7 @@ import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.IN
 
 import javax.annotation.Nonnull;
 import java.time.temporal.ChronoUnit;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 
 /**
@@ -88,15 +88,29 @@ public final class CNetworkActivity implements INetworkActivity
 
     @Nonnull
     @Override
-    public final BiFunction<INetworkEvent, INetworkEvent, Number> cost()
+    public final Supplier<Number> cost()
     {
-        return ( i, j ) -> ChronoUnit.MINUTES.between( j.time(), i.time() );
+        return () -> ChronoUnit.MINUTES.between( m_to.time(), m_from.time() );
+    }
+
+    @Nonnull
+    @Override
+    public final Supplier<Number> lowerbound()
+    {
+        return () -> 0;
+    }
+
+    @Nonnull
+    @Override
+    public final Supplier<Number> upperbound()
+    {
+        return () -> 0;
     }
 
     @Nonnull
     @Override
     public final EEvent event()
     {
-        return null;
+        return m_event;
     }
 }
