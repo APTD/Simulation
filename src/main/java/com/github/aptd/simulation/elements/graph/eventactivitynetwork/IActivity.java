@@ -22,35 +22,41 @@
 
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork;
 
-import com.github.aptd.simulation.elements.graph.IVertex;
+import com.github.aptd.simulation.elements.graph.IEdge;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiFunction;
 
 
 /**
- * interface of an activity
+ * event interface
  */
-public interface IActivity<S, T, E> extends IVertex<IActivity<S, T, E>>
+public interface IActivity<A extends IEvent<?, ?, ?>> extends IEdge<A>
 {
-    /**
-     * source of the activity
-     * @return source
-     */
-    @Nonnull
-    S source();
 
     /**
-     * target of the activity
-     * @return target
+     * cost function
+     *
+     * @return function to define the cost
      */
     @Nonnull
-    T target();
+    BiFunction<A, A, Number> cost();
 
     /**
-     * returns the event element
-     * @return event
+     * event
+     *
+     * @return event reference
      */
     @Nonnull
-    E event();
+    EEvent event();
 
+
+    /**
+     * event
+     */
+    enum EEvent
+    {
+        CHANGING,
+        HEADWAY;
+    }
 }

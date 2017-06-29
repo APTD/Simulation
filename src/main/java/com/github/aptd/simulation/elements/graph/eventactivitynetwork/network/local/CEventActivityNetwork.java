@@ -24,8 +24,8 @@ package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.l
 
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEventActivityNetwork;
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.algorithms.shortestpath.ShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -38,16 +38,16 @@ import java.util.stream.Stream;
 /**
  * event-activity-network
  */
-public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActivity, INetworkEvent>
+public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEvent, INetworkActivity>
 {
     /**
      * graph data structure
      */
-    private final DirectedSparseGraph<INetworkActivity, INetworkEvent> m_graph = new DirectedSparseGraph<>();
+    private final DirectedSparseGraph<INetworkEvent, INetworkActivity> m_graph = new DirectedSparseGraph<>();
     /**
      * shortest-path algorthim
      */
-    private final ShortestPath<INetworkActivity, INetworkEvent> m_shortestpath;
+    private final ShortestPath<INetworkEvent, INetworkActivity> m_shortestpath;
 
 
 
@@ -56,11 +56,11 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActi
      *
      * @param p_edges edge elements
      */
-    public CEventActivityNetwork( @Nonnull final Stream<INetworkEvent> p_edges )
+    public CEventActivityNetwork( @Nonnull final Stream<INetworkActivity> p_edges )
     {
         p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
 
-        final com.google.common.base.Function<INetworkEvent, Number> l_function = ( i ) -> i.cost().apply( i.from(), i.to() );
+        final com.google.common.base.Function<INetworkActivity, Number> l_function = ( i ) -> i.cost().apply( i.from(), i.to() );
         m_shortestpath = new DijkstraShortestPath<>( m_graph, l_function );
     }
 
@@ -69,7 +69,7 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActi
      *
      * @param p_edges edge elements
      */
-    public CEventActivityNetwork( @Nonnull final Stream<INetworkEvent> p_edges, @Nonnull final ShortestPath<INetworkActivity, INetworkEvent> p_shortestpath )
+    public CEventActivityNetwork( @Nonnull final Stream<INetworkActivity> p_edges, @Nonnull final ShortestPath<INetworkEvent, INetworkActivity> p_shortestpath )
     {
         m_shortestpath = p_shortestpath;
         p_edges.forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
@@ -89,38 +89,38 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkActi
     }
 
     @Override
-    public List<INetworkEvent> route( final INetworkActivity p_start, final INetworkActivity p_end )
+    public List<INetworkActivity> route( final INetworkEvent p_start, final INetworkEvent p_end )
     {
         return null;
     }
 
     @Override
-    public INetworkEvent edge( final INetworkActivity p_start, final INetworkActivity p_end )
+    public INetworkActivity edge( final INetworkEvent p_start, final INetworkEvent p_end )
     {
         return null;
     }
 
     @Override
-    public Stream<INetworkActivity> neighbours( final INetworkActivity p_id )
+    public Stream<INetworkEvent> neighbours( final INetworkEvent p_id )
     {
         return null;
     }
 
     @Override
-    public boolean containsvertex( final INetworkActivity p_id )
+    public boolean containsvertex( final INetworkEvent p_id )
     {
         return false;
     }
 
     @Override
-    public boolean containsedge( final INetworkActivity p_start, final INetworkActivity p_end
+    public boolean containsedge( final INetworkEvent p_start, final INetworkEvent p_end
     )
     {
         return false;
     }
 
     @Override
-    public boolean containsedge( final INetworkEvent p_id )
+    public boolean containsedge( final INetworkActivity p_id )
     {
         return false;
     }

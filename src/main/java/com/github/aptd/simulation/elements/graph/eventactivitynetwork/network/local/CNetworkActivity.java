@@ -22,95 +22,81 @@
 
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local;
 
-
-import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
-import com.github.aptd.simulation.elements.graph.network.IStation;
-import com.github.aptd.simulation.elements.train.ITrain;
 
 import javax.annotation.Nonnull;
-import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.function.BiFunction;
 
 
 /**
- * activity
+ * network event
  */
 public final class CNetworkActivity implements INetworkActivity
 {
     /**
-     * train
+     * from activity
      */
-    private final ITrain<?> m_train;
+    private final INetworkEvent m_from;
     /**
-     * station
+     * activity
      */
-    private final IStation<?> m_station;
+    private final INetworkEvent m_to;
     /**
      * event
      */
     private final EEvent m_event;
-    /**
-     * time
-     */
-    private final Instant m_time;
 
     /**
      * ctor
      *
-     * @param p_train train
-     * @param p_station station
+     * @param p_from from activity
+     * @param p_to to activity
      * @param p_event event
-     * @param p_time time
      */
-    public CNetworkActivity( @Nonnull final ITrain<?> p_train, @Nonnull final IStation<?> p_station,
-                             @Nonnull final EEvent p_event, @Nonnull final Instant p_time )
+    public CNetworkActivity( @Nonnull final INetworkEvent p_from, @Nonnull final INetworkEvent p_to, @Nonnull final EEvent p_event )
     {
-        m_time = p_time;
-        m_train = p_train;
+        m_to = p_to;
+        m_from = p_from;
         m_event = p_event;
-        m_station = p_station;
     }
 
+    @Override
+    public final INetworkEvent from()
+    {
+        return m_from;
+    }
 
+    @Override
+    public final INetworkEvent to()
+    {
+        return m_to;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        return m_from.hashCode() ^ m_to.hashCode() ^ m_event.hashCode();
+    }
+
+    @Override
+    public final boolean equals( final Object p_object )
+    {
+        return ( p_object != null ) && ( p_object instanceof INetworkActivity ) && ( this.hashCode() == p_object.hashCode() );
+    }
 
     @Nonnull
     @Override
-    public final ITrain<?> source()
+    public final BiFunction<INetworkEvent, INetworkEvent, Number> cost()
     {
-        return m_train;
-    }
-
-    @Nonnull
-    @Override
-    public final IStation<?> target()
-    {
-        return m_station;
+        return ( i, j ) -> ChronoUnit.MINUTES.between( j.time(), i.time() );
     }
 
     @Nonnull
     @Override
     public final EEvent event()
     {
-        return m_event;
-    }
-
-
-    @Override
-    public final int hashCode()
-    {
-        return m_event.hashCode() ^ m_train.hashCode() ^ m_station.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof IActivity<?, ?, ?> ) && ( p_object.hashCode() == this.hashCode() );
-    }
-
-    @Nonnull
-    @Override
-    public final Instant time()
-    {
-        return m_time;
+        return null;
     }
 }

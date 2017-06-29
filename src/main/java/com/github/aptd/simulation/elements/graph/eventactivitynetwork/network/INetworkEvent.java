@@ -23,11 +23,34 @@
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network;
 
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEvent;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.ITrain;
+
+import javax.annotation.Nonnull;
+import java.time.Instant;
 
 
 /**
- * network event
+ * network activity
  */
-public interface INetworkEvent extends IEvent<INetworkActivity>
+public interface INetworkEvent extends IEvent<ITrain<?>, IStation<?>, INetworkEvent.EEvent>
 {
+    /**
+     * time of the activity
+     *
+     * @return time
+     */
+    @Nonnull
+    Instant time();
+
+
+    /**
+     * events
+     */
+    enum EEvent
+    {
+        ARRIVE,
+        DEPATURE;
+    }
+
 }
