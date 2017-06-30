@@ -42,7 +42,7 @@ import java.util.stream.Stream;
  *
  * @todo upper-bound is not implemented
  */
-public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEvent, INetworkActivity>
+public class CEventActivityNetwork implements INetworkEAN
 {
     /**
      * graph data structure
@@ -96,18 +96,6 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEven
         return new DijkstraShortestPath<>( p_graph, l_function );
     }
 
-    @Override
-    public final int hashCode()
-    {
-        return m_graph.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof IGraph<?, ?> ) && ( p_object.hashCode() == this.hashCode() );
-    }
-
     @Nonnull
     @Override
     public List<INetworkActivity> route( @Nonnull final INetworkEvent p_start, @Nonnull final INetworkEvent p_end )
@@ -150,10 +138,37 @@ public class CEventActivityNetwork implements IEventActivityNetwork<INetworkEven
 
     @Nonnull
     @Override
+    public IGraph<INetworkEvent, INetworkActivity> addedge( @Nonnull final INetworkActivity... p_edges
+    )
+    {
+        return null;
+    }
+
+    /*
+    @Nonnull
+    @Override
     public final IGraph<INetworkEvent, INetworkActivity> addedge( @Nonnull final INetworkActivity... p_edges )
     {
         Arrays.stream( p_edges ).forEach( i -> m_graph.addEdge( i, i.from(), i.to() ) );
         return this;
     }
+    */
 
+    @Override
+    public final int hashCode()
+    {
+        return m_graph.hashCode();
+    }
+
+    @Override
+    public final boolean equals( final Object p_object )
+    {
+        return ( p_object != null ) && ( p_object instanceof IGraph<?, ?> ) && ( p_object.hashCode() == this.hashCode() );
+    }
+
+    @Override
+    public final String toString()
+    {
+        return m_graph.toString();
+    }
 }

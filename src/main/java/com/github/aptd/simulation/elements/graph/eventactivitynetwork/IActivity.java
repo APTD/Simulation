@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 /**
  * event interface
  */
-public interface IActivity<A extends IEvent<?, ?, ?>> extends IEdge<A>
+public interface IActivity<S,T,E> extends IEdge<IEvent<S,T,E>>
 {
 
     /**
@@ -58,24 +58,12 @@ public interface IActivity<A extends IEvent<?, ?, ?>> extends IEdge<A>
     @Nonnull
     Supplier<Number> upperbound();
 
-
-
-
     /**
      * event
      *
      * @return event reference
      */
     @Nonnull
-    EEvent event();
+    E event();
 
-
-    /**
-     * event
-     */
-    enum EEvent
-    {
-        CHANGING,
-        HEADWAY;
-    }
 }

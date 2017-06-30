@@ -33,7 +33,7 @@ import java.time.Instant;
 /**
  * network activity
  */
-public interface INetworkEvent extends IEvent<ITrain<?>, IStation<?>, INetworkEvent.EEvent>
+public interface INetworkEvent extends IEvent<ITrain<?>, IStation<?>, INetworkEvent>
 {
     /**
      * time of the activity

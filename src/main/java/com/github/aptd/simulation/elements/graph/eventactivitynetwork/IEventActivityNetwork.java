@@ -28,6 +28,6 @@ import com.github.aptd.simulation.elements.graph.IGraph;
 /**
  * interface event-activity-network
  */
-public interface IEventActivityNetwork<E extends IEvent<?, ?, ?>, A extends IActivity<E>> extends IGraph<E, A>
+public interface IEventActivityNetwork<E extends IEvent<?, ?, ?>, A extends IActivity<?,?,E>> extends IGraph<E, A>
 {
 }

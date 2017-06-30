@@ -27,6 +27,7 @@ import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IEventActi
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkActivity;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.INetworkEvent;
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local.CEventActivityNetwork;
+import com.github.aptd.simulation.elements.graph.eventactivitynetwork.network.local.CNetworkActivity;
 import org.junit.Test;
 
 
@@ -43,6 +44,15 @@ public final class TestCNetworkEAN extends IBaseTest
     {
         final IEventActivityNetwork<INetworkEvent, INetworkActivity> l_ean = new CEventActivityNetwork();
 
+        l_ean.addedge(
+          new CNetworkActivity(
+              null,
+              null,
+              INetworkActivity.EEvent.
+          )
+        );
+
+        System.out.println( l_ean );
     }
 
 

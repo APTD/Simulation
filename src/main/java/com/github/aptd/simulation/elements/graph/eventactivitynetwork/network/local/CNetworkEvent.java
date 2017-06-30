@@ -29,6 +29,7 @@ import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.train.ITrain;
 
 import javax.annotation.Nonnull;
+import java.text.MessageFormat;
 import java.time.Instant;
 
 
@@ -94,6 +95,12 @@ public final class CNetworkEvent implements INetworkEvent
         return m_event;
     }
 
+    @Nonnull
+    @Override
+    public final Instant time()
+    {
+        return m_time;
+    }
 
     @Override
     public final int hashCode()
@@ -107,10 +114,9 @@ public final class CNetworkEvent implements INetworkEvent
         return ( p_object != null ) && ( p_object instanceof IEvent<?, ?, ?> ) && ( p_object.hashCode() == this.hashCode() );
     }
 
-    @Nonnull
     @Override
-    public final Instant time()
+    public final String toString()
     {
-        return m_time;
+        return MessageFormat.format( "( {0} | {1} | {2} | {3} )", m_train, m_station, m_event, m_time );
     }
 }

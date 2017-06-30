@@ -23,11 +23,23 @@
 package com.github.aptd.simulation.elements.graph.eventactivitynetwork.network;
 
 import com.github.aptd.simulation.elements.graph.eventactivitynetwork.IActivity;
+import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.ITrain;
 
 
 /**
  * network event
  */
-public interface INetworkActivity extends IActivity<INetworkEvent>
+public interface INetworkActivity extends IActivity<ITrain<?>, IStation<?>, INetworkEvent>
 {
+
+    /**
+     * event
+     */
+    enum EEvent
+    {
+        DRIVE,
+        CHANGING,
+        HEADWAY;
+    }
 }

@@ -74,18 +74,6 @@ public final class CNetworkActivity implements INetworkActivity
         return m_to;
     }
 
-    @Override
-    public final int hashCode()
-    {
-        return m_from.hashCode() ^ m_to.hashCode() ^ m_event.hashCode();
-    }
-
-    @Override
-    public final boolean equals( final Object p_object )
-    {
-        return ( p_object != null ) && ( p_object instanceof INetworkActivity ) && ( this.hashCode() == p_object.hashCode() );
-    }
-
     @Nonnull
     @Override
     public final Supplier<Number> cost()
@@ -112,5 +100,23 @@ public final class CNetworkActivity implements INetworkActivity
     public final EEvent event()
     {
         return m_event;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        return m_from.hashCode() ^ m_to.hashCode() ^ m_event.hashCode();
+    }
+
+    @Override
+    public final boolean equals( final Object p_object )
+    {
+        return ( p_object != null ) && ( p_object instanceof INetworkActivity ) && ( this.hashCode() == p_object.hashCode() );
+    }
+
+    @Override
+    public final String toString()
+    {
+        return m_event.toString();
     }
 }
