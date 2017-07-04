@@ -34,6 +34,7 @@ import com.github.aptd.simulation.datamodel.xml.Iagents;
 import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.github.aptd.simulation.elements.train.CTrain;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.github.aptd.simulation.error.CNotFoundException;
@@ -113,10 +114,12 @@ public final class CXMLReader implements IDataModel
 
             // macro (train-network) and microscopic model
             final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
+            final Map<String, ITrack<?>> l_track = track( l_model.getNetwork(), l_agentdefs, p_factory, l_time, l_station );
             final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
 
             final Map<String, IElement<?>> l_agents = new HashMap<>();
             l_agents.putAll( l_station );
+            l_agents.putAll( l_track );
             l_agents.putAll( l_train );
 
             // experiment (executable model)
@@ -196,6 +199,67 @@ public final class CXMLReader implements IDataModel
         try
         {
             return p_factory.station(
+                IOUtils.toInputStream( p_asl, "UTF-8" ),
+                p_actions,
+                p_time
+            );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
+    }
+
+    /**
+     * create the track list
+     *
+     * @param p_network network component
+     * @param p_agents map with agents
+     * @param p_factory factory
+     * @param p_time time reference
+     * @param p_stations map with station agents
+     * @return unmodifyable map with tracks
+     */
+    private static Map<String, ITrack<?>> track(  final Network p_network, final Map<String, String> p_agents, final IFactory p_factory, final ITime p_time,
+                                                  final Map<String, IStation<?>> p_stations )
+    {
+        final Map<String, IElement.IGenerator<ITrack<?>>> l_generators = new ConcurrentHashMap<>();
+        final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
+        return Collections.<String, ITrack<?>>unmodifiableMap(
+            p_network.getInfrastructure()
+                     .getTracks()
+                     .getTrack()
+                     .parallelStream()
+                     .filter( i -> hasagentname( i.getAny2() ) || hasagentname( i.getAny3() ) )
+                     .map( i -> hasagentname( i.getAny2() ) ? agentname( i, i.getAny2() ) : agentname( i, i.getAny3() ) )
+                     .map( i -> l_generators.computeIfAbsent(
+                         i.getRight(),
+                         a -> trackgenerator( p_factory, p_agents.get( i.getRight() ), l_actions, p_time )
+                           ).generatesingle(
+                         i.getLeft().getId(),
+                         p_stations.get( ( (EOcp) i.getLeft().getTrackTopology().getTrackBegin().getMacroscopicNode().getOcpRef() ).getId() ),
+                         p_stations.get( ( (EOcp) i.getLeft().getTrackTopology().getTrackEnd().getMacroscopicNode().getOcpRef() ).getId() )
+                           )
+                     )
+                     .collect( Collectors.toMap( IElement::id, i -> i ) )
+        );
+    }
+
+
+    /**
+     * creates a track agent generator
+     *
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return track generator
+     */
+    private static IElement.IGenerator<ITrack<?>> trackgenerator( final IFactory p_factory, final String p_asl,
+                                                                  final Set<IAction> p_actions, final ITime p_time )
+    {
+        try
+        {
+            return p_factory.track(
                 IOUtils.toInputStream( p_asl, "UTF-8" ),
                 p_actions,
                 p_time

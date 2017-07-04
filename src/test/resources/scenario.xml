@@ -107,6 +107,19 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         ]]></asimov:asl>
                     </asimov:configuration>
                 </asimov:agent>
+                <asimov:agent id="agent-track-default">
+                    <asimov:configuration>
+                        <asimov:asl><![CDATA[
+                            !main.
+
+                            +!main <-
+                                generic/print("hello track")
+                            .
+
+                        ]]></asimov:asl>
+
+                    </asimov:configuration>
+                </asimov:agent>
             </asimov:instance>
         </asimov:agents>
     </asimov:ai>
@@ -119,6 +132,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
             </rail:infraAttrGroups>
             <rail:tracks>
                 <rail:track id="toy-edge-1">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-1-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-1" />
@@ -129,6 +143,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-2">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-2-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-2" />
@@ -139,6 +154,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-3">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-3-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-3" />
@@ -149,6 +165,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-4">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-4-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-4" />
@@ -159,6 +176,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-5">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-5-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-5" />
@@ -169,6 +187,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-6">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-6-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-3" />
@@ -179,6 +198,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-7">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-7-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-6" />
@@ -189,6 +209,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-8">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-8-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-6" />
@@ -199,6 +220,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-1-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-1-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-3" />
@@ -209,6 +231,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-2-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-2-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-3" />
@@ -219,6 +242,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-3-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-3-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-4" />
@@ -229,6 +253,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-4-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-4-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-5" />
@@ -239,6 +264,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-5-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-5-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-6" />
@@ -249,6 +275,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-6-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-6-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-6" />
@@ -259,6 +286,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-7-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-7-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-7" />
@@ -269,6 +297,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                     </rail:trackTopology>
                 </rail:track>
                 <rail:track id="toy-edge-8-back">
+                    <asimov:agentRef agent="agent-track-default" />
                     <rail:trackTopology>
                         <rail:trackBegin id="toy-edge-8-back-begin" pos="0">
                             <rail:macroscopicNode ocpRef="toy-node-8" />

@@ -30,6 +30,7 @@ import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.github.aptd.simulation.elements.graph.network.local.CNetwork;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
+import com.github.aptd.simulation.elements.graph.network.local.CTrack;
 import com.github.aptd.simulation.elements.graph.network.local.CTransit;
 import com.github.aptd.simulation.elements.graph.network.local.CVirtual;
 import com.github.aptd.simulation.elements.train.CTrain;
@@ -91,5 +92,13 @@ public final class CLocal implements IFactory
                                                      @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CVirtual.CGenerator( p_stream, p_actions, p_time );
+    }
+
+    @Nonnull
+    @Override
+    public IElement.IGenerator<ITrack<?>> track( @Nonnull final InputStream p_stream,
+                                                 @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
+    {
+        return new CTrack.CGenerator( p_stream, p_actions, p_time );
     }
 }

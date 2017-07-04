@@ -108,4 +108,16 @@ public interface IFactory
     @Nonnull
     IElement.IGenerator<IStation<?>> virtual( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
+    /**
+     * creates a track generator
+     *
+     * @param p_stream ASL stream
+     * @param p_actions default actions
+     * @param p_time time reference
+     * @return generator
+     * @throws Exception is thrown on any error
+     */
+    @Nonnull
+    IElement.IGenerator<ITrack<?>> track( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
+
 }
