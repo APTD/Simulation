@@ -172,7 +172,7 @@ public final class CXMLReader implements IDataModel
                                         i.getRight(),
                                         a -> stationgenerator( p_factory, p_agents.get( i.getRight() ), l_actions, p_time )
                                         ).generatesingle(
-                                            i.getLeft().getDescription(),
+                                            i.getLeft().getId(),
                                             i.getLeft().getGeoCoord().getCoord().get( 0 ),
                                             i.getLeft().getGeoCoord().getCoord().get( 1 )
                                         )
