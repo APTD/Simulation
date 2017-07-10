@@ -24,6 +24,11 @@
             <jaxb:property name = "any4" />
         </jaxb:bindings>
     </jaxb:bindings>
+    <jaxb:bindings schemaLocation = "http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/rollingstock.xsd">
+        <jaxb:bindings node = "//xs:schema/xs:complexType[@name='ePassenger']/xs:complexContent/xs:extension/xs:sequence/xs:element[@name='tilting']">
+            <jaxb:property name = "tilting2" />
+        </jaxb:bindings>
+    </jaxb:bindings>
 
     <!--<jaxb:bindings schemaLocation = "http://www.railml.org/files/download/schemas/2016/railML-2.3/schema/infrastructureTypes.xsd">
         <jaxb:bindings node="//xs:schema//xs:attribute[@name='ocpRef']" multiple="true">
