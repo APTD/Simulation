@@ -413,7 +413,12 @@
                     <bindingIncludes>
                         <include>**/*.xjb</include>
                     </bindingIncludes>
+                    <extension>true</extension>
+                    <args>
+                        <arg>-npa</arg>
+                    </args>
                 </configuration>
+
             </plugin>
 
             <!-- the project should be build into one executable Jar file, which stores any dependencies which are included above -->
