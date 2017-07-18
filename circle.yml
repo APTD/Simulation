@@ -33,6 +33,8 @@ checkout:
         - git clean -xdf
         - git fetch -p
         - git gc --prune=now
+        - git submodule sync
+        - git submodule update --init
         - mvn -B -DreResolve=false -DactTransitively=true clean dependency:purge-local-repository
 
 
