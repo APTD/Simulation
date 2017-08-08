@@ -55,7 +55,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,7 +108,8 @@ public final class CXMLReader implements IDataModel
             final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
 
             // time definition
-            final ITime l_time = new CStepTime( Instant.now(), Duration.ofSeconds( 1 ) );
+            final ITime l_time = new CStepTime( ZonedDateTime.now().with( ChronoField.CLOCK_HOUR_OF_DAY, 8 ).with( ChronoField.MINUTE_OF_HOUR, 0 ).toInstant(),
+                                                Duration.ofSeconds( 1 ) );
 
             // asl agent definition
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
@@ -251,8 +254,12 @@ public final class CXMLReader implements IDataModel
                                                                                                                                 .getTrackEnd().getPos()
                                                                                                                                 .doubleValue(),
                                           ( (EOcp) l_tts[j].getOcpRef() ).getId(),
-                                          l_times.getArrival() == null ? null : l_times.getArrival().toGregorianCalendar().toInstant(),
-                                          l_times.getDeparture() == null ? null : l_times.getDeparture().toGregorianCalendar().toInstant()
+                                          l_times.getArrival() == null ? null
+                                                                       : l_times.getArrival().toGregorianCalendar().toZonedDateTime().with( LocalDate.now() )
+                                                                                .toInstant(),
+                                          l_times.getDeparture() == null ? null
+                                                                         : l_times.getDeparture().toGregorianCalendar().toZonedDateTime()
+                                                                                  .with( LocalDate.now() ).toInstant()
                                       );
                                   }
                                   return Arrays.stream( l_entries );

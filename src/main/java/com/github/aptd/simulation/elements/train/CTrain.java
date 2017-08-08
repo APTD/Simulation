@@ -163,10 +163,12 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
     private final synchronized void timertransition()
     {
         if ( nextstatechange().isAfter( m_time.current() ) ) return;
-        System.out.println( "timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
+        System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
         switch ( m_state )
         {
             case ARRIVED:
+                System.out.println( m_id + " - departure at " + m_time.current().toString() + " which was planned for "
+                                    + m_timetable.get( m_ttindex ).m_publisheddeparture );
                 // proceed to next timetable entry
                 m_ttindex++;
                 m_positionontrack = 0.0;
@@ -174,6 +176,8 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
                 break;
             case DRIVING:
                 m_state = ETrainState.ARRIVED;
+                System.out.println( m_id + " - arrival at " + m_time.current().toString() + " which was planned for "
+                                    + m_timetable.get( m_ttindex ).m_publishedarrival );
                 break;
             case WAITING_TO_DRIVE:
                 m_state = ETrainState.DRIVING;
@@ -181,7 +185,7 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
             default:
                 // making checkstyle happy
         }
-        System.out.println( "new state is " + m_state + ", ttindex is " + m_ttindex );
+        System.out.println( m_id + " - new state is " + m_state + ", ttindex is " + m_ttindex );
         m_laststatechange = m_time.current();
         m_lastupdate = m_time.current();
         m_nextactivation = nextstatechange();
