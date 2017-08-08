@@ -150,6 +150,7 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
                 );
             case WAITING_TO_DRIVE:
                 return m_laststatechange;
+                // @todo implement other agents and make external transition from this state (return Infinity here then)
             case ARRIVED:
                 if ( m_ttindex + 1 >= m_timetable.size() ) return Instant.MAX;
                 return Collections.max( Arrays.asList( m_timetable.get( m_ttindex ).m_publisheddeparture, m_laststatechange.plus( 30, ChronoUnit.SECONDS ) ) );
@@ -182,6 +183,7 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
             case WAITING_TO_DRIVE:
                 m_state = ETrainState.DRIVING;
                 break;
+                // @todo remove this after implementation of other agents with external transition from this state
             default:
                 // making checkstyle happy
         }

@@ -32,6 +32,8 @@ import com.github.aptd.simulation.elements.graph.network.local.CNetwork;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.elements.graph.network.local.CTransit;
 import com.github.aptd.simulation.elements.graph.network.local.CVirtual;
+import com.github.aptd.simulation.elements.passenger.CPassengerSource;
+import com.github.aptd.simulation.elements.passenger.IPassengerSource;
 import com.github.aptd.simulation.elements.train.CTrain;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.google.common.base.Function;
@@ -92,4 +94,14 @@ public final class CLocal implements IFactory
     {
         return new CVirtual.CGenerator( p_stream, p_actions, p_time );
     }
+
+    @Nonnull
+    @Override
+    public IElement.IGenerator<IPassengerSource<?>> passengersource(
+            @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
+            throws Exception
+    {
+        return new CPassengerSource.CGenerator( p_stream, p_actions, p_time );
+    }
+
 }

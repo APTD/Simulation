@@ -34,6 +34,7 @@ import com.github.aptd.simulation.datamodel.xml.Iagents;
 import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.passenger.IPassengerSource;
 import com.github.aptd.simulation.elements.train.CTrain;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.github.aptd.simulation.error.CNotFoundException;
@@ -43,6 +44,7 @@ import com.github.aptd.simulation.factory.IFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
 import org.railml.schemas._2016.EArrivalDepartureTimes;
@@ -56,6 +58,7 @@ import javax.xml.bind.JAXBException;
 import java.io.FileInputStream;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Arrays;
@@ -108,8 +111,12 @@ public final class CXMLReader implements IDataModel
             final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
 
             // time definition
-            final ITime l_time = new CStepTime( ZonedDateTime.now().with( ChronoField.CLOCK_HOUR_OF_DAY, 8 ).with( ChronoField.MINUTE_OF_HOUR, 0 ).toInstant(),
-                                                Duration.ofSeconds( 1 ) );
+            final ITime l_time = new CStepTime(
+                    ZonedDateTime.now( ZoneId.systemDefault() )
+                            .with( ChronoField.CLOCK_HOUR_OF_DAY, 9 )
+                            .with( ChronoField.MINUTE_OF_HOUR, 45 )
+                            .toInstant(),
+                    Duration.ofSeconds( 1 ) );
 
             // asl agent definition
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
@@ -121,6 +128,20 @@ public final class CXMLReader implements IDataModel
             final Map<String, IElement<?>> l_agents = new HashMap<>();
             l_agents.putAll( l_station );
             l_agents.putAll( l_train );
+
+            // @todo create passengersources according to scenario definition
+            l_agents.put( "passengersource_test",
+                    passengersourcegenerator(
+                            p_factory, "                            !main.\n"
+                                    + "\n"
+                                    + "                            +!main <-\n"
+                                    + "                            generic/print(\"hello passenger source\").\n"
+                                    + "+!activate <-\n    state/timertransition\n.",
+                            CCommon.actionsFromPackage().collect( Collectors.toSet() ),
+                            l_time )
+                            .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
+                                    l_time.current().toEpochMilli(), 20 )
+            );
 
             // experiment (executable model)
             return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents, l_time );
@@ -254,12 +275,14 @@ public final class CXMLReader implements IDataModel
                                                                                                                                 .getTrackEnd().getPos()
                                                                                                                                 .doubleValue(),
                                           ( (EOcp) l_tts[j].getOcpRef() ).getId(),
-                                          l_times.getArrival() == null ? null
-                                                                       : l_times.getArrival().toGregorianCalendar().toZonedDateTime().with( LocalDate.now() )
-                                                                                .toInstant(),
-                                          l_times.getDeparture() == null ? null
-                                                                         : l_times.getDeparture().toGregorianCalendar().toZonedDateTime()
-                                                                                  .with( LocalDate.now() ).toInstant()
+                                          l_times.getArrival() == null
+                                                  ? null
+                                                  : l_times.getArrival().toGregorianCalendar().toZonedDateTime()
+                                                    .with( LocalDate.now() ).toInstant(),
+                                          l_times.getDeparture() == null
+                                                  ? null
+                                                  : l_times.getDeparture().toGregorianCalendar().toZonedDateTime()
+                                                    .with( LocalDate.now() ).toInstant()
                                       );
                                   }
                                   return Arrays.stream( l_entries );
@@ -288,6 +311,32 @@ public final class CXMLReader implements IDataModel
                 IOUtils.toInputStream( p_asl, "UTF-8" ),
                 p_actions,
                 p_time
+            );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
+    }
+
+
+    /**
+     * creates a PassengerSource agent generator
+     *
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return PassengerSource generator
+     */
+    private static IElement.IGenerator<IPassengerSource<?>> passengersourcegenerator(
+            final IFactory p_factory, final String p_asl, final Set<IAction> p_actions, final ITime p_time )
+    {
+        try
+        {
+            return p_factory.passengersource(
+                    IOUtils.toInputStream( p_asl, "UTF-8" ),
+                    p_actions,
+                    p_time
             );
         }
         catch ( final Exception l_exception )
