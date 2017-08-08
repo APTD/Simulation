@@ -28,6 +28,9 @@ import com.github.aptd.simulation.elements.IElement;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
+import org.lightjason.agentspeak.action.binding.IAgentAction;
+import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
+import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 
@@ -41,6 +44,7 @@ import java.util.stream.Stream;
 /**
  * passenger
  */
+@IAgentAction
 public final class CPassenger extends IBaseElement<IPassenger<?>> implements IPassenger<IPassenger<?>>
 {
     /**
@@ -71,6 +75,11 @@ public final class CPassenger extends IBaseElement<IPassenger<?>> implements IPa
         return Stream.of();
     }
 
+    @IAgentActionFilter
+    @IAgentActionName( name = "state/timertransition" )
+    private synchronized void timertransition()
+    {
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -85,12 +94,13 @@ public final class CPassenger extends IBaseElement<IPassenger<?>> implements IPa
         private static final AtomicLong COUNTER = new AtomicLong();
 
         /**
+         * generator ctor
          * @param p_stream stream
          * @param p_actions action
          * @param p_time time reference
          * @throws Exception on any error
          */
-        protected CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final ITime p_time ) throws Exception
+        public CGenerator( final InputStream p_stream, final Set<IAction> p_actions, final ITime p_time ) throws Exception
         {
             super( p_stream, p_actions, CPassenger.class, p_time );
         }

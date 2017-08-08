@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.passenger;
 
+import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
@@ -60,6 +61,9 @@ public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
      */
     private static final String FUNCTOR = "passengersource";
 
+    private IElement.IGenerator<?> m_generator;
+    private IExperiment m_experiment;
+
     private RealDistribution m_distribution;
     private long m_startmillis;
     private int m_passengers;
@@ -78,13 +82,17 @@ public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
         final ITime p_time,
         final RealDistribution p_distribution,
         final long p_startmillis,
-        final int p_passengers
+        final int p_passengers,
+        final IElement.IGenerator<?> p_generator,
+        final IExperiment p_experiment
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
         m_distribution = p_distribution;
         m_startmillis = p_startmillis;
         m_passengers = p_passengers;
+        m_generator = p_generator;
+        m_experiment = p_experiment;
         m_passengersgenerated = 0;
         m_nextactivation = nextstatechange();
     }
@@ -120,7 +128,9 @@ public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
 
     private synchronized void generatepassenger()
     {
-        // @todo implement
+        // @todo put passenger somewhere, initialize its state, etc.
+        final IElement<?> l_passenger = m_generator.generatesingle();
+        m_experiment.addAgent( l_passenger.id(), l_passenger );
         m_passengersgenerated++;
     }
 
@@ -156,7 +166,8 @@ public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
                     new CPassengerSource( m_configuration,
                             MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ),
                             m_time,
-                            (RealDistribution) p_data[0], (long) p_data[1], (int) p_data[2] ),
+                            (RealDistribution) p_data[0], (long) p_data[1], (int) p_data[2],
+                            (IElement.IGenerator<?>) p_data[3], (IExperiment) p_data[4] ),
                     Stream.of( FUNCTOR )
             );
         }

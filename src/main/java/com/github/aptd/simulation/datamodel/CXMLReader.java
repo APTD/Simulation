@@ -34,6 +34,7 @@ import com.github.aptd.simulation.datamodel.xml.Iagents;
 import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.elements.passenger.IPassengerSource;
 import com.github.aptd.simulation.elements.train.CTrain;
 import com.github.aptd.simulation.elements.train.ITrain;
@@ -118,6 +119,8 @@ public final class CXMLReader implements IDataModel
                             .toInstant(),
                     Duration.ofSeconds( 1 ) );
 
+            final Set<IAction> l_actionsfrompackage = CCommon.actionsFromPackage().collect( Collectors.toSet() );
+
             // asl agent definition
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
 
@@ -129,22 +132,33 @@ public final class CXMLReader implements IDataModel
             l_agents.putAll( l_station );
             l_agents.putAll( l_train );
 
-            // @todo create passengersources according to scenario definition
-            l_agents.put( "passengersource_test",
+            final CExperiment l_experiment = new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents,
+                    l_time );
+
+            // @todo create passengersources and their passenger generators according to scenario definition
+
+            final IElement.IGenerator<IPassenger<?>> l_passengergenerator = passengergenerator( p_factory,
+                    "                            !main.\n"
+                            + "\n"
+                            + "                            +!main <-\n"
+                            + "                            generic/print(\"hello passenger\").\n"
+                            + "+!activate <-\n    state/timertransition\n.",
+                    l_actionsfrompackage, l_time );
+
+            l_experiment.addAgent( "passengersource_test",
                     passengersourcegenerator(
                             p_factory, "                            !main.\n"
                                     + "\n"
                                     + "                            +!main <-\n"
                                     + "                            generic/print(\"hello passenger source\").\n"
                                     + "+!activate <-\n    state/timertransition\n.",
-                            CCommon.actionsFromPackage().collect( Collectors.toSet() ),
-                            l_time )
+                            l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
-                                    l_time.current().toEpochMilli(), 20 )
+                                    l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment )
             );
 
             // experiment (executable model)
-            return new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents, l_time );
+            return l_experiment;
 
         }
         catch ( final Exception l_execption )
@@ -334,6 +348,32 @@ public final class CXMLReader implements IDataModel
         try
         {
             return p_factory.passengersource(
+                    IOUtils.toInputStream( p_asl, "UTF-8" ),
+                    p_actions,
+                    p_time
+            );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
+    }
+
+
+    /**
+     * creates a Passenger agent generator
+     *
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return Passenger generator
+     */
+    private static IElement.IGenerator<IPassenger<?>> passengergenerator(
+            final IFactory p_factory, final String p_asl, final Set<IAction> p_actions, final ITime p_time )
+    {
+        try
+        {
+            return p_factory.passenger(
                     IOUtils.toInputStream( p_asl, "UTF-8" ),
                     p_actions,
                     p_time

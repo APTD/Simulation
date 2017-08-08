@@ -111,6 +111,17 @@ public final class CExperiment implements IExperiment
         );
     }
 
+    /**
+     * add agent to the experiment
+     * @param p_key agent key
+     * @param p_value agent
+     * @return added agent or existing agent with same id
+     */
+    @Override
+    public IElement<?> addAgent( final String p_key, final IElement<?> p_value )
+    {
+        return m_agents.putIfAbsent( p_key, p_value );
+    }
 
     @Nonnull
     @Override

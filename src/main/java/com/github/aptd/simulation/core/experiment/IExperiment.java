@@ -44,6 +44,8 @@ public interface IExperiment
      */
     IExperiment EMPTY = new CEmptyExperiment();
 
+    IElement<?> addAgent( String p_key, IElement<?> p_value );
+
     /**
      * returns a stream of all executable objects
      *
@@ -96,6 +98,12 @@ public interface IExperiment
      */
     class CEmptyExperiment implements IExperiment
     {
+        @Override
+        public IElement<?> addAgent( final String p_key, final IElement<?> p_value )
+        {
+            return null;
+        }
+
         @Nonnull
         @Override
         public final Stream<IElement<?>> objects()

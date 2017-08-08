@@ -27,6 +27,7 @@ import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.IGraph;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
+import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.elements.passenger.IPassengerSource;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.google.common.base.Function;
@@ -121,6 +122,11 @@ public interface IFactory
      */
     @Nonnull
     IElement.IGenerator<IPassengerSource<?>> passengersource(
+            @Nonnull InputStream p_stream, @Nonnull Set<IAction> p_actions, ITime p_time )
+            throws Exception;
+
+    @Nonnull
+    IElement.IGenerator<IPassenger<?>> passenger(
             @Nonnull InputStream p_stream, @Nonnull Set<IAction> p_actions, ITime p_time )
             throws Exception;
 }
