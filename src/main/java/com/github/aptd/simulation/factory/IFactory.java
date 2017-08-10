@@ -121,12 +121,10 @@ public interface IFactory
      * @throws Exception is thrown on any error
      */
     @Nonnull
-    IElement.IGenerator<IPassengerSource<?>> passengersource(
-            @Nonnull InputStream p_stream, @Nonnull Set<IAction> p_actions, ITime p_time )
+    IElement.IGenerator<IPassengerSource<?>> passengersource( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
             throws Exception;
 
     @Nonnull
-    IElement.IGenerator<IPassenger<?>> passenger(
-            @Nonnull InputStream p_stream, @Nonnull Set<IAction> p_actions, ITime p_time )
+    IElement.IGenerator<IPassenger<?>> passenger( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
             throws Exception;
 }

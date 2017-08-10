@@ -99,18 +99,16 @@ public final class CLocal implements IFactory
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IPassengerSource<?>> passengersource(
-            @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
-            throws Exception
+    public IElement.IGenerator<IPassengerSource<?>> passengersource( @Nonnull final InputStream p_stream,
+                                                                     @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CPassengerSource.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull
     @Override
-    public IElement.IGenerator<IPassenger<?>> passenger(
-            @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
-            throws Exception
+    public IElement.IGenerator<IPassenger<?>> passenger( @Nonnull final InputStream p_stream,
+                                                         @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CPassenger.CGenerator( p_stream, p_actions, p_time );
     }
