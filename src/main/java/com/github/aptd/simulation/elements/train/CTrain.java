@@ -23,15 +23,13 @@
 package com.github.aptd.simulation.elements.train;
 
 import com.github.aptd.simulation.core.time.ITime;
-import com.github.aptd.simulation.elements.IBaseElement;
+import com.github.aptd.simulation.elements.IStatefulElement;
 import com.github.aptd.simulation.elements.common.IGPS;
 import com.github.aptd.simulation.error.CSemanticException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
-import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
-import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
@@ -53,7 +51,7 @@ import java.util.stream.Stream;
  * train class
  */
 @IAgentAction
-public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITrain<?>>
+public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<ITrain<?>>
 {
     /**
      * serial id
@@ -80,9 +78,6 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
 
     private ETrainState m_state = ETrainState.ARRIVED;
 
-    private Instant m_laststatechange;
-    private Instant m_lastupdate;
-
     private final List<CTimetableEntry> m_timetable;
     private int m_ttindex;
     private double m_positionontrack;
@@ -102,8 +97,7 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
         m_wagon = p_wagon.collect( Collectors.toList() );
         m_timetable = p_timetable.collect( Collectors.toList() );
         // first timetable entry only has departure
-        m_laststatechange = m_time.current();
-        m_nextactivation = nextstatechange();
+        m_nextactivation = determinenextstatechange();
     }
 
     @Override
@@ -137,14 +131,13 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
         );
     }
 
-    @IAgentActionFilter
-    @IAgentActionName( name = "state/nextstatechange" )
-    private final synchronized Instant nextstatechange()
+    @Override
+    protected final synchronized Instant determinenextstatechange()
     {
         switch ( m_state )
         {
             case DRIVING:
-                return m_lastupdate.plus(
+                return m_lastcontinuousupdate.plus(
                     Math.round( ( m_timetable.get( m_ttindex ).m_tracklength - m_positionontrack ) / DRIVING_SPEED ),
                     ChronoUnit.SECONDS
                 );
@@ -159,11 +152,10 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
         }
     }
 
-    @IAgentActionFilter
-    @IAgentActionName( name = "state/timertransition" )
-    private final synchronized void timertransition()
+    @Override
+    protected final synchronized boolean updatestate()
     {
-        if ( nextstatechange().isAfter( m_time.current() ) ) return;
+        if ( determinenextstatechange().isAfter( m_time.current() ) ) return false;
         System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
         switch ( m_state )
         {
@@ -188,24 +180,21 @@ public final class CTrain extends IBaseElement<ITrain<?>> implements ITrain<ITra
                 // making checkstyle happy
         }
         System.out.println( m_id + " - new state is " + m_state + ", ttindex is " + m_ttindex );
-        m_laststatechange = m_time.current();
-        m_lastupdate = m_time.current();
-        m_nextactivation = nextstatechange();
+        return true;
     }
 
-    private final synchronized void update()
+    @Override
+    protected final synchronized boolean updatecontinuous( final Duration p_elapsed )
     {
-        if ( !nextstatechange().isBefore( m_time.current() ) ) timertransition();
-        final Duration l_elapsed = Duration.between( m_lastupdate, m_time.current() );
         switch ( m_state )
         {
             case DRIVING:
-                m_positionontrack += l_elapsed.get( ChronoUnit.SECONDS ) * DRIVING_SPEED;
-                break;
+                m_positionontrack += p_elapsed.get( ChronoUnit.SECONDS ) * DRIVING_SPEED;
+                return true;
             default:
                 // making checkstyle happy
         }
-        m_lastupdate = m_time.current();
+        return false;
     }
 
 

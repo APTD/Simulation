@@ -23,6 +23,7 @@
 package com.github.aptd.simulation.elements;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
+import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.ui.CHTTPServer;
 import org.apache.commons.lang3.tuple.Pair;
@@ -58,6 +59,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -102,6 +105,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * reference of the environment
      */
     private final AtomicReference<IEnvironment<N, ?>> m_environment = new AtomicReference<>();
+    /**
+     * set of inputs to be processed
+     */
+    private final Set<IMessage> m_input = Collections.synchronizedSet( new HashSet<>() );
 
 
     /**
@@ -127,9 +134,19 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     @Override
     public N call() throws Exception
     {
-        if ( runningplans().isEmpty() && !m_nextactivation.isAfter( m_time.current() ) )
-            this.trigger( CAgentTrigger.ACTIVATE );
+        if ( imminent() ) this.trigger( CAgentTrigger.ACTIVATE );
         return super.call();
+    }
+
+    /**
+     * whether the element has a scheduled activation at the current time
+     *
+     * @return true if this component has a scheduled activation at the current time
+     */
+    @Override
+    public boolean imminent()
+    {
+        return /* runningplans().isEmpty() && */ !m_nextactivation.isAfter( m_time.current() );
     }
 
     @Override
@@ -189,6 +206,31 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * @return literal stream
      */
     protected abstract Stream<ILiteral> individualliteral( final Stream<IElement<?>> p_object );
+
+    /**
+     * get outgoing messages. empty by default
+     *
+     * @return Stream of messages
+     */
+    @Override
+    public Stream<IMessage> output()
+    {
+        return Stream.of();
+    }
+
+    /**
+     * store an incoming message to be processed
+     *
+     * @param p_message incoming message
+     * @return self reference
+     */
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public N input( final IMessage p_message )
+    {
+        m_input.add( p_message );
+        return (N) this;
+    }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
 

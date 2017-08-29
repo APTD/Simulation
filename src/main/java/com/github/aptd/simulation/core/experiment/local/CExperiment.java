@@ -24,6 +24,7 @@ package com.github.aptd.simulation.core.experiment.local;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.core.experiment.IExperiment;
+import com.github.aptd.simulation.core.messaging.IMessenger;
 import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.core.writer.IWriter;
@@ -72,9 +73,13 @@ public final class CExperiment implements IExperiment
      */
     private final IStatistic m_statistic;
     /**
-     * environment
+     * time object
      */
     private final ITime m_time;
+    /**
+     * messenger object
+     */
+    private final IMessenger m_messenger;
     /**
      * agents
      */
@@ -95,12 +100,13 @@ public final class CExperiment implements IExperiment
      * @param p_time time object
      */
     public CExperiment( final long p_steps, final boolean p_parallel, @Nonnull final IStatistic p_statistic,
-                        @Nonnull final Map<String, ? extends IElement<?>> p_agents, @Nonnull final ITime p_time )
+                        @Nonnull final Map<String, ? extends IElement<?>> p_agents, @Nonnull final ITime p_time, @Nonnull final IMessenger p_messenger )
     {
         m_steps = p_steps;
         m_parallel = p_parallel;
         m_statistic = p_statistic;
         m_time = p_time;
+        m_messenger = p_messenger;
         m_agents.putAll( p_agents );
 
         m_actions = Collections.unmodifiableSet(
@@ -123,6 +129,17 @@ public final class CExperiment implements IExperiment
         return m_agents.putIfAbsent( p_key, p_value );
     }
 
+    /**
+     * get agent by key (ID)
+     * @param p_key agent key
+     * @return agent
+     */
+    @Override
+    public IElement<?> getAgent( final String p_key )
+    {
+        return m_agents.get( p_key );
+    }
+
     @Nonnull
     @Override
     public final Stream<IElement<?>> objects()
@@ -134,7 +151,7 @@ public final class CExperiment implements IExperiment
     @Override
     public final Stream<Callable<?>> preprocess()
     {
-        return Stream.of( m_time );
+        return Stream.of( m_time, m_messenger );
     }
 
     @Nonnegative

@@ -20,74 +20,62 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core.runtime.local;
+package com.github.aptd.simulation.core.messaging.local;
 
-
-import com.github.aptd.simulation.core.experiment.IExperiment;
-import com.github.aptd.simulation.core.runtime.IRuntime;
-
-import java.util.concurrent.Callable;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+import com.github.aptd.simulation.core.messaging.IMessage;
 
 
 /**
- * local runtime
- * @todo refactor with logger
- * @todo add step-by-step execution
+ * message class
  */
-public final class CRuntime implements IRuntime
+public class CMessage implements IMessage
 {
 
-    @Override
-    public final IExperiment execute( final IExperiment p_experiment )
-    {
-        LongStream.range( 0, p_experiment.simulationsteps() )
-                  .forEach( i ->
-                  {
-                      optionalparallelstream( p_experiment.preprocess(), false ).forEach( CRuntime::execute );
-                      optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
-                  } );
-
-        return p_experiment;
-    }
-
-    // ??? runtime needs experiment to execute
-    @Override
-    public final IRuntime next()
-    {
-        return this;
-    }
-
+    private final String m_sender;
+    private final String m_recipient;
+    private final String m_content;
 
     /**
-     * creates an optional parallel stream
+     * ctor
      *
-     * @param p_stream input stream
-     * @return stream
-     * @tparam T stream element type
+     * @param p_sender ID of sending agent
+     * @param p_recipient ID of receiving agent
+     * @param p_content content
      */
-    private static <T> Stream<T> optionalparallelstream( final Stream<T> p_stream, final boolean p_parallel )
+    public CMessage( final String p_sender, final String p_recipient, final String p_content )
     {
-        return p_parallel ? p_stream.parallel() : p_stream;
+        m_sender = p_sender;
+        m_recipient = p_recipient;
+        m_content = p_content;
     }
-
 
     /**
-     * execute callable object with catching exception
-     *
-     * @param p_object callable
+     * get sender agent ID
+     * @return agent ID
      */
-    private static void execute( final Callable<?> p_object )
+    @Override
+    public String sender()
     {
-        try
-        {
-            p_object.call();
-        }
-        catch ( final Exception l_exception )
-        {
-            l_exception.printStackTrace();
-        }
+        return m_sender;
     }
 
+    /**
+     * get recipient agent ID
+     * @return agent ID
+     */
+    @Override
+    public String recipient()
+    {
+        return m_recipient;
+    }
+
+    /**
+     * get content of the message
+     * @return content string
+     */
+    @Override
+    public String content()
+    {
+        return m_content;
+    }
 }

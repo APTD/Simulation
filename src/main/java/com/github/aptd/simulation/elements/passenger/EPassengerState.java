@@ -20,65 +20,14 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements;
-
-import com.github.aptd.simulation.core.messaging.IMessage;
-import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
-
-import java.util.concurrent.Callable;
-import java.util.stream.Stream;
-
+package com.github.aptd.simulation.elements.passenger;
 
 /**
- * any object interface
- *
- * @tparam T domain specific type
+ * enum of qualitative states for passenger agents
  */
-public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>, Callable<T>
+public enum EPassengerState
 {
 
-    boolean imminent();
-
-    /**
-     * name of the object
-     *
-     * @return string name
-     */
-    String id();
-
-    /**
-     * changes the environment of the agent
-     *
-     * @param p_environment environment
-     * @return self reference
-     * @todo should be moved - incomplete
-     */
-    IElement<T> environment( final IEnvironment<T, ?> p_environment );
-
-    /**
-     * get pending output messages
-     *
-     * @return Stream of messages
-     */
-    Stream<IMessage> output();
-
-    T input( IMessage p_message );
-
-
-    /**
-     * generator interface
-     *
-     * @tparam T element generator
-     */
-    interface IGenerator<T extends IElement<?>> extends IAgentGenerator<T>
-    {
-        /**
-         * resets the internal counter
-         *
-         * @return self-reference
-         */
-        IGenerator<T> resetcount();
-    }
+    AT_STATION, IN_ENTRANCE_QUEUE, ENTERING_TRAIN, IN_TRAIN, IN_EXIT_QUEUE, LEAVING_TRAIN;
 
 }

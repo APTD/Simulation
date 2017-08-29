@@ -46,6 +46,8 @@ public interface IExperiment
 
     IElement<?> addAgent( String p_key, IElement<?> p_value );
 
+    IElement<?> getAgent( String p_key );
+
     /**
      * returns a stream of all executable objects
      *
@@ -100,6 +102,12 @@ public interface IExperiment
     {
         @Override
         public IElement<?> addAgent( final String p_key, final IElement<?> p_value )
+        {
+            return null;
+        }
+
+        @Override
+        public IElement<?> getAgent( final String p_key )
         {
             return null;
         }

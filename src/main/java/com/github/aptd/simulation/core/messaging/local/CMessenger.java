@@ -20,74 +20,61 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.core.runtime.local;
-
+package com.github.aptd.simulation.core.messaging.local;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
-import com.github.aptd.simulation.core.runtime.IRuntime;
+import com.github.aptd.simulation.core.messaging.IMessenger;
+import com.github.aptd.simulation.elements.IElement;
 
-import java.util.concurrent.Callable;
-import java.util.stream.LongStream;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 
 /**
- * local runtime
- * @todo refactor with logger
- * @todo add step-by-step execution
+ * messenger class
  */
-public final class CRuntime implements IRuntime
+public class CMessenger implements IMessenger
 {
 
-    @Override
-    public final IExperiment execute( final IExperiment p_experiment )
-    {
-        LongStream.range( 0, p_experiment.simulationsteps() )
-                  .forEach( i ->
-                  {
-                      optionalparallelstream( p_experiment.preprocess(), false ).forEach( CRuntime::execute );
-                      optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
-                  } );
+    private static final boolean OUTPUT_ONLY_FROM_IMMINENT = true;
+    private IExperiment m_experiment;
 
-        return p_experiment;
-    }
-
-    // ??? runtime needs experiment to execute
+    /**
+     * asks agents for output messages and delivers them to the target agents
+     *
+     * @return self reference
+     */
     @Override
-    public final IRuntime next()
+    public IMessenger call()
     {
+        if ( m_experiment == null )
+        {
+            Logger.getLogger( this.getClass().getCanonicalName() ).warning( "CMessenger executed without reference to IExperiment, cannot operate" );
+            return this;
+        }
+        optionalfilteredstream( m_experiment.objects().parallel(), OUTPUT_ONLY_FROM_IMMINENT ? IElement::imminent : null )
+            .flatMap( IElement::output ).forEach( msg ->
+            {
+                m_experiment.getAgent( msg.recipient() ).input( msg );
+            } );
         return this;
     }
 
-
     /**
-     * creates an optional parallel stream
-     *
-     * @param p_stream input stream
-     * @return stream
-     * @tparam T stream element type
+     * set experiment reference
+     * @param p_experiment experiment object
+     * @return self reference
      */
-    private static <T> Stream<T> optionalparallelstream( final Stream<T> p_stream, final boolean p_parallel )
+    public CMessenger experiment( final IExperiment p_experiment )
     {
-        return p_parallel ? p_stream.parallel() : p_stream;
+        m_experiment = p_experiment;
+        return this;
     }
 
-
-    /**
-     * execute callable object with catching exception
-     *
-     * @param p_object callable
-     */
-    private static void execute( final Callable<?> p_object )
+    private static <T> Stream<T> optionalfilteredstream( final Stream<T> p_stream, final Predicate<T> p_predicate )
     {
-        try
-        {
-            p_object.call();
-        }
-        catch ( final Exception l_exception )
-        {
-            l_exception.printStackTrace();
-        }
+        return p_predicate == null ? p_stream : p_stream.filter( p_predicate );
     }
 
 }

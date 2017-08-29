@@ -24,20 +24,19 @@ package com.github.aptd.simulation.elements.passenger;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.time.ITime;
-import com.github.aptd.simulation.elements.IBaseElement;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.IStatefulElement;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
-import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
-import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -48,7 +47,7 @@ import java.util.stream.Stream;
  * passenger source: an agent creating Passenger agents according to statistical distributions
  */
 @IAgentAction
-public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
+public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>>
         implements IPassengerSource<IPassengerSource<?>>
 {
 
@@ -94,7 +93,7 @@ public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
         m_generator = p_generator;
         m_experiment = p_experiment;
         m_passengersgenerated = 0;
-        m_nextactivation = nextstatechange();
+        m_nextactivation = determinenextstatechange();
     }
 
     /**
@@ -109,21 +108,24 @@ public final class CPassengerSource extends IBaseElement<IPassengerSource<?>>
         return Stream.of();
     }
 
-    private synchronized Instant nextstatechange()
+    protected synchronized Instant determinenextstatechange()
     {
         if ( m_passengersgenerated >= m_passengers ) return Instant.MAX;
         return Instant.ofEpochMilli( m_startmillis + (long) Math.ceil( m_distribution.inverseCumulativeProbability(
                 1.0 * ( m_passengersgenerated + 1 ) / m_passengers ) ) );
     }
 
-    @IAgentActionFilter
-    @IAgentActionName( name = "state/timertransition" )
-    private synchronized void timertransition()
+    protected synchronized boolean updatestate()
     {
-        if ( nextstatechange().isAfter( m_time.current() ) ) return;
         System.out.println( "generating passenger at " + m_time.current().toString() );
         generatepassenger();
-        m_nextactivation = nextstatechange();
+        return true;
+    }
+
+    @Override
+    protected boolean updatecontinuous( final Duration p_elapsed )
+    {
+        return false;
     }
 
     private synchronized void generatepassenger()

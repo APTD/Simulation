@@ -20,65 +20,18 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements;
-
-import com.github.aptd.simulation.core.messaging.IMessage;
-import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
-
-import java.util.concurrent.Callable;
-import java.util.stream.Stream;
-
+package com.github.aptd.simulation.core.messaging;
 
 /**
- * any object interface
- *
- * @tparam T domain specific type
+ * message interface (messages are output from and input to elements/agents used for communication and interaction)
  */
-public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>, Callable<T>
+public interface IMessage
 {
 
-    boolean imminent();
+    String sender();
 
-    /**
-     * name of the object
-     *
-     * @return string name
-     */
-    String id();
+    String recipient();
 
-    /**
-     * changes the environment of the agent
-     *
-     * @param p_environment environment
-     * @return self reference
-     * @todo should be moved - incomplete
-     */
-    IElement<T> environment( final IEnvironment<T, ?> p_environment );
-
-    /**
-     * get pending output messages
-     *
-     * @return Stream of messages
-     */
-    Stream<IMessage> output();
-
-    T input( IMessage p_message );
-
-
-    /**
-     * generator interface
-     *
-     * @tparam T element generator
-     */
-    interface IGenerator<T extends IElement<?>> extends IAgentGenerator<T>
-    {
-        /**
-         * resets the internal counter
-         *
-         * @return self-reference
-         */
-        IGenerator<T> resetcount();
-    }
+    String content();
 
 }

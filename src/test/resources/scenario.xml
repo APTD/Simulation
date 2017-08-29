@@ -91,7 +91,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                             .
 
                             +!activate <-
-                                state/timertransition
+                                state/transition
                             .
 
                             +!activate_bak

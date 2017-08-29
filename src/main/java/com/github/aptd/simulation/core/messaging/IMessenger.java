@@ -20,65 +20,14 @@
  * @endcond
  */
 
-package com.github.aptd.simulation.elements;
-
-import com.github.aptd.simulation.core.messaging.IMessage;
-import org.lightjason.agentspeak.agent.IAgent;
-import org.lightjason.agentspeak.generator.IAgentGenerator;
+package com.github.aptd.simulation.core.messaging;
 
 import java.util.concurrent.Callable;
-import java.util.stream.Stream;
 
 
 /**
- * any object interface
- *
- * @tparam T domain specific type
+ * messenger interface (the messenger is a callable unit called in the preprocessing step of each cycle)
  */
-public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>, Callable<T>
+public interface IMessenger extends Callable<IMessenger>
 {
-
-    boolean imminent();
-
-    /**
-     * name of the object
-     *
-     * @return string name
-     */
-    String id();
-
-    /**
-     * changes the environment of the agent
-     *
-     * @param p_environment environment
-     * @return self reference
-     * @todo should be moved - incomplete
-     */
-    IElement<T> environment( final IEnvironment<T, ?> p_environment );
-
-    /**
-     * get pending output messages
-     *
-     * @return Stream of messages
-     */
-    Stream<IMessage> output();
-
-    T input( IMessage p_message );
-
-
-    /**
-     * generator interface
-     *
-     * @tparam T element generator
-     */
-    interface IGenerator<T extends IElement<?>> extends IAgentGenerator<T>
-    {
-        /**
-         * resets the internal counter
-         *
-         * @return self-reference
-         */
-        IGenerator<T> resetcount();
-    }
-
 }

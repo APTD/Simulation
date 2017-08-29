@@ -24,6 +24,7 @@ package com.github.aptd.simulation.datamodel;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.experiment.local.CExperiment;
+import com.github.aptd.simulation.core.messaging.local.CMessenger;
 import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.core.time.local.CStepTime;
@@ -119,6 +120,8 @@ public final class CXMLReader implements IDataModel
                             .toInstant(),
                     Duration.ofSeconds( 1 ) );
 
+            final CMessenger l_messenger = new CMessenger();
+
             final Set<IAction> l_actionsfrompackage = CCommon.actionsFromPackage().collect( Collectors.toSet() );
 
             // asl agent definition
@@ -133,7 +136,7 @@ public final class CXMLReader implements IDataModel
             l_agents.putAll( l_train );
 
             final CExperiment l_experiment = new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents,
-                    l_time );
+                    l_time, l_messenger );
 
             // @todo create passengersources and their passenger generators according to scenario definition
 
@@ -142,7 +145,7 @@ public final class CXMLReader implements IDataModel
                             + "\n"
                             + "                            +!main <-\n"
                             + "                            generic/print(\"hello passenger\").\n"
-                            + "+!activate <-\n    state/timertransition\n.",
+                            + "+!activate <-\n    state/transition\n.",
                     l_actionsfrompackage, l_time );
 
             l_experiment.addAgent( "passengersource_test",
@@ -151,7 +154,7 @@ public final class CXMLReader implements IDataModel
                                     + "\n"
                                     + "                            +!main <-\n"
                                     + "                            generic/print(\"hello passenger source\").\n"
-                                    + "+!activate <-\n    state/timertransition\n.",
+                                    + "+!activate <-\n    state/transition\n.",
                             l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
                                     l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment )
