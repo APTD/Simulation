@@ -97,7 +97,8 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         m_wagon = p_wagon.collect( Collectors.toList() );
         m_timetable = p_timetable.collect( Collectors.toList() );
         // first timetable entry only has departure
-        m_nextactivation = determinenextstatechange();
+        m_nextstatechange = determinenextstatechange();
+        m_nextactivation = m_nextstatechange;
     }
 
     @Override
@@ -155,7 +156,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
     @Override
     protected final synchronized boolean updatestate()
     {
-        if ( determinenextstatechange().isAfter( m_time.current() ) ) return false;
+        if ( m_nextstatechange.isAfter( m_time.current() ) ) return false;
         System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
         switch ( m_state )
         {
@@ -166,21 +167,23 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 m_ttindex++;
                 m_positionontrack = 0.0;
                 m_state = ETrainState.WAITING_TO_DRIVE;
-                break;
+                debugPrintState();
+                return true;
             case DRIVING:
                 m_state = ETrainState.ARRIVED;
                 System.out.println( m_id + " - arrival at " + m_time.current().toString() + " which was planned for "
                                     + m_timetable.get( m_ttindex ).m_publishedarrival );
-                break;
+                debugPrintState();
+                return true;
             case WAITING_TO_DRIVE:
                 m_state = ETrainState.DRIVING;
-                break;
+                debugPrintState();
+                return true;
                 // @todo remove this after implementation of other agents with external transition from this state
             default:
                 // making checkstyle happy
         }
-        System.out.println( m_id + " - new state is " + m_state + ", ttindex is " + m_ttindex );
-        return true;
+        return false;
     }
 
     @Override
@@ -195,6 +198,11 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 // making checkstyle happy
         }
         return false;
+    }
+
+    private void debugPrintState()
+    {
+        System.out.println( m_id + " - state is " + m_state + ", ttindex is " + m_ttindex );
     }
 
 
