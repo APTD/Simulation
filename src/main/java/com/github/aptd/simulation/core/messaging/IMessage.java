@@ -22,16 +22,21 @@
 
 package com.github.aptd.simulation.core.messaging;
 
+import com.github.aptd.simulation.elements.IElement;
+
+
 /**
  * message interface (messages are output from and input to elements/agents used for communication and interaction)
  */
 public interface IMessage
 {
 
-    String sender();
+    IElement<?> sender();
 
     String recipient();
 
     String content();
+
+    EMessageType type();
 
 }

@@ -54,10 +54,7 @@ public class CMessenger implements IMessenger
             return this;
         }
         optionalfilteredstream( m_experiment.objects().parallel(), OUTPUT_ONLY_FROM_IMMINENT ? IElement::imminent : null )
-            .flatMap( IElement::output ).forEach( msg ->
-            {
-                m_experiment.getAgent( msg.recipient() ).input( msg );
-            } );
+            .flatMap( IElement::output ).forEach( msg -> m_experiment.getAgent( msg.recipient() ).input( msg ) );
         return this;
     }
 
