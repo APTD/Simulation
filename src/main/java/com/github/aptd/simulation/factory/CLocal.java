@@ -26,9 +26,11 @@ package com.github.aptd.simulation.factory;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.IGraph;
+import com.github.aptd.simulation.elements.graph.network.IPlatform;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.github.aptd.simulation.elements.graph.network.local.CNetwork;
+import com.github.aptd.simulation.elements.graph.network.local.CPlatform;
 import com.github.aptd.simulation.elements.graph.network.local.CStation;
 import com.github.aptd.simulation.elements.graph.network.local.CTransit;
 import com.github.aptd.simulation.elements.graph.network.local.CVirtual;
@@ -79,6 +81,14 @@ public final class CLocal implements IFactory
                                                      @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CStation.CGenerator( p_stream, p_actions, p_time );
+    }
+
+    @Nonnull
+    @Override
+    public IElement.IGenerator<IPlatform<?>> platform( @Nonnull final InputStream p_stream,
+                                                       @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
+    {
+        return new CPlatform.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull

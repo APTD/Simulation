@@ -25,6 +25,7 @@ package com.github.aptd.simulation.factory;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.graph.IGraph;
+import com.github.aptd.simulation.elements.graph.network.IPlatform;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
@@ -98,6 +99,20 @@ public interface IFactory
     IElement.IGenerator<IStation<?>> transit( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
     /**
+     * creates a platform generator,
+     * which is used to generate platforms within stations
+     *
+     * @param p_stream ASL stream
+     * @param p_actions default actions
+     * @param p_time time reference
+     * @return generator
+     * @throws Exception is thrown on any error
+     */
+    @Nonnull
+    IElement.IGenerator<IPlatform<?>> platform( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
+            throws Exception;
+
+    /**
      * creates a virtual station generator,
      * which is used to simulate events only
      *
@@ -112,7 +127,7 @@ public interface IFactory
 
     /**
      * creates a PassengerSource generator,
-     * which is used to generate passengers
+     * which is used to generate a passenger source
      *
      * @param p_stream ASL stream
      * @param p_actions default actions
@@ -124,7 +139,19 @@ public interface IFactory
     IElement.IGenerator<IPassengerSource<?>> passengersource( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
             throws Exception;
 
+    /**
+     * creates a passenger generator,
+     * which is used to generate passengers
+     *
+     * @param p_stream ASL stream
+     * @param p_actions default actions
+     * @param p_time time reference
+     * @return generator
+     * @throws Exception is thrown on any error
+     */
     @Nonnull
     IElement.IGenerator<IPassenger<?>> passenger( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time )
             throws Exception;
+
+
 }

@@ -69,7 +69,6 @@ public abstract class IBaseStation extends IBaseElement<IStation<?>> implements 
     {
         super( p_configuration, p_functor, p_id, p_time );
         m_position = new CGPS( p_longitude, p_latitude );
-
     }
 
     @Override

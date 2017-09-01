@@ -33,7 +33,10 @@ import com.github.aptd.simulation.datamodel.xml.Asimov;
 import com.github.aptd.simulation.datamodel.xml.Iagent;
 import com.github.aptd.simulation.datamodel.xml.Iagents;
 import com.github.aptd.simulation.datamodel.xml.Network;
+import com.github.aptd.simulation.datamodel.xml.PlatformType;
+import com.github.aptd.simulation.datamodel.xml.StationLayout;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.graph.network.IPlatform;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.elements.passenger.IPassengerSource;
@@ -43,6 +46,8 @@ import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
 import com.github.aptd.simulation.error.CSemanticException;
 import com.github.aptd.simulation.factory.IFactory;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -71,6 +76,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -92,7 +98,7 @@ public final class CXMLReader implements IDataModel
     {
         try
         {
-            m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class );
+            m_context = JAXBContext.newInstance( Asimov.class, AgentRef.class, StationLayout.class );
         }
         catch ( final JAXBException l_exception )
         {
@@ -128,10 +134,12 @@ public final class CXMLReader implements IDataModel
             final Map<String, String> l_agentdefs = agents( l_model.getAi() );
 
             // macro (train-network) and microscopic model
-            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
+            final Map<String, IPlatform<?>> l_platform = platform( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
+            final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time, l_platform );
             final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
 
             final Map<String, IElement<?>> l_agents = new HashMap<>();
+            l_agents.putAll( l_platform );
             l_agents.putAll( l_station );
             l_agents.putAll( l_train );
 
@@ -192,16 +200,18 @@ public final class CXMLReader implements IDataModel
      * create the station list
      *
      * @param p_network network component
-     * @param p_agents map with agents
+     * @param p_agents map with agent asl scripts
      * @param p_factory factory
      * @param p_time time reference
+     * @param p_platforms map with already generated platforms
      * @return unmodifyable map with stations
      */
     private static Map<String, IStation<?>> station( final Network p_network, final Map<String, String> p_agents,
-                                                     final IFactory p_factory, final ITime p_time )
+                                                     final IFactory p_factory, final ITime p_time, final Map<String, IPlatform<?>> p_platforms )
     {
         final Map<String, IElement.IGenerator<IStation<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
+        final ListMultimap<String, IPlatform<?>> l_platformbystationid = Multimaps.index( p_platforms.values(), IPlatform::stationid );
         return Collections.<String, IStation<?>>unmodifiableMap(
                    p_network.getInfrastructure()
                             .getOperationControlPoints()
@@ -215,7 +225,8 @@ public final class CXMLReader implements IDataModel
                                         ).generatesingle(
                                             i.getLeft().getDescription(),
                                             i.getLeft().getGeoCoord().getCoord().get( 0 ),
-                                            i.getLeft().getGeoCoord().getCoord().get( 1 )
+                                            i.getLeft().getGeoCoord().getCoord().get( 1 ),
+                                            l_platformbystationid.get( i.getLeft().getDescription() )
                                         )
                                 )
                             .collect( Collectors.toMap( IElement::id, i -> i ) )
@@ -250,10 +261,73 @@ public final class CXMLReader implements IDataModel
 
 
     /**
+     * create the platforms of all stations
+     *
+     * @param p_network network component
+     * @param p_agents map with agent asl scripts
+     * @param p_factory factory
+     * @param p_time time reference
+     * @return unmodifyable map with platforms
+     */
+    private static Map<String, IPlatform<?>> platform( final Network p_network, final Map<String, String> p_agents,
+                                                                          final IFactory p_factory, final ITime p_time )
+    {
+        final Map<String, IElement.IGenerator<IPlatform<?>>> l_generators = new ConcurrentHashMap<>();
+        final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
+        return Collections.<String, IPlatform<?>>unmodifiableMap(
+            p_network.getInfrastructure()
+                     .getOperationControlPoints()
+                     .getOcp()
+                     .parallelStream()
+                     .flatMap( ocp -> ocp.getAny().stream().filter( a -> a instanceof StationLayout )
+                                         .findAny().map( a -> ( (StationLayout) a ).getPlatform().stream()
+                                                                                       .map( p -> new ImmutablePair<EOcp, PlatformType>( ocp, p ) ) )
+                                         .orElse( Stream.of() ) )
+                     .filter( i -> i.getRight().getAgentRef() != null )
+                     .map( i -> l_generators.computeIfAbsent(
+                         i.getRight().getAgentRef().getAgent(),
+                         a -> platformgenerator( p_factory, p_agents.get( i.getRight().getAgentRef().getAgent() ), l_actions, p_time )
+                           ).generatesingle(
+                         i.getLeft().getDescription() + "-track-" + i.getRight().getNumber(),
+                         i.getLeft().getDescription()
+                           )
+                     )
+                     .collect( Collectors.toMap( IElement::id, i -> i ) )
+        );
+    }
+
+
+    /**
+     * creates a platform agent generator
+     *
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return platform generator
+     */
+    private static IElement.IGenerator<IPlatform<?>> platformgenerator( final IFactory p_factory, final String p_asl,
+                                                                        final Set<IAction> p_actions, final ITime p_time )
+    {
+        try
+        {
+            return p_factory.platform(
+                IOUtils.toInputStream( p_asl, "UTF-8" ),
+                p_actions,
+                p_time
+            );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
+    }
+
+
+    /**
      * create the train list
      *
      * @param p_network network component
-     * @param p_agents map with agents
+     * @param p_agents map with agent asl scripts
      * @param p_factory factory
      * @return unmodifiable map with trains
      */

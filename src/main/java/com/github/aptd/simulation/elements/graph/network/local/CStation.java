@@ -23,13 +23,19 @@
 package com.github.aptd.simulation.elements.graph.network.local;
 
 import com.github.aptd.simulation.core.time.ITime;
+import com.github.aptd.simulation.elements.graph.network.IPlatform;
 import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.ITrain;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -49,6 +55,10 @@ public final class CStation extends IBaseStation
      * literal functor
      */
     private static final String FUNCTOR = "station";
+    /**
+     * overview which platform is occupied by which train (every platform is always present als key, with null as value if unoccupied)
+     */
+    private final Map<IPlatform<?>, ITrain<?>> m_platformoccupation;
 
     /**
      * ctor
@@ -64,10 +74,13 @@ public final class CStation extends IBaseStation
         final String p_id,
         final double p_longitude,
         final double p_latitude,
+        final List<IPlatform<?>> p_platforms,
         final ITime p_time
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_longitude, p_latitude, p_time );
+        m_platformoccupation = Collections.synchronizedMap( new HashMap<>( p_platforms != null ? p_platforms.size() : 0 ) );
+        if ( p_platforms != null ) p_platforms.forEach( p -> m_platformoccupation.put( p, null ) );
     }
 
 
@@ -93,10 +106,17 @@ public final class CStation extends IBaseStation
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         protected final Pair<IStation<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CStation( m_configuration, p_data[0].toString(), (double) p_data[1], (double) p_data[1], m_time ),
+                new CStation(
+                    m_configuration,
+                    p_data[0].toString(),
+                    (double) p_data[1],
+                    (double) p_data[2],
+                    p_data.length > 3 ? (List<IPlatform<?>>) p_data[3] : null,
+                    m_time ),
                 Stream.of( FUNCTOR, BASEFUNCTOR )
             );
         }
