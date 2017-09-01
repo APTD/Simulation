@@ -23,9 +23,13 @@
 package com.github.aptd.simulation.elements;
 
 import com.github.aptd.simulation.common.CAgentTrigger;
+import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.ui.CHTTPServer;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
@@ -59,8 +63,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -90,6 +92,10 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      */
     protected Instant m_nextactivation = Instant.MAX;
     /**
+     * set of inputs to be processed
+     */
+    protected final ListMultimap<EMessageType, IMessage> m_input = Multimaps.synchronizedListMultimap( ArrayListMultimap.create() );
+    /**
      * functor definition
      */
     private final String m_functor;
@@ -105,10 +111,6 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
      * reference of the environment
      */
     private final AtomicReference<IEnvironment<N, ?>> m_environment = new AtomicReference<>();
-    /**
-     * set of inputs to be processed
-     */
-    private final Set<IMessage> m_input = Collections.synchronizedSet( new HashSet<>() );
 
 
     /**
@@ -228,7 +230,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     @SuppressWarnings( "unchecked" )
     public N input( final IMessage p_message )
     {
-        m_input.add( p_message );
+        m_input.put( p_message.type(), p_message );
         return (N) this;
     }
 
