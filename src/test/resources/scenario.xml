@@ -311,6 +311,17 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </rail:ocp>
                 <rail:ocp id="toy-node-2" name="2" description="Zwei">
                     <asimov:agentRef agent="agent-station-default" />
+                    <asimov:stationLayout>
+                        <asimov:platform number="1">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="2">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="3">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                    </asimov:stationLayout>
                     <rail:geoCoord coord="51.412148 9.657186" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-3" name="3" description="Drei">
@@ -346,6 +357,17 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </rail:ocp>
                 <rail:ocp id="toy-node-5" name="5" description="Fünf">
                     <asimov:agentRef agent="agent-station-default" />
+                    <asimov:stationLayout>
+                        <asimov:platform number="1">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="2">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="3">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                    </asimov:stationLayout>
                     <rail:geoCoord coord="51.644046 10.329508" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-6" name="6" description="Sechs">
@@ -366,10 +388,32 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                 </rail:ocp>
                 <rail:ocp id="toy-node-7" name="7" description="Sieben">
                     <asimov:agentRef agent="agent-station-default" />
+                    <asimov:stationLayout>
+                        <asimov:platform number="1">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="2">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="3">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                    </asimov:stationLayout>
                     <rail:geoCoord coord="51.984547 9.812833" />
                 </rail:ocp>
                 <rail:ocp id="toy-node-8" name="8" description="Acht">
                     <asimov:agentRef agent="agent-station-default" />
+                    <asimov:stationLayout>
+                        <asimov:platform number="1">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="2">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                        <asimov:platform number="3">
+                            <asimov:agentRef agent="agent-platform-default" />
+                        </asimov:platform>
+                    </asimov:stationLayout>
                     <rail:geoCoord coord="51.911861 10.420842" />
                 </rail:ocp>
             </rail:operationControlPoints>
@@ -398,7 +442,7 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
         </asimov:lineplan>
         <rail:timetable id="timetable" infrastructureRef="toy-infrastructure" rollingstockRef="rolling-stock">
             <rail:trainParts>
-                <rail:trainPart id="train-part-001">
+                <rail:trainPart id= "train-part-134">
                     <rail:formationTT formationRef="default-train" />
                     <rail:ocpsTT>
                         <rail:ocpTT ocpRef="toy-node-1" ocpType="stop">
@@ -423,12 +467,51 @@ http://www.railml.org/schemas/2016 http://www.railml.org/files/download/schemas/
                         </rail:ocpTT>
                     </rail:ocpsTT>
                 </rail:trainPart>
+                <rail:trainPart id="train-part-2368">
+                    <rail:formationTT formationRef="default-train" />
+                    <rail:ocpsTT>
+                        <rail:ocpTT ocpRef="toy-node-2" ocpType="stop">
+                            <rail:times scope="published" departure="10:02:00" />
+                            <rail:sectionTT>
+                                <rail:trackRef ref="toy-edge-2" dir="up" />
+                                <rail:runTimes minimalTime="PT21M12S" />
+                            </rail:sectionTT>
+                            <rail:stopDescription asimov:platformRef="Zwei-track-1"/>
+                        </rail:ocpTT>
+                        <rail:ocpTT ocpRef="toy-node-3" ocpType="stop">
+                            <rail:times scope="published" arrival="10:31:00" departure="10:34:00"/>
+                            <rail:sectionTT>
+                                <rail:trackRef ref="toy-edge-6" dir="up" />
+                                <rail:runTimes minimalTime="PT9M24S" />
+                            </rail:sectionTT>
+                            <rail:stopDescription asimov:platformRef="Drei-track-1"/>
+                        </rail:ocpTT>
+                        <rail:ocpTT ocpRef="toy-node-6" ocpType="stop">
+                            <rail:times scope="published" arrival="10:43:00" departure="10:45:00"/>
+                            <rail:sectionTT>
+                                <rail:trackRef ref="toy-edge-8" dir="up" />
+                                <rail:runTimes minimalTime="PT29M06S" />
+                            </rail:sectionTT>
+                            <rail:stopDescription asimov:platformRef="Sechs-track-1"/>
+                        </rail:ocpTT>
+                        <rail:ocpTT ocpRef="toy-node-6" ocpType="stop">
+                            <rail:times scope="published" arrival="11:17:00" />
+                            <rail:stopDescription asimov:platformRef="Acht-track-1"/>
+                        </rail:ocpTT>
+                    </rail:ocpsTT>
+                </rail:trainPart>
             </rail:trainParts>
             <rail:trains>
-                <rail:train id="train-01" type="commercial">
+                <rail:train id="train-134" type="commercial">
                     <asimov:agentRef agent="agent-train-default" />
                     <rail:trainPartSequence sequence="1">
-                        <rail:trainPartRef ref="train-part-001" position="1"/>
+                        <rail:trainPartRef ref="train-part-134" position="1"/>
+                    </rail:trainPartSequence>
+                </rail:train>
+                <rail:train id="train-2368" type="commercial">
+                    <asimov:agentRef agent="agent-train-default" />
+                    <rail:trainPartSequence sequence="1">
+                        <rail:trainPartRef ref="train-part-2368" position="1"/>
                     </rail:trainPartSequence>
                 </rail:train>
             </rail:trains>
