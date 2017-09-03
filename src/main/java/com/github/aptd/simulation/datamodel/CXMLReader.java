@@ -415,7 +415,9 @@ public final class CXMLReader implements IDataModel
                                                                                                + l_doorcount.computeIfAbsent(
                                                                                                    i.getLeft().getId(),
                                                                                                    id -> new AtomicLong( 1L ) ).getAndIncrement(),
-                                                          id -> l_doorgenerator.generatesingle( id, i.getLeft().getId() )
+                                                          id -> l_doorgenerator.generatesingle( id, i.getLeft().getId(),
+                                                                                                v.getRight().getEntranceWidth().doubleValue()
+                                                                                                / v.getRight().getNumber().longValue() )
                                                       )
                                                       )
                               )

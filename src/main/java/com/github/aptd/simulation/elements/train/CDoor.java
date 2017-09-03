@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -81,7 +82,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
     /**
      * for how long the door must have been unused before it can close (seconds)
      */
-    private double m_minfreetimetoclose;
+    private double m_minfreetimetoclose = 10;
     /**
      * for how long the door has not been used (seconds)
      */
@@ -89,11 +90,11 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
     /**
      * how fast the door opens (meters per second)
      */
-    private double m_openingspeed;
+    private double m_openingspeed = 0.4;
     /**
      * how fast the door closes (meters per second)
      */
-    private double m_closingspeed;
+    private double m_closingspeed = 0.4;
 
     /**
      * ctor
@@ -103,10 +104,11 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
      * @param p_time          time reference
      * @param p_train train id
      */
-    protected CDoor( final IAgentConfiguration<IDoor<?>> p_configuration, final String p_id, final ITime p_time, final String p_train )
+    protected CDoor( final IAgentConfiguration<IDoor<?>> p_configuration, final String p_id, final ITime p_time, final String p_train, final double p_width )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
         m_train = p_train;
+        m_width = p_width;
         m_nextstatechange = determinenextstatechange();
     }
 
@@ -159,15 +161,17 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         final List<IMessage> l_finished = m_input.get( EMessageType.PASSENGER_TO_DOOR_FINISHED );
 
         // enqueuing passengers (if queues are empty, passenger will get immediate access with nextpassengerifpossible() at the end)
-        l_entryrequests.stream().forEach( msg -> m_entryqueue.add( (IPassenger<?>) msg.sender() ) );
-        l_exitrequests.stream().forEach( msg -> m_exitqueue.add( (IPassenger<?>) msg.sender() ) );
+        l_entryrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
+                       .forEachOrdered( msg -> m_entryqueue.add( (IPassenger<?>) msg.sender() ) );
+        l_exitrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
+                      .forEachOrdered( msg -> m_exitqueue.add( (IPassenger<?>) msg.sender() ) );
 
         // locking or unlocking
         handletrainmessages();
 
         // switches state from busy to free, but if queues are not empty, will become busy again with nextpassengerifpossible() at the end
         if ( l_finished.size() > 1 ) throw new RuntimeException( m_id + " received multiple finished messages" );
-        if ( !l_finished.isEmpty() ) passengerfinished();
+        if ( !l_finished.isEmpty() ) passengerfinished( l_finished.get( 0 ) );
 
         // determine from which queue a passenger could be taken next: exit has priority over entry
         final Queue<IPassenger<?>> l_queue = m_exitqueue.isEmpty() ? m_entryqueue.isEmpty() ? null : m_entryqueue : m_exitqueue;
@@ -312,7 +316,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         }
     }
 
-    private void passengerfinished()
+    private void passengerfinished( final IMessage p_message )
     {
         switch ( m_state )
         {
@@ -323,8 +327,13 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                 m_state = EDoorState.OPEN_FREE_SHALL_CLOSE;
                 break;
             default:
-                throw new RuntimeException( m_id + "received finished message although not busy in state " + m_state );
+                throw new RuntimeException( m_id + " received finished message although not busy in state " + m_state );
         }
+        final String l_exiting = m_exitqueue.isEmpty() ? null : m_exitqueue.peek().id();
+        final String l_entering = m_entryqueue.isEmpty() ? null : m_entryqueue.peek().id();
+        if ( l_exiting.equals( p_message.sender().id() ) ) m_exitqueue.poll();
+        else if ( l_entering.equals( p_message.sender().id() ) ) m_entryqueue.poll();
+        else throw new RuntimeException( m_id + " received finished message from " + p_message.sender().id() + " who is not first in either queue" );
         m_freetime = 0.0;
     }
 
@@ -408,7 +417,8 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                     new CDoor( m_configuration,
                                (String) p_data[0],
                                m_time,
-                               (String) p_data[1] ),
+                               (String) p_data[1],
+                               (double) p_data[2] ),
                     Stream.of( FUNCTOR )
             );
         }
