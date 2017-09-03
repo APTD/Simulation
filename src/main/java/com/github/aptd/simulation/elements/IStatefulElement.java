@@ -69,6 +69,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     {
         super( p_configuration, p_functor, p_id, p_time );
         m_laststatechange = m_time.current();
+        m_lastcontinuousupdate = m_time.current();
     }
 
     protected final void flushOutput()
@@ -82,9 +83,11 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     }
 
     @Override
-    public Stream<IMessage> output()
+    public synchronized Stream<IMessage> output()
     {
-        return m_output.stream();
+        final Set<IMessage> l_output = new HashSet<>( m_output );
+        m_output.clear();
+        return l_output.stream();
     }
 
     @IAgentActionFilter
@@ -98,13 +101,26 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     @IAgentActionName( name = "state/transition" )
     protected final synchronized void transition()
     {
-        if ( updatestate() )
+        // System.out.println( m_time.current() + " - " + m_id + " transition check" );
+        try
         {
-            m_laststatechange = m_time.current();
-            m_lastcontinuousupdate = m_time.current();
-            m_nextstatechange = determinenextstatechange();
-            m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+            if ( updatestate() )
+            {
+                m_laststatechange = m_time.current();
+                m_lastcontinuousupdate = m_time.current();
+                m_nextstatechange = determinenextstatechange();
+                System.out.println( m_time.current() + " - " + m_id + " - transition happened. next state change at " + m_nextstatechange );
+            }
         }
+        catch ( final RuntimeException l_ex )
+        {
+            System.out.println( "RUNTIME EXCEPTION in " + m_id + ": " + l_ex.toString() );
+            l_ex.printStackTrace();
+        }
+        m_input.clear();
+        m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+        // System.out.println( m_time.current() + " - " + m_id + " output contains " + m_output.size() + " messages" );
+        // m_output.forEach( msg -> System.out.println( msg.type() + " to " + msg.recipient() + ": " + msg.content() ) );
     }
 
     @IAgentActionFilter
@@ -145,5 +161,21 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
      * @return true iff the state has actually changed
      */
     protected abstract boolean updatecontinuous( final Duration p_elapsed );
+
+    /**
+     * generates a default asl script string calling "state/transition" upon "!activate", and greeting upon initialisation
+     *
+     * @param p_name the name to print with "hello" after initialisation
+     * @return asl script as String
+     */
+    public static final String getDefaultAsl( final String p_name )
+    {
+        return "!main.\n"
+               + "\n"
+               + "+!main <-\n"
+               + "  generic/print(\"hello " + p_name.replaceAll( "\\W", "_" ) + "\").\n"
+               + "+!activate <-\n"
+               + "  state/transition\n.";
+    }
 
 }

@@ -36,11 +36,13 @@ import com.github.aptd.simulation.datamodel.xml.Network;
 import com.github.aptd.simulation.datamodel.xml.PlatformType;
 import com.github.aptd.simulation.datamodel.xml.StationLayout;
 import com.github.aptd.simulation.elements.IElement;
+import com.github.aptd.simulation.elements.IStatefulElement;
 import com.github.aptd.simulation.elements.graph.network.IPlatform;
 import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.elements.passenger.IPassengerSource;
 import com.github.aptd.simulation.elements.train.CTrain;
+import com.github.aptd.simulation.elements.train.IDoor;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.github.aptd.simulation.error.CNotFoundException;
 import com.github.aptd.simulation.error.CRuntimeException;
@@ -55,14 +57,19 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
 import org.railml.schemas._2016.EArrivalDepartureTimes;
+import org.railml.schemas._2016.EFormation;
 import org.railml.schemas._2016.EOcp;
 import org.railml.schemas._2016.EOcpTT;
 import org.railml.schemas._2016.ETrack;
 import org.railml.schemas._2016.ETrainPart;
+import org.railml.schemas._2016.EVehicle;
+import org.railml.schemas._2016.TDoors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -75,7 +82,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -86,6 +95,10 @@ import java.util.stream.Stream;
  */
 public final class CXMLReader implements IDataModel
 {
+    private static final QName PLATFORM_REF_ATTRIBUTE = new QName(
+        "https://raw.githubusercontent.com/APTD/Simulation/master/src/main/xsd",
+        "platformRef"
+    );
     /**
      * jaxb context
      */
@@ -136,12 +149,13 @@ public final class CXMLReader implements IDataModel
             // macro (train-network) and microscopic model
             final Map<String, IPlatform<?>> l_platform = platform( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
             final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time, l_platform );
-            final Map<String, ITrain<?>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
+            final Pair<Map<String, ITrain<?>>, Map<String, IDoor<?>>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
 
             final Map<String, IElement<?>> l_agents = new HashMap<>();
             l_agents.putAll( l_platform );
             l_agents.putAll( l_station );
-            l_agents.putAll( l_train );
+            l_agents.putAll( l_train.getLeft() );
+            l_agents.putAll( l_train.getRight() );
 
             final CExperiment l_experiment = new CExperiment( p_simulationsteps, p_parallel, IStatistic.EMPTY, l_agents,
                     l_time, l_messenger );
@@ -165,8 +179,10 @@ public final class CXMLReader implements IDataModel
                                     + "+!activate <-\n    state/transition\n.",
                             l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
-                                    l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment )
+                                    l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "Drei" ) )
             );
+
+            l_messenger.experiment( l_experiment );
 
             // experiment (executable model)
             return l_experiment;
@@ -331,11 +347,16 @@ public final class CXMLReader implements IDataModel
      * @param p_factory factory
      * @return unmodifiable map with trains
      */
-    private static Map<String, ITrain<?>> train( final Network p_network, final Map<String, String> p_agents, final IFactory p_factory, final ITime p_time )
+    private static Pair<Map<String, ITrain<?>>, Map<String, IDoor<?>>> train( final Network p_network, final Map<String, String> p_agents,
+                                                                              final IFactory p_factory, final ITime p_time )
     {
+        final String l_dooragent = IStatefulElement.getDefaultAsl( "door" );
         final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
-        return Collections.<String, ITrain<?>>unmodifiableMap(
+        final IElement.IGenerator<IDoor<?>> l_doorgenerator = doorgenerator( p_factory, l_dooragent, l_actions, p_time );
+        final Map<String, AtomicLong> l_doorcount = new HashMap<>();
+        final Map<String, IDoor<?>> l_doors = new HashMap<>();
+        return new ImmutablePair<>( Collections.<String, ITrain<?>>unmodifiableMap(
             p_network.getTimetable()
                      .getTrains()
                      .getTrain()
@@ -352,6 +373,7 @@ public final class CXMLReader implements IDataModel
                               .stream()
                               .flatMap( ref ->
                               {
+                                  // @todo support multiple train parts
                                   final EOcpTT[] l_tts = ( (ETrainPart) ref.getTrainPartRef().get( 0 ).getRef() )
                                       .getOcpsTT().getOcpTT().toArray( new EOcpTT[0] );
                                   final CTrain.CTimetableEntry[] l_entries = new CTrain.CTimetableEntry[l_tts.length];
@@ -366,6 +388,7 @@ public final class CXMLReader implements IDataModel
                                                                                                                                 .getTrackEnd().getPos()
                                                                                                                                 .doubleValue(),
                                           ( (EOcp) l_tts[j].getOcpRef() ).getId(),
+                                          l_tts[j].getStopDescription().getOtherAttributes().getOrDefault( PLATFORM_REF_ATTRIBUTE, null ),
                                           l_times.getArrival() == null
                                                   ? null
                                                   : l_times.getArrival().toGregorianCalendar().toZonedDateTime()
@@ -377,11 +400,30 @@ public final class CXMLReader implements IDataModel
                                       );
                                   }
                                   return Arrays.stream( l_entries );
-                              } )
+                              } ),
+                             i.getLeft()
+                              .getTrainPartSequence()
+                              .stream()
+                              // @todo support multiple train parts
+                              .map( s -> (ETrainPart) s.getTrainPartRef().get( 0 ).getRef() )
+                              .map( p -> (EFormation) p.getFormationTT().getFormationRef() )
+                              .flatMap( f -> f.getTrainOrder().getVehicleRef().stream() )
+                              .map( r -> new ImmutablePair<BigInteger, TDoors>( r.getVehicleCount(),
+                                                                                ( (EVehicle) r.getVehicleRef() ).getWagon().getPassenger().getDoors() ) )
+                              .flatMap( v -> IntStream.range( 0, v.getLeft().intValue() * v.getRight().getNumber().intValue() )
+                                                      .mapToObj( j -> l_doors.computeIfAbsent( "door-" + i.getLeft().getId() + "-"
+                                                                                               + l_doorcount.computeIfAbsent(
+                                                                                                   i.getLeft().getId(),
+                                                                                                   id -> new AtomicLong( 1L ) ).getAndIncrement(),
+                                                          id -> l_doorgenerator.generatesingle( id, i.getLeft().getId() )
+                                                      )
+                                                      )
+                              )
+                             .collect( Collectors.toList() )
                          )
                      )
                      .collect( Collectors.toMap( IElement::id, i -> i ) )
-        );
+        ), l_doors );
     }
 
 
@@ -399,6 +441,32 @@ public final class CXMLReader implements IDataModel
         try
         {
             return p_factory.train(
+                IOUtils.toInputStream( p_asl, "UTF-8" ),
+                p_actions,
+                p_time
+            );
+        }
+        catch ( final Exception l_exception )
+        {
+            throw new CSemanticException( l_exception );
+        }
+    }
+
+
+    /**
+     * creates a train door agent generator
+     *
+     * @param p_factory factory
+     * @param p_asl asl script as String
+     * @param p_actions actions
+     * @return train door generator
+     */
+    private static IElement.IGenerator<IDoor<?>> doorgenerator( final IFactory p_factory, final String p_asl,
+                                                                final Set<IAction> p_actions, final ITime p_time )
+    {
+        try
+        {
+            return p_factory.door(
                 IOUtils.toInputStream( p_asl, "UTF-8" ),
                 p_actions,
                 p_time

@@ -26,6 +26,7 @@ import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.IStatefulElement;
+import com.github.aptd.simulation.elements.graph.network.IStation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.distribution.RealDistribution;
@@ -62,6 +63,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
 
     private IElement.IGenerator<?> m_generator;
     private IExperiment m_experiment;
+    private IStation<?> m_station;
 
     private RealDistribution m_distribution;
     private long m_startmillis;
@@ -70,10 +72,15 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
 
     /**
      * ctor
-     *
      * @param p_configuration agent configuration
      * @param p_id ...
      * @param p_time time reference
+     * @param p_distribution distribution according to which passengers are generated over time (in milliseconds)
+     * @param p_startmillis the start timestamp, in milliseconds (to anchor the distribution)
+     * @param p_passengers how many passengers will be generated in total
+     * @param p_generator agent generator of passenger agent class to be generated
+     * @param p_experiment reference to the experiment instance into which the agents will be added
+     * @param p_station station agent at which the passengers will begin their lives
      */
     private CPassengerSource(
         final IAgentConfiguration<IPassengerSource<?>> p_configuration,
@@ -82,8 +89,9 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         final RealDistribution p_distribution,
         final long p_startmillis,
         final int p_passengers,
-        final IElement.IGenerator<?> p_generator,
-        final IExperiment p_experiment
+        final IGenerator<?> p_generator,
+        final IExperiment p_experiment,
+        final IStation<?> p_station
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
@@ -92,6 +100,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         m_passengers = p_passengers;
         m_generator = p_generator;
         m_experiment = p_experiment;
+        m_station = p_station;
         m_passengersgenerated = 0;
         m_nextactivation = determinenextstatechange();
     }
@@ -131,7 +140,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     private synchronized void generatepassenger()
     {
         // @todo put passenger somewhere, initialize its state, etc.
-        final IElement<?> l_passenger = m_generator.generatesingle();
+        final IElement<?> l_passenger = m_generator.generatesingle( m_station );
         m_experiment.addAgent( l_passenger.id(), l_passenger );
         m_passengersgenerated++;
     }
@@ -166,10 +175,11 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         {
             return new ImmutablePair<>(
                     new CPassengerSource( m_configuration,
-                            MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ),
-                            m_time,
-                            (RealDistribution) p_data[0], (long) p_data[1], (int) p_data[2],
-                            (IElement.IGenerator<?>) p_data[3], (IExperiment) p_data[4] ),
+                                          MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ),
+                                          m_time,
+                                          (RealDistribution) p_data[0], (long) p_data[1], (int) p_data[2],
+                                          (IElement.IGenerator<?>) p_data[3], (IExperiment) p_data[4], (IStation<?>) p_data[5]
+                    ),
                     Stream.of( FUNCTOR )
             );
         }

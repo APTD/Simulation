@@ -231,6 +231,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     public N input( final IMessage p_message )
     {
         m_input.put( p_message.type(), p_message );
+        m_nextactivation = m_time.current();
         return (N) this;
     }
 

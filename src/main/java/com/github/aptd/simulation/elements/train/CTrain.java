@@ -22,9 +22,13 @@
 
 package com.github.aptd.simulation.elements.train;
 
+import com.github.aptd.simulation.core.messaging.EMessageType;
+import com.github.aptd.simulation.core.messaging.IMessage;
+import com.github.aptd.simulation.core.messaging.local.CMessage;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IStatefulElement;
 import com.github.aptd.simulation.elements.common.IGPS;
+import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.error.CSemanticException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -41,6 +45,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,6 +77,15 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
      */
     private final List<IWagon<?>> m_wagon;
     /**
+     * lists of doors
+     */
+    private final Set<IDoor<?>> m_doorsclosedlocked = Collections.synchronizedSet( new HashSet<>() );
+    private final Set<IDoor<?>> m_doorsnotclosedlocked = Collections.synchronizedSet( new HashSet<>() );
+    /**
+     * set of passengers on the train (subscribers to notifcations of arrivals at stations)
+     */
+    private final Set<IPassenger<?>> m_passengers = Collections.synchronizedSet( new HashSet<>() );
+    /**
      * current GPS position
      */
     private final IGPS m_position = null;
@@ -87,15 +101,19 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
      *
      * @param p_configuration agent configuration
      * @param p_id train identifier
-     * @param p_wagon wagon references
+     * @param p_timetable stream of timetable entries
+     * @param p_doors list of door agent references
+     * @param p_wagon stream of wagon references
      * @param p_time environment
      */
     private CTrain( final IAgentConfiguration<ITrain<?>> p_configuration, final String p_id, final Stream<CTimetableEntry> p_timetable,
-                    final Stream<IWagon<?>> p_wagon, final ITime p_time )
+                    final List<IDoor<?>> p_doors, final Stream<IWagon<?>> p_wagon, final ITime p_time )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
         m_wagon = p_wagon.collect( Collectors.toList() );
+        m_doorsnotclosedlocked.addAll( p_doors );
         m_timetable = p_timetable.collect( Collectors.toList() );
+        output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, "", EMessageType.TRAIN_TO_PLATFORM_ARRIVING ) );
         // first timetable entry only has departure
         m_nextstatechange = determinenextstatechange();
         m_nextactivation = m_nextstatechange;
@@ -143,8 +161,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                     ChronoUnit.SECONDS
                 );
             case WAITING_TO_DRIVE:
-                return m_laststatechange;
-                // @todo implement other agents and make external transition from this state (return Infinity here then)
+                return m_doorsnotclosedlocked.isEmpty() ? m_laststatechange : Instant.MAX;
             case ARRIVED:
                 if ( m_ttindex + 1 >= m_timetable.size() ) return Instant.MAX;
                 return Collections.max( Arrays.asList( m_timetable.get( m_ttindex ).m_publisheddeparture, m_laststatechange.plus( 30, ChronoUnit.SECONDS ) ) );
@@ -156,30 +173,61 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
     @Override
     protected final synchronized boolean updatestate()
     {
-        if ( m_nextstatechange.isAfter( m_time.current() ) ) return false;
-        System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
+        final List<IDoor<?>> l_doorsclosedlocked = m_input.get( EMessageType.DOOR_TO_TRAIN_CLOSED_LOCKED ).stream()
+                                                          .map( msg -> (IDoor<?>) msg.sender() ).collect( Collectors.toList() );
+        if ( !l_doorsclosedlocked.isEmpty() )
+        {
+            if ( m_state != ETrainState.WAITING_TO_DRIVE ) throw new RuntimeException( "door locked although not waiting to drive: " + m_id );
+            m_doorsnotclosedlocked.removeAll( l_doorsclosedlocked );
+            m_doorsclosedlocked.addAll( l_doorsclosedlocked );
+        }
+
+        final List<IMessage> l_subscribingpassengers = m_input.get( EMessageType.PASSENGER_TO_TRAIN_SUBSCRIBE );
+        final List<IMessage> l_unsubscribingpassengers = m_input.get( EMessageType.PASSENGER_TO_TRAIN_UNSUBSCRIBE );
+        if ( !l_subscribingpassengers.isEmpty() || !l_unsubscribingpassengers.isEmpty() )
+        {
+            if ( m_state != ETrainState.ARRIVED ) throw new RuntimeException( "passengers subscribing/unsubscribing although not ARRIVED:" + m_id );
+            l_subscribingpassengers.stream().forEach( msg -> m_passengers.add( (IPassenger) msg.sender() ) );
+            l_unsubscribingpassengers.stream().forEach( msg -> m_passengers.remove( msg.sender() ) );
+        }
+
+        final boolean l_timedchange = !m_nextstatechange.isAfter( m_time.current() );
+        if ( l_timedchange )
+            System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
         switch ( m_state )
         {
             case ARRIVED:
+                if ( !l_timedchange ) break;
                 System.out.println( m_id + " - departure at " + m_time.current().toString() + " which was planned for "
                                     + m_timetable.get( m_ttindex ).m_publisheddeparture );
                 // proceed to next timetable entry
                 m_ttindex++;
                 m_positionontrack = 0.0;
                 m_state = ETrainState.WAITING_TO_DRIVE;
+                m_doorsnotclosedlocked.forEach( d -> output( new CMessage( this, d.id(), "", EMessageType.TRAIN_TO_DOOR_LOCK ) ) );
                 debugPrintState();
                 return true;
             case DRIVING:
+                // @todo: react to "red signal" here
+                if ( !l_timedchange ) break;
                 m_state = ETrainState.ARRIVED;
                 System.out.println( m_id + " - arrival at " + m_time.current().toString() + " which was planned for "
                                     + m_timetable.get( m_ttindex ).m_publishedarrival );
+                m_passengers.forEach( p -> output( new CMessage( this,
+                                                                 p.id(),
+                                                                 m_timetable.get( m_ttindex ).m_platformid,
+                                                                 EMessageType.TRAIN_TO_PASSENGER_ARRIVING ) ) );
+                output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, "", EMessageType.TRAIN_TO_PLATFORM_ARRIVING ) );
+                m_doorsclosedlocked.forEach( d -> output( new CMessage( this, d.id(), "", EMessageType.TRAIN_TO_DOOR_UNLOCK ) ) );
+                m_doorsnotclosedlocked.addAll( m_doorsclosedlocked );
+                m_doorsclosedlocked.clear();
                 debugPrintState();
                 return true;
             case WAITING_TO_DRIVE:
+                if ( !m_doorsnotclosedlocked.isEmpty() ) break;
                 m_state = ETrainState.DRIVING;
                 debugPrintState();
                 return true;
-                // @todo remove this after implementation of other agents with external transition from this state
             default:
                 // making checkstyle happy
         }
@@ -238,7 +286,8 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                     m_configuration,
                     p_data[0].toString(),
                     (Stream<CTimetableEntry>) p_data[1],
-                    Arrays.stream( p_data ).skip( 2 ).map( i -> (IWagon<?>) i ),
+                    (List<IDoor<?>>) p_data[2],
+                    Arrays.stream( p_data ).skip( 3 ).map( i -> (IWagon<?>) i ),
                     m_time
                 ),
                 Stream.of( FUNCTOR )
@@ -254,6 +303,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
 
         private final double m_tracklength;
         private final String m_stationid;
+        private final String m_platformid;
         private final Instant m_publishedarrival;
         private final Instant m_publisheddeparture;
 
@@ -262,20 +312,23 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
          *
          * @param p_tracklength length of the track leading to the station
          * @param p_stationid station
+         * @param p_platformid platform
          * @param p_publishedarrival arrival at this station
          * @param p_publisheddeparture departure onto track of next entry
          */
-        public CTimetableEntry( final double p_tracklength, final String p_stationid, final Instant p_publishedarrival, final Instant p_publisheddeparture )
+        public CTimetableEntry( final double p_tracklength, final String p_stationid, final String p_platformid, final Instant p_publishedarrival,
+                                final Instant p_publisheddeparture )
         {
             m_tracklength = p_tracklength;
             m_stationid = p_stationid;
+            m_platformid = p_platformid;
             m_publishedarrival = p_publishedarrival;
             m_publisheddeparture = p_publisheddeparture;
         }
 
         public String toString()
         {
-            return "TTE - " + m_tracklength + " / " + m_stationid + " / " + m_publishedarrival + " / " + m_publisheddeparture;
+            return "TTE - " + m_tracklength + " / " + m_stationid + " / " + m_platformid + " / " + m_publishedarrival + " / " + m_publisheddeparture;
         }
 
     }

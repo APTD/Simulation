@@ -38,7 +38,9 @@ import com.github.aptd.simulation.elements.passenger.CPassenger;
 import com.github.aptd.simulation.elements.passenger.CPassengerSource;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.elements.passenger.IPassengerSource;
+import com.github.aptd.simulation.elements.train.CDoor;
 import com.github.aptd.simulation.elements.train.CTrain;
+import com.github.aptd.simulation.elements.train.IDoor;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.google.common.base.Function;
 import org.lightjason.agentspeak.action.IAction;
@@ -62,6 +64,14 @@ public final class CLocal implements IFactory
                                                        @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception
     {
         return new CTrain.CGenerator( p_stream, p_actions, p_time );
+    }
+
+    @Nonnull
+    @Override
+    public IElement.IGenerator<IDoor<?>> door( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time
+    ) throws Exception
+    {
+        return new CDoor.CGenerator( p_stream, p_actions, p_time );
     }
 
     @Nonnull

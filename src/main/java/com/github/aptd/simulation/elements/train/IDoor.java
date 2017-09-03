@@ -22,23 +22,11 @@
 
 package com.github.aptd.simulation.elements.train;
 
+import com.github.aptd.simulation.elements.IElement;
+
 /**
- * enum of qualitative states for train agents
+ * interface of door
  */
-public enum ETrainState
+public interface IDoor<T extends IDoor<?>> extends IElement<T>
 {
-
-    /**
-     * the train is standing at a station and either its minimum waiting time is not yet over or the next departure time has not been reached
-     */
-    ARRIVED,
-    /**
-     * the train is ready to drive and waiting for preconditions to be fulfilled (such as all doors closed and locked, signals permitting)
-     */
-    WAITING_TO_DRIVE,
-    /**
-     * the train is in the process of driving
-     */
-    DRIVING;
-
 }

@@ -30,6 +30,7 @@ import com.github.aptd.simulation.elements.graph.network.IStation;
 import com.github.aptd.simulation.elements.graph.network.ITrack;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
 import com.github.aptd.simulation.elements.passenger.IPassengerSource;
+import com.github.aptd.simulation.elements.train.IDoor;
 import com.github.aptd.simulation.elements.train.ITrain;
 import com.google.common.base.Function;
 import org.lightjason.agentspeak.action.IAction;
@@ -59,6 +60,17 @@ public interface IFactory
      * @throws Exception is thrown on any error
      */
     IElement.IGenerator<ITrain<?>> train( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
+
+    /**
+     * creates a train door generator
+     *
+     * @param p_stream ASL stream
+     * @param p_actions default actions
+     * @param p_time time reference
+     * @return generator
+     * @throws Exception is thrown on any error
+     */
+    IElement.IGenerator<IDoor<?>> door( @Nonnull final InputStream p_stream, @Nonnull final Set<IAction> p_actions, final ITime p_time ) throws Exception;
 
     /**
      * network generating
