@@ -35,18 +35,17 @@ public class CMessage implements IMessage
 
     private final IElement<?> m_sender;
     private final String m_recipient;
-    private final String m_content;
+    private final Object[] m_content;
     private final EMessageType m_type;
 
     /**
      * ctor
      * @param p_sender sending agent
      * @param p_recipient ID of receiving agent
-     * @param p_content content
      * @param p_type message type
+     * @param p_content content
      */
-    public CMessage( final IElement<?> p_sender, final String p_recipient, final String p_content,
-                     final EMessageType p_type
+    public CMessage( final IElement<?> p_sender, final String p_recipient, final EMessageType p_type, final Object...p_content
     )
     {
         m_sender = p_sender;
@@ -83,7 +82,7 @@ public class CMessage implements IMessage
      * @return content string
      */
     @Override
-    public String content()
+    public Object[] content()
     {
         return m_content;
     }

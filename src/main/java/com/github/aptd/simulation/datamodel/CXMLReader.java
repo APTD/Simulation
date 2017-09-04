@@ -179,7 +179,7 @@ public final class CXMLReader implements IDataModel
                                     + "+!activate <-\n    state/transition\n.",
                             l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
-                                    l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "Drei" ) )
+                                    l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ) )
             );
 
             l_messenger.experiment( l_experiment );
@@ -239,10 +239,10 @@ public final class CXMLReader implements IDataModel
                                         i.getRight(),
                                         a -> stationgenerator( p_factory, p_agents.get( i.getRight() ), l_actions, p_time )
                                         ).generatesingle(
-                                            i.getLeft().getDescription(),
+                                            i.getLeft().getId(),
                                             i.getLeft().getGeoCoord().getCoord().get( 0 ),
                                             i.getLeft().getGeoCoord().getCoord().get( 1 ),
-                                            l_platformbystationid.get( i.getLeft().getDescription() )
+                                            l_platformbystationid.get( i.getLeft().getId() )
                                         )
                                 )
                             .collect( Collectors.toMap( IElement::id, i -> i ) )
@@ -304,8 +304,8 @@ public final class CXMLReader implements IDataModel
                          i.getRight().getAgentRef().getAgent(),
                          a -> platformgenerator( p_factory, p_agents.get( i.getRight().getAgentRef().getAgent() ), l_actions, p_time )
                            ).generatesingle(
-                         i.getLeft().getDescription() + "-track-" + i.getRight().getNumber(),
-                         i.getLeft().getDescription()
+                         i.getLeft().getId() + "-track-" + i.getRight().getNumber(),
+                         i.getLeft().getId()
                            )
                      )
                      .collect( Collectors.toMap( IElement::id, i -> i ) )
@@ -354,8 +354,8 @@ public final class CXMLReader implements IDataModel
         final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new ConcurrentHashMap<>();
         final Set<IAction> l_actions = CCommon.actionsFromPackage().collect( Collectors.toSet() );
         final IElement.IGenerator<IDoor<?>> l_doorgenerator = doorgenerator( p_factory, l_dooragent, l_actions, p_time );
-        final Map<String, AtomicLong> l_doorcount = new HashMap<>();
-        final Map<String, IDoor<?>> l_doors = new HashMap<>();
+        final Map<String, AtomicLong> l_doorcount = Collections.synchronizedMap( new HashMap<>() );
+        final Map<String, IDoor<?>> l_doors = Collections.synchronizedMap( new HashMap<>() );
         return new ImmutablePair<>( Collections.<String, ITrain<?>>unmodifiableMap(
             p_network.getTimetable()
                      .getTrains()

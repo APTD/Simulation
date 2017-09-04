@@ -35,7 +35,7 @@ public interface IMessage
 
     String recipient();
 
-    String content();
+    Object[] content();
 
     EMessageType type();
 

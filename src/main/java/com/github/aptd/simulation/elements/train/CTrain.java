@@ -113,10 +113,11 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         m_wagon = p_wagon.collect( Collectors.toList() );
         m_doorsnotclosedlocked.addAll( p_doors );
         m_timetable = p_timetable.collect( Collectors.toList() );
-        output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, "", EMessageType.TRAIN_TO_PLATFORM_ARRIVING ) );
+        output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, EMessageType.TRAIN_TO_PLATFORM_ARRIVING,
+                              m_doorsnotclosedlocked.toArray() ) );
         // first timetable entry only has departure
         m_nextstatechange = determinenextstatechange();
-        m_nextactivation = m_nextstatechange;
+        m_nextactivation = m_time.current();
     }
 
     @Override
@@ -187,7 +188,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         if ( !l_subscribingpassengers.isEmpty() || !l_unsubscribingpassengers.isEmpty() )
         {
             if ( m_state != ETrainState.ARRIVED ) throw new RuntimeException( "passengers subscribing/unsubscribing although not ARRIVED:" + m_id );
-            l_subscribingpassengers.stream().forEach( msg -> m_passengers.add( (IPassenger) msg.sender() ) );
+            l_subscribingpassengers.stream().forEach( msg -> m_passengers.add( (IPassenger<?>) msg.sender() ) );
             l_unsubscribingpassengers.stream().forEach( msg -> m_passengers.remove( msg.sender() ) );
         }
 
@@ -204,7 +205,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 m_ttindex++;
                 m_positionontrack = 0.0;
                 m_state = ETrainState.WAITING_TO_DRIVE;
-                m_doorsnotclosedlocked.forEach( d -> output( new CMessage( this, d.id(), "", EMessageType.TRAIN_TO_DOOR_LOCK ) ) );
+                m_doorsnotclosedlocked.forEach( d -> output( new CMessage( this, d.id(), EMessageType.TRAIN_TO_DOOR_LOCK, "" ) ) );
                 debugPrintState();
                 return true;
             case DRIVING:
@@ -213,18 +214,25 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 m_state = ETrainState.ARRIVED;
                 System.out.println( m_id + " - arrival at " + m_time.current().toString() + " which was planned for "
                                     + m_timetable.get( m_ttindex ).m_publishedarrival );
-                m_passengers.forEach( p -> output( new CMessage( this,
-                                                                 p.id(),
-                                                                 m_timetable.get( m_ttindex ).m_platformid,
-                                                                 EMessageType.TRAIN_TO_PASSENGER_ARRIVING ) ) );
-                output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, "", EMessageType.TRAIN_TO_PLATFORM_ARRIVING ) );
-                m_doorsclosedlocked.forEach( d -> output( new CMessage( this, d.id(), "", EMessageType.TRAIN_TO_DOOR_UNLOCK ) ) );
+                m_doorsclosedlocked.forEach( d -> output( new CMessage( this, d.id(), EMessageType.TRAIN_TO_DOOR_UNLOCK,
+                                                                        m_timetable.get( m_ttindex ).m_stationid,
+                                                                        m_timetable.get( m_ttindex ).m_platformid ) ) );
                 m_doorsnotclosedlocked.addAll( m_doorsclosedlocked );
                 m_doorsclosedlocked.clear();
+                m_passengers.forEach( p -> output( new CMessage( this,
+                                                                 p.id(),
+                                                                 EMessageType.TRAIN_TO_PASSENGER_ARRIVING,
+                                                                 m_timetable.get( m_ttindex ).m_stationid,
+                                                                 m_timetable.get( m_ttindex ).m_platformid,
+                                                                 m_doorsnotclosedlocked.toArray()
+                ) ) );
+                output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, EMessageType.TRAIN_TO_PLATFORM_ARRIVING,
+                                      m_doorsnotclosedlocked.toArray() ) );
                 debugPrintState();
                 return true;
             case WAITING_TO_DRIVE:
                 if ( !m_doorsnotclosedlocked.isEmpty() ) break;
+                output( new CMessage( this, m_timetable.get( m_ttindex - 1 ).m_platformid, EMessageType.TRAIN_TO_PLATFORM_DEPARTING ) );
                 m_state = ETrainState.DRIVING;
                 debugPrintState();
                 return true;

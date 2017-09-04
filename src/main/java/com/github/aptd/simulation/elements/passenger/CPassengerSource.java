@@ -140,9 +140,20 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     private synchronized void generatepassenger()
     {
         // @todo put passenger somewhere, initialize its state, etc.
-        final IElement<?> l_passenger = m_generator.generatesingle( m_station );
+        final IElement<?> l_passenger = m_generator.generatesingle( "passenger-" + m_station.id() + "-" + m_passengersgenerated,
+                                                                    itinerary() );
         m_experiment.addAgent( l_passenger.id(), l_passenger );
         m_passengersgenerated++;
+    }
+
+    private Stream<CPassenger.CItineraryEntry> itinerary()
+    {
+        return Stream.of( new CPassenger.CItineraryEntry( "train-134", "toy-node-1", "toy-node-3",
+                                                          null, null,
+                                                          "toy-node-1-track-3", "toy-node-3-track-2" ),
+                          new CPassenger.CItineraryEntry( "train-2368", "toy-node-3", "toy-node-8",
+                                                          null, null,
+                                                          "toy-node-3-track-1", "toy-node-8-track-1" ) );
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

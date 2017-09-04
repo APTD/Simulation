@@ -95,6 +95,14 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
      * how fast the door closes (meters per second)
      */
     private double m_closingspeed = 0.4;
+    /**
+     * agent ID of the station the door is currently at
+     */
+    private String m_stationid;
+    /**
+     * agent ID of the platform the door is currently at
+     */
+    private String m_platformid;
 
     /**
      * ctor
@@ -155,6 +163,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
     @Override
     protected boolean updatestate()
     {
+        //debugPrintState();
         final EDoorState l_oldstate = m_state;
         final List<IMessage> l_entryrequests = m_input.get( EMessageType.PASSENGER_TO_DOOR_ENQUEUE_ENTRANCE );
         final List<IMessage> l_exitrequests = m_input.get( EMessageType.PASSENGER_TO_DOOR_ENQUEUE_EXIT );
@@ -182,7 +191,13 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         // if the door is in a permissible state, let the next passenger pass (or open the door first, if closed), if any
         nextpassengerifpossible( l_queue );
 
+        //debugPrintState();
         return l_oldstate != m_state;
+    }
+
+    private void debugPrintState()
+    {
+        System.out.println( "[DEBUG] " + m_id + " state: " + m_state );
     }
 
     private void handletrainmessages()
@@ -206,6 +221,8 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         {
             if ( m_state != EDoorState.CLOSED_LOCKED ) throw new RuntimeException( m_id + " received departing message although in state " + m_state );
             m_entryqueue.clear();
+            m_stationid = null;
+            m_platformid = null;
         }
     }
 
@@ -213,6 +230,9 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
     {
         if ( p_unlockrequests.size() > 1 ) throw new RuntimeException( m_id + " received multiple unlock requests" );
         if ( !p_unlockrequests.isEmpty() )
+        {
+            m_stationid = (String) p_unlockrequests.get( 0 ).content()[0];
+            m_platformid = (String) p_unlockrequests.get( 0 ).content()[1];
             switch ( m_state )
             {
                 case CLOSED_LOCKED:
@@ -241,6 +261,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                 default:
                     // making checkstyle happy
             }
+        }
     }
 
     private void lockifrequested( final List<IMessage> p_lockrequests )
@@ -251,7 +272,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
             {
                 case CLOSED_RELEASED:
                     m_state = EDoorState.CLOSED_LOCKED;
-                    output( new CMessage( this, m_train, "", EMessageType.DOOR_TO_TRAIN_CLOSED_LOCKED ) );
+                    output( new CMessage( this, m_train, EMessageType.DOOR_TO_TRAIN_CLOSED_LOCKED, "" ) );
                     break;
                 case OPENING:
                     m_state = EDoorState.OPENING_SHALL_CLOSE;
@@ -308,7 +329,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                 case CLOSING_LOCKED:
                     m_state = EDoorState.CLOSED_LOCKED;
                     m_openwidth = 0.0;
-                    output( new CMessage( this, m_train, "", EMessageType.DOOR_TO_TRAIN_CLOSED_LOCKED ) );
+                    output( new CMessage( this, m_train, EMessageType.DOOR_TO_TRAIN_CLOSED_LOCKED, "" ) );
                     break;
                 default:
                     // making checkstyle happy
@@ -331,8 +352,8 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         }
         final String l_exiting = m_exitqueue.isEmpty() ? null : m_exitqueue.peek().id();
         final String l_entering = m_entryqueue.isEmpty() ? null : m_entryqueue.peek().id();
-        if ( l_exiting.equals( p_message.sender().id() ) ) m_exitqueue.poll();
-        else if ( l_entering.equals( p_message.sender().id() ) ) m_entryqueue.poll();
+        if ( p_message.sender().id().equals( l_exiting ) ) m_exitqueue.poll();
+        else if ( p_message.sender().id().equals( l_entering ) ) m_entryqueue.poll();
         else throw new RuntimeException( m_id + " received finished message from " + p_message.sender().id() + " who is not first in either queue" );
         m_freetime = 0.0;
     }
@@ -346,11 +367,11 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                 case OPEN_CLOSEABLE:
                 case OPEN_FREE:
                     m_state = EDoorState.OPEN_BUSY;
-                    output( new CMessage( this, p_queue.peek().id(), "", EMessageType.DOOR_TO_PASSENGER_YOURTURN ) );
+                    output( new CMessage( this, p_queue.peek().id(), EMessageType.DOOR_TO_PASSENGER_YOURTURN, m_stationid, m_platformid ) );
                     break;
                 case OPEN_FREE_SHALL_CLOSE:
                     m_state = EDoorState.OPEN_BUSY_SHALL_CLOSE;
-                    output( new CMessage( this, p_queue.peek().id(), "", EMessageType.DOOR_TO_PASSENGER_YOURTURN ) );
+                    output( new CMessage( this, p_queue.peek().id(), EMessageType.DOOR_TO_PASSENGER_YOURTURN, m_stationid, m_platformid ) );
                     break;
                 case CLOSING:
                 case CLOSED_RELEASED:

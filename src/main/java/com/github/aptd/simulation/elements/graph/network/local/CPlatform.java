@@ -30,6 +30,7 @@ import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.IStatefulElement;
 import com.github.aptd.simulation.elements.graph.network.IPlatform;
 import com.github.aptd.simulation.elements.passenger.IPassenger;
+import com.github.aptd.simulation.elements.train.IDoor;
 import com.github.aptd.simulation.elements.train.ITrain;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -40,8 +41,11 @@ import org.lightjason.agentspeak.language.ILiteral;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -73,6 +77,7 @@ public final class CPlatform extends IStatefulElement<IPlatform<?>> implements I
      * reference to the train currently standing at the platform
      */
     private ITrain<?> m_train;
+    private final List<IDoor<?>> m_doors = Collections.synchronizedList( new LinkedList<>() );
 
     /**
      * ctor
@@ -115,14 +120,16 @@ public final class CPlatform extends IStatefulElement<IPlatform<?>> implements I
         {
             if ( m_train != l_departingtrains.get( 0 ).sender() )
                 throw new RuntimeException( m_id + " has a train departing that's not there at " + m_time.current() );
-            m_passengers.stream().forEach( p -> output( new CMessage( this, p.id(), m_train.id(), EMessageType.PLATFORM_TO_PASSENGER_TRAINDEPARTED ) ) );
+            m_passengers.stream().forEach( p -> output( new CMessage( this, p.id(), EMessageType.PLATFORM_TO_PASSENGER_TRAINDEPARTED, m_train.id() ) ) );
             m_train = null;
+            m_doors.clear();
         }
 
         l_subscribingpassengers.stream().forEach( msg ->
         {
             m_passengers.add( (IPassenger) msg.sender() );
-            if ( m_train != null ) output( new CMessage( this, msg.sender().id(), "", EMessageType.PLATFORM_TO_PASSENGER_TRAINARRIVED ) );
+            if ( m_train != null ) output( new CMessage( this, msg.sender().id(), EMessageType.PLATFORM_TO_PASSENGER_TRAINARRIVED, m_train.id(),
+                                                         m_doors.toArray() ) );
         } );
         l_unsubscribingpassengers.stream().forEach( msg -> m_passengers.remove( msg.sender() ) );
 
@@ -132,7 +139,10 @@ public final class CPlatform extends IStatefulElement<IPlatform<?>> implements I
             if ( m_train != null )
                 throw new RuntimeException( m_id + " has a second train arriving without the first departing at " + m_time.current() );
             m_train = (ITrain) l_arrivingtrains.get( 0 ).sender();
-            m_passengers.stream().forEach( p -> output( new CMessage( this, p.id(), m_train.id(), EMessageType.PLATFORM_TO_PASSENGER_TRAINARRIVED ) ) );
+            Arrays.stream( l_arrivingtrains.get( 0 ).content() ).map( o -> (IDoor<?>) o ).sorted( Comparator.comparing( IDoor::id ) )
+                  .forEachOrdered( m_doors::add );
+            m_passengers.stream().forEach( p -> output( new CMessage( this, p.id(), EMessageType.PLATFORM_TO_PASSENGER_TRAINARRIVED, m_train.id(),
+                                                                      m_doors.toArray() ) ) );
         }
         return true;
     }

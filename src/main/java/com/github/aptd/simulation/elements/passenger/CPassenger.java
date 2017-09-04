@@ -22,10 +22,14 @@
 
 package com.github.aptd.simulation.elements.passenger;
 
+import com.github.aptd.simulation.core.messaging.EMessageType;
+import com.github.aptd.simulation.core.messaging.IMessage;
+import com.github.aptd.simulation.core.messaging.local.CMessage;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.IStatefulElement;
 import com.github.aptd.simulation.elements.graph.network.IStation;
+import com.github.aptd.simulation.elements.train.IDoor;
 import com.github.aptd.simulation.elements.train.ITrain;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,12 +39,14 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -59,6 +65,10 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
      */
     private static final String FUNCTOR = "passenger";
 
+    /**
+     * qualitative state of the passenger
+     */
+    private EPassengerState m_state = EPassengerState.MOVING_THROUGH_STATION;
     /**
      * station that the passenger is currently at (may be null, especially if they are on a train instead)
      */
@@ -84,6 +94,34 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
      * index into the itinerary
      */
     private int m_itindex;
+    /**
+     * the passenger's individual speed at the station (moving to another platform) (meters per second)
+     */
+    private double m_speedatstation = 1.5;
+    /**
+     * the distance from the previous to the next platform (meters)
+     */
+    private double m_distancetonextplatform = 150.0;
+    /**
+     * distance already walked to the next platform (meters) (continuous state variable for MOVING_THROUGH_STATION)
+     */
+    private double m_distancewalked;
+    /**
+     * how long the passenger needs to enter a train when it's their turn (seconds)
+     */
+    private double m_entranceduration = 5.0;
+    /**
+     * how long the passenger needs to leave a train when it's their turn (seconds)
+     */
+    private double m_exitduration = 5.0;
+    /**
+     * how long the passenger is already using the door (seconds) (continuous state variable for ENTERING_TRAIN and LEAVING_TRAIN)
+     */
+    private double m_dooruse;
+    /**
+     * the door currently being used
+     */
+    private IDoor<?> m_door;
 
     /**
      * ctor
@@ -92,9 +130,13 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
      * @param p_id passenger identifier
      * @param p_time time reference
      */
-    private CPassenger( final IAgentConfiguration<IPassenger<?>> p_configuration, final String p_id, final ITime p_time )
+    private CPassenger( final IAgentConfiguration<IPassenger<?>> p_configuration, final String p_id, final ITime p_time,
+                        final Stream<CItineraryEntry> p_itinerary )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
+        m_itinerary = new ArrayList<>( p_itinerary.collect( Collectors.toList() ) );
+        m_nextstatechange = determinenextstatechange();
+        m_nextactivation = m_nextstatechange;
     }
 
     @Override
@@ -107,22 +149,158 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
     @Override
     protected Instant determinenextstatechange()
     {
-        // @todo implement
-        return Instant.MAX;
+        switch ( m_state )
+        {
+            case MOVING_THROUGH_STATION:
+                return m_lastcontinuousupdate.plus(
+                    Math.round( ( m_distancetonextplatform - m_distancewalked ) / m_speedatstation ),
+                    ChronoUnit.SECONDS
+                );
+            case ENTERING_TRAIN:
+                return m_lastcontinuousupdate.plus(
+                    Math.round( m_entranceduration - m_dooruse ),
+                    ChronoUnit.SECONDS
+                );
+            case LEAVING_TRAIN:
+                return m_lastcontinuousupdate.plus(
+                    Math.round( m_exitduration - m_dooruse ),
+                    ChronoUnit.SECONDS
+                );
+            default:
+                return Instant.MAX;
+        }
     }
 
     @Override
     protected boolean updatestate()
     {
-        // @todo implement
+        if ( m_input.size() > 1 ) throw new RuntimeException( m_id + " received multiple input messages at once, not possible" );
+        // this may have to be refined if further state logic is added
+
+        if ( handleplatformmessages() || handledoormessage() ) return true;
+
+        final List<IMessage> l_trainarriving = m_input.get( EMessageType.TRAIN_TO_PASSENGER_ARRIVING );
+        if ( !l_trainarriving.isEmpty() )
+        {
+            if ( m_state != EPassengerState.ON_TRAIN ) throw new RuntimeException( m_id + " received ARRIVING although in state " + m_state );
+            if ( !m_itinerary.get( m_itindex ).m_arrivalstation.equals( (String) l_trainarriving.get( 0 ).content()[0] ) ) return false;
+            final IDoor<?> l_door = (IDoor<?>) ( (Object[]) l_trainarriving.get( 0 ).content()[2] )[0];
+            output( new CMessage( this, l_door.id(), EMessageType.PASSENGER_TO_DOOR_ENQUEUE_EXIT ) );
+            m_state = EPassengerState.IN_EXIT_QUEUE;
+            return true;
+        }
+
+        final boolean l_timedchange = !m_nextstatechange.isAfter( m_time.current() );
+        if ( l_timedchange )
+        {
+            switch ( m_state )
+            {
+                case LEAVING_TRAIN:
+                    output( new CMessage( this, m_door.id(), EMessageType.PASSENGER_TO_DOOR_FINISHED ) );
+                    m_door = null;
+                    if ( m_itindex + 1 >= m_itinerary.size() )
+                    {
+                        System.out.println( m_id + " finished itinerary :-) at " + m_time.current() );
+                        m_state = EPassengerState.IDLE_AT_STATION;
+                    }
+                    else
+                    {
+                        m_itindex++;
+                        m_distancewalked = 0.0;
+                        m_state = EPassengerState.MOVING_THROUGH_STATION;
+                    }
+                    break;
+                case MOVING_THROUGH_STATION:
+                    output( new CMessage( this, m_itinerary.get( m_itindex ).m_departuretrack, EMessageType.PASSENGER_TO_PLATFORM_SUBSCRIBE ) );
+                    m_state = EPassengerState.ON_PLATFORM_WAITING_FOR_TRAIN;
+                    break;
+                case ENTERING_TRAIN:
+                    output( new CMessage( this, m_door.id(), EMessageType.PASSENGER_TO_DOOR_FINISHED ) );
+                    m_door = null;
+                    output( new CMessage( this, m_itinerary.get( m_itindex ).m_trainnumber, EMessageType.PASSENGER_TO_TRAIN_SUBSCRIBE ) );
+                    m_state = EPassengerState.ON_TRAIN;
+                    break;
+                default:
+                    throw new RuntimeException( m_id + " has timed change although in state " + m_state );
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean handledoormessage()
+    {
+        final List<IMessage> l_yourturn = m_input.get( EMessageType.DOOR_TO_PASSENGER_YOURTURN );
+        if ( !l_yourturn.isEmpty() )
+        {
+            m_door = (IDoor<?>) l_yourturn.get( 0 ).sender();
+            if ( m_state == EPassengerState.IN_ENTRANCE_QUEUE )
+            {
+                output( new CMessage( this, m_itinerary.get( m_itindex ).m_departuretrack, EMessageType.PASSENGER_TO_PLATFORM_UNSUBSCRIBE ) );
+                m_state = EPassengerState.ENTERING_TRAIN;
+            }
+            else if ( m_state == EPassengerState.IN_EXIT_QUEUE )
+            {
+                output( new CMessage( this, m_itinerary.get( m_itindex ).m_trainnumber, EMessageType.PASSENGER_TO_TRAIN_UNSUBSCRIBE ) );
+                m_state = EPassengerState.LEAVING_TRAIN;
+            }
+            else throw new RuntimeException( m_id + " received YOURTURN from " + l_yourturn.get( 0 ).sender() + " although in state " + m_state );
+            // this may have to be changed when the passenger can decide to leave a queue
+            m_dooruse = 0.0;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleplatformmessages()
+    {
+        final List<IMessage> l_trainarrivedatplatform = m_input.get( EMessageType.PLATFORM_TO_PASSENGER_TRAINARRIVED );
+        final List<IMessage> l_traindepartedfromplatform = m_input.get( EMessageType.PLATFORM_TO_PASSENGER_TRAINDEPARTED );
+
+        if ( !l_trainarrivedatplatform.isEmpty() )
+        {
+            if ( m_state != EPassengerState.ON_PLATFORM_WAITING_FOR_TRAIN )
+                throw new RuntimeException( m_id + " received TRAINARRIVED although in state" + m_state );
+            if ( !m_itinerary.get( m_itindex ).m_trainnumber.equals( l_trainarrivedatplatform.get( 0 ).content()[0] ) ) return false;
+            //for ( final Object l_obj : l_trainarrivedatplatform.get( 0 ).content() )
+            //    System.out.println( l_obj.getClass() );
+            final IDoor<?> l_door = (IDoor<?>) ( (Object[]) l_trainarrivedatplatform.get( 0 ).content()[1] )[0];
+            output( new CMessage( this, l_door.id(), EMessageType.PASSENGER_TO_DOOR_ENQUEUE_ENTRANCE ) );
+            m_state = EPassengerState.IN_ENTRANCE_QUEUE;
+            return true;
+        }
+
+        if ( !l_traindepartedfromplatform.isEmpty() )
+        {
+            if ( m_state == EPassengerState.IN_ENTRANCE_QUEUE )
+            {
+                m_state = EPassengerState.ON_PLATFORM_WAITING_FOR_TRAIN;
+                return true;
+            }
+            else if ( m_state == EPassengerState.ON_PLATFORM_WAITING_FOR_TRAIN ) return false;
+            else throw new RuntimeException( m_id + " received TRAINDEPARTED although in state " + m_state );
+        }
+
         return false;
     }
 
     @Override
     protected boolean updatecontinuous( final Duration p_elapsed )
     {
-        // @todo implement
-        return false;
+        switch ( m_state )
+        {
+
+            case MOVING_THROUGH_STATION:
+                m_distancewalked += p_elapsed.get( ChronoUnit.SECONDS ) * m_speedatstation;
+                return true;
+            case ENTERING_TRAIN:
+            case LEAVING_TRAIN:
+                m_dooruse += p_elapsed.get( ChronoUnit.SECONDS );
+                return true;
+            default:
+                return false;
+        }
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,10 +328,11 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         protected final Pair<IPassenger<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CPassenger( m_configuration, MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ), m_time ),
+                new CPassenger( m_configuration, (String) p_data[0], m_time, (Stream<CItineraryEntry>) p_data[1] ),
                 Stream.of( FUNCTOR )
             );
         }
