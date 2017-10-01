@@ -108,4 +108,15 @@ public abstract class IBaseTime implements ITime
              CLiteral.from( "datetime", CRawTerm.from( l_time ) )
         );
     }
+
+    public void addagent( final IElement<?> p_element )
+    {
+        // default implementation: do nothing
+    }
+
+    public void removeagent( final IElement<?> p_element )
+    {
+        // default implementation: do nothing
+    }
+
 }

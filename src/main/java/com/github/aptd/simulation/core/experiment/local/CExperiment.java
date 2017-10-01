@@ -108,6 +108,7 @@ public final class CExperiment implements IExperiment
         m_time = p_time;
         m_messenger = p_messenger;
         m_agents.putAll( p_agents );
+        m_agents.values().stream().forEach( m_time::addagent );
 
         m_actions = Collections.unmodifiableSet(
             Stream.concat(
@@ -126,6 +127,7 @@ public final class CExperiment implements IExperiment
     @Override
     public IElement<?> addAgent( final String p_key, final IElement<?> p_value )
     {
+        m_time.addagent( p_value );
         return m_agents.putIfAbsent( p_key, p_value );
     }
 

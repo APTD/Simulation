@@ -152,6 +152,12 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
     }
 
     @Override
+    public Instant nextactivation()
+    {
+        return m_nextactivation;
+    }
+
+    @Override
     public final String id()
     {
         return m_id;

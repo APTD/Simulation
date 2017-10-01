@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.core.time;
 
+import com.github.aptd.simulation.elements.IElement;
 import com.github.aptd.simulation.elements.IPerceiveable;
 
 import java.time.Instant;
@@ -48,5 +49,19 @@ public interface ITime extends IPerceiveable, Callable<ITime>
      * @return casted time object
      */
     <N extends ITime> N raw();
+
+    /**
+     * add an agent
+     *
+     * @param p_element the new agent
+     */
+    void addagent( IElement<?> p_element );
+
+    /**
+     * remove an agent
+     *
+     * @param p_element the removed agent
+     */
+    void removeagent( IElement<?> p_element );
 
 }

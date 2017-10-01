@@ -26,6 +26,7 @@ import com.github.aptd.simulation.core.messaging.IMessage;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.generator.IAgentGenerator;
 
+import java.time.Instant;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
@@ -39,6 +40,8 @@ public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>,
 {
 
     boolean imminent();
+
+    Instant nextactivation();
 
     /**
      * name of the object

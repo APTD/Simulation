@@ -27,6 +27,7 @@ import com.github.aptd.simulation.core.experiment.local.CExperiment;
 import com.github.aptd.simulation.core.messaging.local.CMessenger;
 import com.github.aptd.simulation.core.statistic.IStatistic;
 import com.github.aptd.simulation.core.time.ITime;
+import com.github.aptd.simulation.core.time.local.CJumpTime;
 import com.github.aptd.simulation.core.time.local.CStepTime;
 import com.github.aptd.simulation.datamodel.xml.AgentRef;
 import com.github.aptd.simulation.datamodel.xml.Asimov;
@@ -71,6 +72,7 @@ import javax.xml.namespace.QName;
 import java.io.FileInputStream;
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -122,7 +124,7 @@ public final class CXMLReader implements IDataModel
     @Override
     @SuppressWarnings( "unchecked" )
     public final IExperiment get( final IFactory p_factory, final String p_datamodel,
-                                  final long p_simulationsteps, final boolean p_parallel )
+                                  final long p_simulationsteps, final boolean p_parallel, final String p_timemodel )
     {
         try
         (
@@ -132,12 +134,13 @@ public final class CXMLReader implements IDataModel
             final Asimov l_model = (Asimov) m_context.createUnmarshaller().unmarshal( l_stream );
 
             // time definition
-            final ITime l_time = new CStepTime(
-                    ZonedDateTime.now( ZoneId.systemDefault() )
-                            .with( ChronoField.CLOCK_HOUR_OF_DAY, 9 )
-                            .with( ChronoField.MINUTE_OF_HOUR, 45 )
-                            .toInstant(),
-                    Duration.ofSeconds( 1 ) );
+
+            final Instant l_starttime = ZonedDateTime.now( ZoneId.systemDefault() )
+                                                     .with( ChronoField.CLOCK_HOUR_OF_DAY, 9 )
+                                                     .with( ChronoField.MINUTE_OF_HOUR, 45 )
+                                                     .toInstant();
+
+            final ITime l_time = "jump".equals( p_timemodel ) ? new CJumpTime( l_starttime ) : new CStepTime( l_starttime, Duration.ofSeconds( 1 ) );
 
             final CMessenger l_messenger = new CMessenger();
 

@@ -79,6 +79,7 @@ public final class CMain
         l_clioptions.addOption( "iteration", true, "number of iterations" );
         l_clioptions.addOption( "scenariotype", true, "comma-separated list of scenario types (default: xml)" );
         l_clioptions.addOption( "scenario", true, "comma-separated list of scenario files" );
+        l_clioptions.addOption( "timemodel", true, "jump for jumping time, step for stepping time (default: step)" );
 
         final CommandLine l_cli;
         try
@@ -130,7 +131,11 @@ public final class CMain
                 ? Long.parseLong( l_cli.getOptionValue( "iteration" ) )
                 : (long) CConfiguration.INSTANCE.getOrDefault( 0, "default", "iteration" ),
 
-                !l_cli.hasOption( "sequential" ) && CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "runtime", "parallel" )
+                !l_cli.hasOption( "sequential" ) && CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "runtime", "parallel" ),
+
+                l_cli.hasOption( "timemodel" )
+                ? l_cli.getOptionValue( "timemodel" )
+                : "step"
 
             ) )
             .forEach( i -> ERuntime.LOCAL.get().execute( i ) )

@@ -40,6 +40,6 @@ public interface IDataModel
      * @param p_datamodel any representation of the datamodel
      * @return experiment
      */
-    IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel );
+    IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel, final String p_timemodel );
 
 }
