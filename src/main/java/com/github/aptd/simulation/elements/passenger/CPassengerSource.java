@@ -70,6 +70,8 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     private int m_passengers;
     private int m_passengersgenerated;
 
+    private RealDistribution m_distpassengerspeedatstaion;
+
     /**
      * ctor
      * @param p_configuration agent configuration
@@ -91,7 +93,8 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         final int p_passengers,
         final IGenerator<?> p_generator,
         final IExperiment p_experiment,
-        final IStation<?> p_station
+        final IStation<?> p_station,
+        final RealDistribution p_distpassengerspeedatstaion
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
@@ -101,6 +104,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         m_generator = p_generator;
         m_experiment = p_experiment;
         m_station = p_station;
+        m_distpassengerspeedatstaion = p_distpassengerspeedatstaion;
         m_passengersgenerated = 0;
         m_nextactivation = determinenextstatechange();
     }
@@ -141,7 +145,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     {
         // @todo put passenger somewhere, initialize its state, etc.
         final IElement<?> l_passenger = m_generator.generatesingle( "passenger-" + m_station.id() + "-" + m_passengersgenerated,
-                                                                    itinerary() );
+                                                                    itinerary(), m_distpassengerspeedatstaion.sample() );
         m_experiment.addAgent( l_passenger.id(), l_passenger );
         m_passengersgenerated++;
     }
@@ -189,7 +193,8 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
                                           MessageFormat.format( "{0} {1}", FUNCTOR.toLowerCase(), COUNTER.getAndIncrement() ),
                                           m_time,
                                           (RealDistribution) p_data[0], (long) p_data[1], (int) p_data[2],
-                                          (IElement.IGenerator<?>) p_data[3], (IExperiment) p_data[4], (IStation<?>) p_data[5]
+                                          (IElement.IGenerator<?>) p_data[3], (IExperiment) p_data[4], (IStation<?>) p_data[5],
+                                          (RealDistribution) p_data[6]
                     ),
                     Stream.of( FUNCTOR )
             );

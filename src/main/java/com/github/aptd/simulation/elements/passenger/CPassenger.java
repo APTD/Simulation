@@ -131,10 +131,11 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
      * @param p_time time reference
      */
     private CPassenger( final IAgentConfiguration<IPassenger<?>> p_configuration, final String p_id, final ITime p_time,
-                        final Stream<CItineraryEntry> p_itinerary )
+                        final Stream<CItineraryEntry> p_itinerary, final double p_speedatstation )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
         m_itinerary = new ArrayList<>( p_itinerary.collect( Collectors.toList() ) );
+        m_speedatstation = p_speedatstation;
         m_nextstatechange = determinenextstatechange();
         m_nextactivation = m_nextstatechange;
     }
@@ -332,7 +333,7 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
         protected final Pair<IPassenger<?>, Stream<String>> generate( final Object... p_data )
         {
             return new ImmutablePair<>(
-                new CPassenger( m_configuration, (String) p_data[0], m_time, (Stream<CItineraryEntry>) p_data[1] ),
+                new CPassenger( m_configuration, (String) p_data[0], m_time, (Stream<CItineraryEntry>) p_data[1], (double) p_data[2] ),
                 Stream.of( FUNCTOR )
             );
         }

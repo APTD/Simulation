@@ -24,6 +24,9 @@ package com.github.aptd.simulation.datamodel;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.factory.IFactory;
+import org.apache.commons.math3.distribution.RealDistribution;
+
+import java.util.function.Supplier;
 
 
 /**
@@ -40,6 +43,7 @@ public interface IDataModel
      * @param p_datamodel any representation of the datamodel
      * @return experiment
      */
-    IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel, final String p_timemodel );
+    IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel, final String p_timemodel,
+                     Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier );
 
 }

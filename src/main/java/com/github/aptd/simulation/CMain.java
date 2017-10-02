@@ -36,6 +36,10 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.distribution.ConstantRealDistribution;
+import org.apache.commons.math3.distribution.UniformRealDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -80,6 +84,9 @@ public final class CMain
         l_clioptions.addOption( "scenariotype", true, "comma-separated list of scenario types (default: xml)" );
         l_clioptions.addOption( "scenario", true, "comma-separated list of scenario files" );
         l_clioptions.addOption( "timemodel", true, "jump for jumping time, step for stepping time (default: step)" );
+        l_clioptions.addOption( "passengerspeedseed", true, "seed for uniform random generator of passenger speeds (default: 1)" );
+        l_clioptions.addOption( "passengerspeedmin", true, "minimum value for uniform random generator of passenger speeds (default: 1.5)" );
+        l_clioptions.addOption( "passengerspeedmax", true, "maximum value for uniform random generator of passenger speeds (default: 1.5)" );
 
         final CommandLine l_cli;
         try
@@ -116,6 +123,9 @@ public final class CMain
             return;
         }
 
+        final double l_passengerspeedmin = Double.parseDouble( l_cli.getOptionValue( "passengerspeedmin", "1.5" ) );
+        final double l_passengerspeedmax = Double.parseDouble( l_cli.getOptionValue( "passengerspeedmax", "1.5" ) );
+
         // load configuration
         CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
 
@@ -135,7 +145,15 @@ public final class CMain
 
                 l_cli.hasOption( "timemodel" )
                 ? l_cli.getOptionValue( "timemodel" )
-                : "step"
+                : "step",
+
+                () ->
+                {
+                    if ( l_passengerspeedmax <= l_passengerspeedmin ) return new ConstantRealDistribution( l_passengerspeedmin );
+                    final RandomGenerator l_randomgenerator = new JDKRandomGenerator();
+                    l_randomgenerator.setSeed( Long.parseLong( l_cli.getOptionValue( "passengerspeedseed", "1" ) ) );
+                    return new UniformRealDistribution( l_randomgenerator, l_passengerspeedmin, l_passengerspeedmax );
+                }
 
             ) )
             .forEach( i -> ERuntime.LOCAL.get().execute( i ) )

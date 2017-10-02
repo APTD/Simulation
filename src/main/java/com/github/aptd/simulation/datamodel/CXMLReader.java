@@ -54,6 +54,7 @@ import com.google.common.collect.Multimaps;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.common.CCommon;
@@ -85,6 +86,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -124,7 +126,9 @@ public final class CXMLReader implements IDataModel
     @Override
     @SuppressWarnings( "unchecked" )
     public final IExperiment get( final IFactory p_factory, final String p_datamodel,
-                                  final long p_simulationsteps, final boolean p_parallel, final String p_timemodel )
+                                  final long p_simulationsteps, final boolean p_parallel, final String p_timemodel,
+                                  final Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier
+    )
     {
         try
         (
@@ -182,7 +186,9 @@ public final class CXMLReader implements IDataModel
                                     + "+!activate <-\n    state/transition\n.",
                             l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
-                                    l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ) )
+                                             l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ),
+                                             p_passengerspeedatstationdistributionsupplier.get()
+                                             )
             );
 
             l_messenger.experiment( l_experiment );
