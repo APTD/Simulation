@@ -55,7 +55,8 @@ public final class CStepTime extends IBaseTime
 
     /**
      * Create a new instance with given stepsize
-     *  @param p_starttime initial time
+     *
+     * @param p_starttime initial time
      * @param p_stepsize how long is one simulation cycle in simulated time
      * @param p_zone time zone
      */
