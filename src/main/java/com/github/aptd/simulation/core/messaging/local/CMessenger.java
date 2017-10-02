@@ -25,9 +25,9 @@ package com.github.aptd.simulation.core.messaging.local;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.messaging.IMessenger;
 import com.github.aptd.simulation.elements.IElement;
+import org.pmw.tinylog.Logger;
 
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 
@@ -50,12 +50,12 @@ public class CMessenger implements IMessenger
     {
         if ( m_experiment == null )
         {
-            Logger.getLogger( this.getClass().getCanonicalName() ).warning( "CMessenger executed without reference to IExperiment, cannot operate" );
+            java.util.logging.Logger.getLogger( this.getClass().getCanonicalName() ).warning( "CMessenger executed without reference to IExperiment, cannot operate" );
             return this;
         }
         optionalfilteredstream( m_experiment.objects().parallel(), OUTPUT_ONLY_FROM_IMMINENT ? IElement::imminent : null )
             .flatMap( IElement::output )
-            /*.peek( msg -> System.out.println( msg.type() + " from " + msg.sender().id() + " to " + msg.recipient() ) )*/
+            .peek( msg -> Logger.debug( msg.type() + " from " + msg.sender().id() + " to " + msg.recipient() ) )
             .forEach( msg -> m_experiment.getAgent( msg.recipient() ).input( msg ) );
         return this;
     }

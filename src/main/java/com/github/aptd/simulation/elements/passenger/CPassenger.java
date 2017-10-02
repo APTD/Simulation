@@ -37,6 +37,7 @@ import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.pmw.tinylog.Logger;
 
 import java.io.InputStream;
 import java.time.Duration;
@@ -138,6 +139,7 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
         m_speedatstation = p_speedatstation;
         m_nextstatechange = determinenextstatechange();
         m_nextactivation = m_nextstatechange;
+        Logger.debug( "passenger " + m_id + " with speed " + m_speedatstation );
     }
 
     @Override

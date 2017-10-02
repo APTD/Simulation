@@ -187,7 +187,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         final List<IMessage> l_unsubscribingpassengers = m_input.get( EMessageType.PASSENGER_TO_TRAIN_UNSUBSCRIBE );
         if ( !l_subscribingpassengers.isEmpty() || !l_unsubscribingpassengers.isEmpty() )
         {
-            if ( m_state != ETrainState.ARRIVED ) throw new RuntimeException( "passengers subscribing/unsubscribing although not ARRIVED:" + m_id );
+            if ( m_doorsnotclosedlocked.isEmpty() ) throw new RuntimeException( "passengers subscribing/unsubscribing although all doors locked:" + m_id );
             l_subscribingpassengers.stream().forEach( msg -> m_passengers.add( (IPassenger<?>) msg.sender() ) );
             l_unsubscribingpassengers.stream().forEach( msg -> m_passengers.remove( msg.sender() ) );
         }

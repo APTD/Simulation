@@ -212,6 +212,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog</artifactId>
+            <version>1.2</version>
+        </dependency>
+
     </dependencies>
     
     

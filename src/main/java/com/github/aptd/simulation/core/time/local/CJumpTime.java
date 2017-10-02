@@ -25,6 +25,7 @@ package com.github.aptd.simulation.core.time.local;
 import com.github.aptd.simulation.core.time.IBaseTime;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
+import org.pmw.tinylog.Logger;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -74,7 +75,10 @@ public class CJumpTime extends IBaseTime
         if ( l_nextactivation.isBefore( m_currenttime.get() ) )
             throw new RuntimeException( "minimum next activation " + l_nextactivation + " is before current time " + m_currenttime.get() );
         if ( l_nextactivation.isBefore( Instant.MAX ) )
+        {
             m_currenttime.set( l_nextactivation );
+            Logger.debug( "time advancing to " + l_nextactivation );
+        }
         return this;
     }
 
