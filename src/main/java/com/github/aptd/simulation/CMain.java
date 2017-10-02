@@ -79,6 +79,7 @@ public final class CMain
         l_clioptions.addOption( "help", false, "shows this information" );
         l_clioptions.addOption( "generateconfig", false, "generate default configuration" );
         l_clioptions.addOption( "config", true, "path to configuration directory (default: <user home>/.asimov/configuration.yaml)" );
+        l_clioptions.addOption( "interactive", false, "start web server for interactive execution" );
         l_clioptions.addOption( "sequential", false, "run simulation in sequential (default is parallel)" );
         l_clioptions.addOption( "iteration", true, "number of iterations" );
         l_clioptions.addOption( "scenariotype", true, "comma-separated list of scenario types (default: xml)" );
@@ -123,35 +124,40 @@ public final class CMain
             return;
         }
 
-        final double l_passengerspeedmin = Double.parseDouble( l_cli.getOptionValue( "passengerspeedmin", "1.5" ) );
-        final double l_passengerspeedmax = Double.parseDouble( l_cli.getOptionValue( "passengerspeedmax", "1.5" ) );
+        execute( l_cli );
+    }
+
+    private static void execute( final CommandLine p_cli )
+    {
+        final double l_passengerspeedmin = Double.parseDouble( p_cli.getOptionValue( "passengerspeedmin", "1.5" ) );
+        final double l_passengerspeedmax = Double.parseDouble( p_cli.getOptionValue( "passengerspeedmax", "1.5" ) );
 
         // load configuration
-        CConfiguration.INSTANCE.loadfile( l_cli.getOptionValue( "config", "" ) );
+        CConfiguration.INSTANCE.loadfile( p_cli.getOptionValue( "config", "" ) );
 
         // execute experiments in batch processing and starts http server
-        new Thread( () -> datamodel( l_cli )
+        new Thread( () -> datamodel( p_cli )
             .map( i -> i.getLeft().model().get(
 
                 EFactory.from( CConfiguration.INSTANCE.getOrDefault( "local", "runtime", "type" ) ).factory(),
 
                 i.getRight(),
 
-                l_cli.hasOption( "iteration" )
-                ? Long.parseLong( l_cli.getOptionValue( "iteration" ) )
+                p_cli.hasOption( "iteration" )
+                ? Long.parseLong( p_cli.getOptionValue( "iteration" ) )
                 : (long) CConfiguration.INSTANCE.getOrDefault( 0, "default", "iteration" ),
 
-                !l_cli.hasOption( "sequential" ) && CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "runtime", "parallel" ),
+                !p_cli.hasOption( "sequential" ) && CConfiguration.INSTANCE.<Boolean>getOrDefault( true, "runtime", "parallel" ),
 
-                l_cli.hasOption( "timemodel" )
-                ? l_cli.getOptionValue( "timemodel" )
+                p_cli.hasOption( "timemodel" )
+                ? p_cli.getOptionValue( "timemodel" )
                 : "step",
 
                 () ->
                 {
                     if ( l_passengerspeedmax <= l_passengerspeedmin ) return new ConstantRealDistribution( l_passengerspeedmin );
                     final RandomGenerator l_randomgenerator = new JDKRandomGenerator();
-                    l_randomgenerator.setSeed( Long.parseLong( l_cli.getOptionValue( "passengerspeedseed", "1" ) ) );
+                    l_randomgenerator.setSeed( Long.parseLong( p_cli.getOptionValue( "passengerspeedseed", "1" ) ) );
                     return new UniformRealDistribution( l_randomgenerator, l_passengerspeedmin, l_passengerspeedmax );
                 }
 
@@ -160,7 +166,7 @@ public final class CMain
         ).start();
 
         // start http server if possible
-        CHTTPServer.execute();
+        if ( p_cli.hasOption( "interactive" ) ) CHTTPServer.execute();
     }
 
 
