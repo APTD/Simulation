@@ -153,7 +153,7 @@ public final class CExperiment implements IExperiment
     @Override
     public final Stream<Callable<?>> preprocess()
     {
-        return Stream.of( m_time, m_messenger );
+        return Stream.of( m_messenger, m_time );
     }
 
     @Nonnegative
