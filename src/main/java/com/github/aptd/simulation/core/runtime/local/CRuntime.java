@@ -27,7 +27,6 @@ import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.runtime.IRuntime;
 
 import java.util.concurrent.Callable;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 
@@ -42,12 +41,11 @@ public final class CRuntime implements IRuntime
     @Override
     public final IExperiment execute( final IExperiment p_experiment )
     {
-        LongStream.range( 0, p_experiment.simulationsteps() )
-                  .forEach( i ->
-                  {
-                      optionalparallelstream( p_experiment.preprocess(), false ).forEach( CRuntime::execute );
-                      optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
-                  } );
+        while ( p_experiment.time().active() )
+        {
+            optionalparallelstream( p_experiment.preprocess(), false ).forEach( CRuntime::execute );
+            optionalparallelstream( p_experiment.objects(), p_experiment.parallel() ).forEach( CRuntime::execute );
+        }
 
         return p_experiment;
     }

@@ -41,6 +41,8 @@ import java.util.List;
 public class CJumpTime extends IBaseTime
 {
 
+    private boolean m_active = true;
+
     private final List<IElement<?>> m_elements = Collections.synchronizedList( new ArrayList<>( ) );
 
     /**
@@ -48,9 +50,9 @@ public class CJumpTime extends IBaseTime
      *
      * @param p_starttime initial time
      */
-    public CJumpTime( final Instant p_starttime )
+    public CJumpTime( final Instant p_starttime, final long p_steplimit )
     {
-        this( p_starttime, ZoneId.systemDefault() );
+        this( p_starttime, p_steplimit, ZoneId.systemDefault() );
     }
 
     /**
@@ -59,9 +61,9 @@ public class CJumpTime extends IBaseTime
      * @param p_starttime current time
      * @param p_zone time zone
      */
-    public CJumpTime( final Instant p_starttime, final ZoneId p_zone )
+    public CJumpTime( final Instant p_starttime, final long p_steplimit, final ZoneId p_zone )
     {
-        super( p_starttime, p_zone );
+        super( p_starttime, p_steplimit, p_zone );
     }
 
     @Override
@@ -78,20 +80,29 @@ public class CJumpTime extends IBaseTime
         {
             m_currenttime.set( l_nextactivation );
             Logger.debug( "time advancing to " + l_nextactivation );
+            m_active = true;
         }
-        return this;
+        else m_active = false;
+        return super.call();
     }
 
     @Override
     public void addagent( final IElement<?> p_element )
     {
         m_elements.add( p_element );
+        m_active = true;
     }
 
     @Override
     public void removeagent( final IElement<?> p_element )
     {
         m_elements.remove( p_element );
+    }
+
+    @Override
+    public boolean active()
+    {
+        return m_active && super.active();
     }
 
 }

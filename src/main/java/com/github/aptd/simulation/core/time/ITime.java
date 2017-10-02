@@ -64,4 +64,11 @@ public interface ITime extends IPerceiveable, Callable<ITime>
      */
     void removeagent( IElement<?> p_element );
 
+    /**
+     * indicates whether the experiment is not over yet
+     *
+     * @return true if the experiment is not over yet, false if it is
+     */
+    boolean active();
+
 }

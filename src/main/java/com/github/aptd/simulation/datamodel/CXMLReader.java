@@ -144,7 +144,9 @@ public final class CXMLReader implements IDataModel
                                                      .with( ChronoField.MINUTE_OF_HOUR, 45 )
                                                      .toInstant();
 
-            final ITime l_time = "jump".equals( p_timemodel ) ? new CJumpTime( l_starttime ) : new CStepTime( l_starttime, Duration.ofSeconds( 1 ) );
+            final ITime l_time = "jump".equals( p_timemodel )
+                                 ? new CJumpTime( l_starttime, p_simulationsteps )
+                                 : new CStepTime( l_starttime, Duration.ofSeconds( 1 ), p_simulationsteps );
 
             final CMessenger l_messenger = new CMessenger();
 

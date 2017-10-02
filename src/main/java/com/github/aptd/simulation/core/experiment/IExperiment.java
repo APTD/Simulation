@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.core.experiment;
 
+import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.core.writer.IWriter;
 import com.github.aptd.simulation.elements.IElement;
 import org.lightjason.agentspeak.action.IAction;
@@ -96,6 +97,13 @@ public interface IExperiment
     boolean parallel();
 
     /**
+     * get the time object
+     *
+     * @return time object
+     */
+    ITime time();
+
+    /**
      * empty experiment
      */
     class CEmptyExperiment implements IExperiment
@@ -151,6 +159,12 @@ public interface IExperiment
         public final boolean parallel()
         {
             return false;
+        }
+
+        @Override
+        public final ITime time()
+        {
+            return null;
         }
     }
 

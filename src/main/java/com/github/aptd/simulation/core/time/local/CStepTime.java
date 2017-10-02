@@ -48,21 +48,20 @@ public final class CStepTime extends IBaseTime
      * @param p_starttime initial time
      * @param p_stepsize how long is one simulation cycle in simulated time
      */
-    public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize )
+    public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize, final long p_steplimit )
     {
-        this( p_starttime, p_stepsize, ZoneId.systemDefault() );
+        this( p_starttime, p_stepsize, p_steplimit, ZoneId.systemDefault() );
     }
 
     /**
      * Create a new instance with given stepsize
-     *
-     * @param p_starttime initial time
+     *  @param p_starttime initial time
      * @param p_stepsize how long is one simulation cycle in simulated time
      * @param p_zone time zone
      */
-    public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize, final ZoneId p_zone )
+    public CStepTime( final Instant p_starttime, final TemporalAmount p_stepsize, final long p_steplimit, final ZoneId p_zone )
     {
-        super( p_starttime, p_zone );
+        super( p_starttime, p_steplimit, p_zone );
         m_stepsize = new AtomicReference<>( p_stepsize );
     }
 
@@ -71,8 +70,7 @@ public final class CStepTime extends IBaseTime
     public final ITime call() throws Exception
     {
         m_currenttime.set( m_currenttime.get().plus( m_stepsize.get() ) );
-        // System.out.println( "steptime advanced to " + m_currenttime.get() );
-        return this;
+        return super.call();
     }
 
     /**

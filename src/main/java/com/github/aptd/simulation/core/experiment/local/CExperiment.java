@@ -184,6 +184,12 @@ public final class CExperiment implements IExperiment
         return m_parallel;
     }
 
+    @Override
+    public final ITime time()
+    {
+        return m_time;
+    }
+
 
     /**
      * agent send action for agent communication

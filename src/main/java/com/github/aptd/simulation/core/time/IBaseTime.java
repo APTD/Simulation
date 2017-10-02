@@ -32,6 +32,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
@@ -46,6 +47,14 @@ public abstract class IBaseTime implements ITime
      */
     protected final AtomicReference<Instant> m_currenttime;
     /**
+     * step counter
+     */
+    protected final AtomicLong m_stepcount = new AtomicLong( 0 );
+    /**
+     * step limit
+     */
+    protected final long m_steplimit;
+    /**
      * time zone
      */
     private final ZoneId m_zone;
@@ -56,10 +65,11 @@ public abstract class IBaseTime implements ITime
      * @param p_currenttime current time
      * @param p_zone time zone
      */
-    protected IBaseTime( final Instant p_currenttime, final ZoneId p_zone )
+    protected IBaseTime( final Instant p_currenttime, final long p_steplimit, final ZoneId p_zone )
     {
         m_currenttime = new AtomicReference<>( p_currenttime );
         m_zone = p_zone;
+        m_steplimit = p_steplimit;
     }
 
     @Override
@@ -109,6 +119,14 @@ public abstract class IBaseTime implements ITime
         );
     }
 
+    @Override
+    public ITime call() throws Exception
+    {
+        m_stepcount.getAndIncrement();
+        return this;
+    }
+
+
     public void addagent( final IElement<?> p_element )
     {
         // default implementation: do nothing
@@ -119,4 +137,9 @@ public abstract class IBaseTime implements ITime
         // default implementation: do nothing
     }
 
+    @Override
+    public boolean active()
+    {
+        return m_stepcount.get() <= m_steplimit;
+    }
 }
