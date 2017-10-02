@@ -85,7 +85,7 @@ public enum EDoorState
      */
     OPEN_BUSY_SHALL_CLOSE,
     /**
-     * Like the CLOSING state, but not interruptable by the enqueueing of a passenger. On its own, resulting in CLOSED_LOCKED instead of CLOSED_RELEASED.
+     * Like the CLOSING state, but resulting in CLOSED_LOCKED instead of CLOSED_RELEASED.
      * Can be changed into CLOSING by a release command from the train. Can be changed into OPENING_SHALL_CLOSE by an aggressive passenger blocking the door.
      */
     CLOSING_LOCKED

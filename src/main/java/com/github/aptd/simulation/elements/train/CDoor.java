@@ -220,6 +220,8 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         if ( !l_departing.isEmpty() )
         {
             if ( m_state != EDoorState.CLOSED_LOCKED ) throw new RuntimeException( m_id + " received departing message although in state " + m_state );
+            m_entryqueue.forEach( p -> System.out.println( p.id() + " in entry queue when departing" ) );
+            m_exitqueue.forEach( p -> System.out.println( p.id() + " in exit queue when departing" ) );
             m_entryqueue.clear();
             m_stationid = null;
             m_platformid = null;
@@ -376,6 +378,9 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                 case CLOSING:
                 case CLOSED_RELEASED:
                     m_state = EDoorState.OPENING;
+                    break;
+                case CLOSING_LOCKED:
+                    m_state = EDoorState.OPENING_SHALL_CLOSE;
                     break;
                 default:
                     // making checkstyle happy
