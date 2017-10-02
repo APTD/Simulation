@@ -306,7 +306,7 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         final boolean l_timedchange = !m_nextstatechange.isAfter( m_time.current() );
         if ( l_timedchange )
         {
-            System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state );
+            // System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state );
             switch ( m_state )
             {
                 case OPENING:

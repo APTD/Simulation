@@ -193,8 +193,8 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         }
 
         final boolean l_timedchange = !m_nextstatechange.isAfter( m_time.current() );
-        if ( l_timedchange )
-            System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
+        // if ( l_timedchange )
+        //    System.out.println( m_id + " - timer transition at " + m_time.current().toString() + " from state " + m_state + " (ttindex = " + m_ttindex + ")" );
         switch ( m_state )
         {
             case ARRIVED:
@@ -206,7 +206,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 m_positionontrack = 0.0;
                 m_state = ETrainState.WAITING_TO_DRIVE;
                 m_doorsnotclosedlocked.forEach( d -> output( new CMessage( this, d.id(), EMessageType.TRAIN_TO_DOOR_LOCK, "" ) ) );
-                debugPrintState();
+                // debugPrintState();
                 return true;
             case DRIVING:
                 // @todo: react to "red signal" here
@@ -228,7 +228,7 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 ) ) );
                 output( new CMessage( this, m_timetable.get( m_ttindex ).m_platformid, EMessageType.TRAIN_TO_PLATFORM_ARRIVING,
                                       m_doorsnotclosedlocked.toArray() ) );
-                debugPrintState();
+                // debugPrintState();
                 return true;
             case WAITING_TO_DRIVE:
                 if ( !m_doorsnotclosedlocked.isEmpty() ) break;

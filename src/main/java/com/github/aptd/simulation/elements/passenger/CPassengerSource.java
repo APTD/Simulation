@@ -130,7 +130,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
 
     protected synchronized boolean updatestate()
     {
-        System.out.println( "generating passenger at " + m_time.current().toString() );
+        // System.out.println( "generating passenger at " + m_time.current().toString() );
         generatepassenger();
         return true;
     }

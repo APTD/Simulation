@@ -109,7 +109,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
                 m_laststatechange = m_time.current();
                 m_lastcontinuousupdate = m_time.current();
                 m_nextstatechange = determinenextstatechange();
-                System.out.println( m_time.current() + " - " + m_id + " - transition happened. next state change at " + m_nextstatechange );
+                // System.out.println( m_time.current() + " - " + m_id + " - transition happened. next state change at " + m_nextstatechange );
             }
         }
         catch ( final RuntimeException l_ex )
@@ -170,11 +170,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
      */
     public static final String getDefaultAsl( final String p_name )
     {
-        return "!main.\n"
-               + "\n"
-               + "+!main <-\n"
-               + "  generic/print(\"hello " + p_name.replaceAll( "\\W", "_" ) + "\").\n"
-               + "+!activate <-\n"
+        return "+!activate <-\n"
                + "  state/transition\n.";
     }
 

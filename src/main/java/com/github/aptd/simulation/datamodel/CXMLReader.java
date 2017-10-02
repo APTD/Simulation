@@ -170,20 +170,12 @@ public final class CXMLReader implements IDataModel
             // @todo create passengersources and their passenger generators according to scenario definition
 
             final IElement.IGenerator<IPassenger<?>> l_passengergenerator = passengergenerator( p_factory,
-                    "                            !main.\n"
-                            + "\n"
-                            + "                            +!main <-\n"
-                            + "                            generic/print(\"hello passenger\").\n"
-                            + "+!activate <-\n    state/transition\n.",
+                                                                                                "+!activate <-\n    state/transition\n.",
                     l_actionsfrompackage, l_time );
 
             l_experiment.addAgent( "passengersource_test",
                     passengersourcegenerator(
-                            p_factory, "                            !main.\n"
-                                    + "\n"
-                                    + "                            +!main <-\n"
-                                    + "                            generic/print(\"hello passenger source\").\n"
-                                    + "+!activate <-\n    state/transition\n.",
+                            p_factory, "+!activate <-\n    state/transition\n.",
                             l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
                                              l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ),
