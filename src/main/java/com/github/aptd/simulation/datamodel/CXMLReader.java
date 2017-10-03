@@ -142,6 +142,8 @@ public final class CXMLReader implements IDataModel
             final Instant l_starttime = ZonedDateTime.now( ZoneId.systemDefault() )
                                                      .with( ChronoField.CLOCK_HOUR_OF_DAY, 9 )
                                                      .with( ChronoField.MINUTE_OF_HOUR, 45 )
+                                                     .with( ChronoField.SECOND_OF_MINUTE, 0 )
+                                                     .with( ChronoField.NANO_OF_SECOND, 0 )
                                                      .toInstant();
 
             final ITime l_time = "jump".equals( p_timemodel )
