@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import org.lightjason.agentspeak.agent.IAgent;
 import org.lightjason.agentspeak.generator.IAgentGenerator;
@@ -48,6 +49,7 @@ public interface IElement<T extends IAgent<?>> extends IPerceiveable, IAgent<T>,
      *
      * @return string name
      */
+    @JsonValue
     String id();
 
     /**

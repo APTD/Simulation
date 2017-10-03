@@ -22,7 +22,10 @@
 
 package com.github.aptd.simulation.core.messaging;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.elements.IElement;
+
+import java.io.IOException;
 
 
 /**
@@ -39,4 +42,5 @@ public interface IMessage
 
     EMessageType type();
 
+    void write( JsonGenerator p_generator ) throws IOException;
 }

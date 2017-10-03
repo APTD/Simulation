@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.train;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.messaging.local.CMessage;
@@ -39,6 +40,7 @@ import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -254,6 +256,25 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 // making checkstyle happy
         }
         return false;
+    }
+
+    @Override
+    protected void writeState( final JsonGenerator p_generator ) throws IOException
+    {
+        p_generator.writeStartObject();
+        p_generator.writeStringField( "state", m_state.name() );
+        p_generator.writeNumberField( "ttindex", m_ttindex );
+        p_generator.writeNumberField( "positionontrack", m_positionontrack );
+        p_generator.writeArrayFieldStart( "doorsclosedlocked" );
+        for ( final IDoor<?> l_door : m_doorsclosedlocked ) p_generator.writeString( l_door.id() );
+        p_generator.writeEndArray();
+        p_generator.writeArrayFieldStart( "doorsnotclosedlocked" );
+        for ( final IDoor<?> l_door : m_doorsnotclosedlocked ) p_generator.writeString( l_door.id() );
+        p_generator.writeEndArray();
+        p_generator.writeArrayFieldStart( "passengers" );
+        for ( final IPassenger<?> l_passenger : m_passengers ) p_generator.writeString( l_passenger.id() );
+        p_generator.writeEndArray();
+        p_generator.writeEndObject();
     }
 
     private void debugPrintState()

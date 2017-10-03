@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.graph.network.local;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.messaging.local.CMessage;
@@ -38,6 +39,7 @@ import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -152,6 +154,20 @@ public final class CPlatform extends IStatefulElement<IPlatform<?>> implements I
     {
         // a platform has no continuous state
         return false;
+    }
+
+    @Override
+    protected void writeState( final JsonGenerator p_generator ) throws IOException
+    {
+        p_generator.writeStartObject();
+        p_generator.writeStringField( "train", m_train.id() );
+        p_generator.writeArrayFieldStart( "doors" );
+        for ( final IDoor<?> l_door : m_doors ) p_generator.writeString( l_door.id() );
+        p_generator.writeEndArray();
+        p_generator.writeArrayFieldStart( "passengers" );
+        for ( final IPassenger<?> l_passenger : m_passengers ) p_generator.writeString( l_passenger.id() );
+        p_generator.writeEndArray();
+        p_generator.writeEndObject();
     }
 
     @Override

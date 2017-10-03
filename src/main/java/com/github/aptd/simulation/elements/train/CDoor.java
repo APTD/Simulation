@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.train;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.messaging.local.CMessage;
@@ -35,6 +36,7 @@ import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -410,6 +412,24 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                 // making checkstyle happy
         }
         return false;
+    }
+
+    @Override
+    protected void writeState( final JsonGenerator p_generator ) throws IOException
+    {
+        p_generator.writeStartObject();
+        p_generator.writeStringField( "state", m_state.name() );
+        p_generator.writeNumberField( "openwidth", m_openwidth );
+        p_generator.writeStringField( "station", m_stationid );
+        p_generator.writeStringField( "platform", m_platformid );
+        p_generator.writeNumberField( "freetime", m_freetime );
+        p_generator.writeArrayFieldStart( "entryqueue" );
+        for ( final IPassenger<?> l_passenger : m_entryqueue ) p_generator.writeString( l_passenger.id() );
+        p_generator.writeEndArray();
+        p_generator.writeArrayFieldStart( "exitqueue" );
+        for ( final IPassenger<?> l_passenger : m_exitqueue ) p_generator.writeString( l_passenger.id() );
+        p_generator.writeEndArray();
+        p_generator.writeEndObject();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

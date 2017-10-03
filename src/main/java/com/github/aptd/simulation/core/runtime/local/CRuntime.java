@@ -25,6 +25,7 @@ package com.github.aptd.simulation.core.runtime.local;
 
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.runtime.IRuntime;
+import org.pmw.tinylog.Logger;
 
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
@@ -85,6 +86,7 @@ public final class CRuntime implements IRuntime
         catch ( final Exception l_exception )
         {
             l_exception.printStackTrace();
+            Logger.debug( l_exception, "when executing " + p_object );
         }
     }
 

@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.passenger;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.messaging.local.CMessage;
@@ -39,6 +40,7 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 import org.pmw.tinylog.Logger;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
@@ -304,6 +306,20 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
             default:
                 return false;
         }
+    }
+
+    @Override
+    protected void writeState( final JsonGenerator p_generator ) throws IOException
+    {
+        p_generator.writeStartObject();
+        p_generator.writeStringField( "state", m_state.name() );
+        p_generator.writeStringField( "station", m_station.id() );
+        p_generator.writeStringField( "train", m_train.id() );
+        p_generator.writeStringField( "door", m_door.id() );
+        p_generator.writeNumberField( "dooruse", m_dooruse );
+        p_generator.writeNumberField( "distancewalked", m_distancewalked );
+        p_generator.writeNumberField( "itindex", m_itindex );
+        p_generator.writeEndObject();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

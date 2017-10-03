@@ -22,13 +22,19 @@
 
 package com.github.aptd.simulation.elements;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.core.time.ITime;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.action.binding.IAgentActionFilter;
 import org.lightjason.agentspeak.action.binding.IAgentActionName;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
+import org.pmw.tinylog.Logger;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -54,6 +60,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     protected Instant m_nextstatechange;
 
     private final Set<IMessage> m_output = Collections.synchronizedSet( new HashSet<>() );
+    private final JsonFactory m_factory = new MappingJsonFactory();
 
     /**
      * ctor
@@ -101,9 +108,25 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     @IAgentActionName( name = "state/transition" )
     protected final synchronized void transition()
     {
-        // System.out.println( m_time.current() + " - " + m_id + " transition check" );
+        Logger.trace( m_time.current() + " - " + m_id + " transition check" );
         try
         {
+            try
+            {
+                final StringWriter l_writer = new StringWriter();
+                final JsonGenerator l_generator = m_factory.createGenerator( l_writer );
+                l_generator.writeStartArray();
+                for ( final IMessage l_message : m_input.values() )
+                    l_message.write( l_generator );
+                l_generator.writeEndArray();
+                l_generator.close();
+                Logger.debug( "INPUT in " + m_id + ": " + l_writer.toString() );
+            }
+            catch ( final IOException l_exception )
+            {
+                l_exception.printStackTrace();
+            }
+
             if ( updatestate() )
             {
                 m_laststatechange = m_time.current();
@@ -111,6 +134,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
                 m_nextstatechange = determinenextstatechange();
                 // System.out.println( m_time.current() + " - " + m_id + " - transition happened. next state change at " + m_nextstatechange );
             }
+
         }
         catch ( final RuntimeException l_ex )
         {
@@ -161,6 +185,13 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
      * @return true iff the state has actually changed
      */
     protected abstract boolean updatecontinuous( final Duration p_elapsed );
+
+    /**
+     * every implementing class must provide this method that serializes the current state of the object into the provided JsonGenerator (fasterxml-core)
+     *
+     * @param p_generator JsonGenerator to use for serialization
+     */
+    protected abstract void writeState( final JsonGenerator p_generator ) throws IOException;
 
     /**
      * generates a default asl script string calling "state/transition" upon "!activate", and greeting upon initialisation

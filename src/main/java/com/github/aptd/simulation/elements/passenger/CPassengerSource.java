@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements.passenger;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.core.experiment.IExperiment;
 import com.github.aptd.simulation.core.time.ITime;
 import com.github.aptd.simulation.elements.IElement;
@@ -35,6 +36,7 @@ import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.time.Duration;
@@ -139,6 +141,14 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     protected boolean updatecontinuous( final Duration p_elapsed )
     {
         return false;
+    }
+
+    @Override
+    protected void writeState( final JsonGenerator p_generator ) throws IOException
+    {
+        p_generator.writeStartObject();
+        p_generator.writeNumberField( "passengersgenerated", m_passengersgenerated );
+        p_generator.writeEndObject();
     }
 
     private synchronized void generatepassenger()

@@ -22,9 +22,12 @@
 
 package com.github.aptd.simulation.core.messaging.local;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
 import com.github.aptd.simulation.elements.IElement;
+
+import java.io.IOException;
 
 
 /**
@@ -96,5 +99,22 @@ public class CMessage implements IMessage
     public EMessageType type()
     {
         return m_type;
+    }
+
+    @Override
+    public void write( final JsonGenerator p_generator ) throws IOException
+    {
+        p_generator.writeStartObject();
+        p_generator.writeStringField( "type", m_type.name() );
+        p_generator.writeStringField( "sender", m_sender.id() );
+        p_generator.writeStringField( "recipient", m_recipient );
+        p_generator.writeArrayFieldStart( "content" );
+        for ( final Object l_object : m_content )
+        {
+            if ( l_object != null ) p_generator.writeObject( l_object );
+            else p_generator.writeNull();
+        }
+        p_generator.writeEndArray();
+        p_generator.writeEndObject();
     }
 }

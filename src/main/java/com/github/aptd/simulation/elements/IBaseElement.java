@@ -22,6 +22,7 @@
 
 package com.github.aptd.simulation.elements;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
@@ -157,6 +158,7 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         return m_nextactivation;
     }
 
+    @JsonValue
     @Override
     public final String id()
     {
@@ -205,6 +207,12 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
                 )
             )
         );
+    }
+
+    @Override
+    public String toString()
+    {
+        return m_id;
     }
 
     /**
