@@ -142,7 +142,8 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
             l_ex.printStackTrace();
         }
         m_input.clear();
-        m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+        // m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+        m_nextactivation = m_nextstatechange;
         // System.out.println( m_time.current() + " - " + m_id + " output contains " + m_output.size() + " messages" );
         // m_output.forEach( msg -> System.out.println( msg.type() + " to " + msg.recipient() + ": " + msg.content() ) );
     }
@@ -157,7 +158,8 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
         {
             m_lastcontinuousupdate = m_time.current();
             m_nextstatechange = determinenextstatechange();
-            m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+            // m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+            m_nextactivation = m_nextstatechange;
         }
     }
 

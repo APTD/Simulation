@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 public class CMessenger implements IMessenger
 {
 
-    private static final boolean OUTPUT_ONLY_FROM_IMMINENT = true;
+    private static final boolean OUTPUT_ONLY_FROM_IMMINENT = false;
     private IExperiment m_experiment;
 
     /**
