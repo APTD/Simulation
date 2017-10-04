@@ -144,6 +144,9 @@ public final class CXMLReader implements IDataModel
                                                      .with( ChronoField.MINUTE_OF_HOUR, 45 )
                                                      .with( ChronoField.SECOND_OF_MINUTE, 0 )
                                                      .with( ChronoField.NANO_OF_SECOND, 0 )
+                                                     .with( ChronoField.DAY_OF_MONTH, 3 )
+                                                     .with( ChronoField.MONTH_OF_YEAR, 10 )
+                                                     .with( ChronoField.YEAR, 2017 )
                                                      .toInstant();
 
             final ITime l_time = "jump".equals( p_timemodel )
@@ -397,11 +400,11 @@ public final class CXMLReader implements IDataModel
                                           l_times.getArrival() == null
                                                   ? null
                                                   : l_times.getArrival().toGregorianCalendar().toZonedDateTime()
-                                                    .with( LocalDate.now() ).toInstant(),
+                                                    .with( LocalDate.from( p_time.current().atZone( ZoneId.systemDefault() ) ) ).toInstant(),
                                           l_times.getDeparture() == null
                                                   ? null
                                                   : l_times.getDeparture().toGregorianCalendar().toZonedDateTime()
-                                                    .with( LocalDate.now() ).toInstant()
+                                                    .with( LocalDate.from( p_time.current().atZone( ZoneId.systemDefault() ) ) ).toInstant()
                                       );
                                   }
                                   return Arrays.stream( l_entries );
