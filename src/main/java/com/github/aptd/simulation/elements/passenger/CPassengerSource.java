@@ -35,6 +35,7 @@ import org.lightjason.agentspeak.action.IAction;
 import org.lightjason.agentspeak.action.binding.IAgentAction;
 import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.pmw.tinylog.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -132,7 +133,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
 
     protected synchronized boolean updatestate()
     {
-        // System.out.println( "generating passenger at " + m_time.current().toString() );
+        Logger.trace( "generating passenger at " + m_time.current().toString() );
         generatepassenger();
         return true;
     }
@@ -146,9 +147,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     @Override
     protected void writeState( final JsonGenerator p_generator ) throws IOException
     {
-        p_generator.writeStartObject();
         p_generator.writeNumberField( "passengersgenerated", m_passengersgenerated );
-        p_generator.writeEndObject();
     }
 
     private synchronized void generatepassenger()

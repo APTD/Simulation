@@ -109,24 +109,28 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     protected final synchronized void transition()
     {
         Logger.trace( m_time.current() + " - " + m_id + " transition check" );
+        final StringWriter l_writer = new StringWriter();
+        JsonGenerator l_generator = null;
         try
         {
-            try
-            {
-                final StringWriter l_writer = new StringWriter();
-                final JsonGenerator l_generator = m_factory.createGenerator( l_writer );
-                l_generator.writeStartArray();
-                for ( final IMessage l_message : m_input.values() )
-                    l_message.write( l_generator );
-                l_generator.writeEndArray();
-                l_generator.close();
-                Logger.debug( "INPUT in " + m_id + ": " + l_writer.toString() );
-            }
-            catch ( final IOException l_exception )
-            {
-                l_exception.printStackTrace();
-            }
-
+            l_generator = m_factory.createGenerator( l_writer );
+            l_generator.writeStartObject();
+            l_generator.writeStringField( "type", "transition" );
+            l_generator.writeStringField( "element", m_id );
+            l_generator.writeObjectFieldStart( "state_before" );
+            writeState( l_generator );
+            l_generator.writeEndObject();
+            l_generator.writeArrayFieldStart( "input" );
+            for ( final IMessage l_message : m_input.values() )
+                l_message.write( l_generator );
+            l_generator.writeEndArray();
+        }
+        catch ( final Exception l_exception )
+        {
+            l_exception.printStackTrace();
+        }
+        try
+        {
             if ( updatestate() )
             {
                 m_laststatechange = m_time.current();
@@ -134,7 +138,6 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
                 m_nextstatechange = determinenextstatechange();
                 // System.out.println( m_time.current() + " - " + m_id + " - transition happened. next state change at " + m_nextstatechange );
             }
-
         }
         catch ( final RuntimeException l_ex )
         {
@@ -146,6 +149,24 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
         m_nextactivation = m_nextstatechange;
         // System.out.println( m_time.current() + " - " + m_id + " output contains " + m_output.size() + " messages" );
         // m_output.forEach( msg -> System.out.println( msg.type() + " to " + msg.recipient() + ": " + msg.content() ) );
+        if ( l_generator != null )
+            try
+            {
+                l_generator.writeObjectFieldStart( "state_after" );
+                writeState( l_generator );
+                l_generator.writeEndObject();
+                l_generator.writeArrayFieldStart( "output" );
+                for ( final IMessage l_message : m_output )
+                    l_message.write( l_generator );
+                l_generator.writeEndArray();
+                l_generator.close();
+                Logger.debug( l_writer.toString() );
+            }
+            catch ( final Exception l_exception )
+            {
+                l_exception.printStackTrace();
+            }
+
     }
 
     @IAgentActionFilter

@@ -261,7 +261,6 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
     @Override
     protected void writeState( final JsonGenerator p_generator ) throws IOException
     {
-        p_generator.writeStartObject();
         p_generator.writeStringField( "state", m_state.name() );
         p_generator.writeNumberField( "ttindex", m_ttindex );
         p_generator.writeNumberField( "positionontrack", m_positionontrack );
@@ -274,7 +273,6 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         p_generator.writeArrayFieldStart( "passengers" );
         for ( final IPassenger<?> l_passenger : m_passengers ) p_generator.writeString( l_passenger.id() );
         p_generator.writeEndArray();
-        p_generator.writeEndObject();
     }
 
     private void debugPrintState()

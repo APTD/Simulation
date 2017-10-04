@@ -159,15 +159,13 @@ public final class CPlatform extends IStatefulElement<IPlatform<?>> implements I
     @Override
     protected void writeState( final JsonGenerator p_generator ) throws IOException
     {
-        p_generator.writeStartObject();
-        p_generator.writeStringField( "train", m_train.id() );
+        p_generator.writeStringField( "train", m_train == null ? null : m_train.id() );
         p_generator.writeArrayFieldStart( "doors" );
         for ( final IDoor<?> l_door : m_doors ) p_generator.writeString( l_door.id() );
         p_generator.writeEndArray();
         p_generator.writeArrayFieldStart( "passengers" );
         for ( final IPassenger<?> l_passenger : m_passengers ) p_generator.writeString( l_passenger.id() );
         p_generator.writeEndArray();
-        p_generator.writeEndObject();
     }
 
     @Override

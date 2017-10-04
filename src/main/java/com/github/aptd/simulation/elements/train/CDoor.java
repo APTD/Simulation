@@ -417,7 +417,6 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
     @Override
     protected void writeState( final JsonGenerator p_generator ) throws IOException
     {
-        p_generator.writeStartObject();
         p_generator.writeStringField( "state", m_state.name() );
         p_generator.writeNumberField( "openwidth", m_openwidth );
         p_generator.writeStringField( "station", m_stationid );
@@ -429,7 +428,6 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         p_generator.writeArrayFieldStart( "exitqueue" );
         for ( final IPassenger<?> l_passenger : m_exitqueue ) p_generator.writeString( l_passenger.id() );
         p_generator.writeEndArray();
-        p_generator.writeEndObject();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

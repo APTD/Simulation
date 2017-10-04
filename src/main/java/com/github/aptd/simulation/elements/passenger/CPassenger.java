@@ -311,15 +311,13 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
     @Override
     protected void writeState( final JsonGenerator p_generator ) throws IOException
     {
-        p_generator.writeStartObject();
         p_generator.writeStringField( "state", m_state.name() );
-        p_generator.writeStringField( "station", m_station.id() );
-        p_generator.writeStringField( "train", m_train.id() );
-        p_generator.writeStringField( "door", m_door.id() );
+        p_generator.writeStringField( "station", m_station == null ? null : m_station.id() );
+        p_generator.writeStringField( "train", m_train == null ? null : m_train.id() );
+        p_generator.writeStringField( "door", m_door == null ? null : m_door.id() );
         p_generator.writeNumberField( "dooruse", m_dooruse );
         p_generator.writeNumberField( "distancewalked", m_distancewalked );
         p_generator.writeNumberField( "itindex", m_itindex );
-        p_generator.writeEndObject();
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
