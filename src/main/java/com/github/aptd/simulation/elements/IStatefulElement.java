@@ -160,6 +160,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
                     l_message.write( l_generator );
                 l_generator.writeEndArray();
                 l_generator.close();
+                l_writer.close();
                 Logger.debug( l_writer.toString() );
             }
             catch ( final Exception l_exception )
