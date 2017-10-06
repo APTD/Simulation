@@ -60,7 +60,7 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     protected Instant m_nextstatechange;
 
     private final Set<IMessage> m_output = Collections.synchronizedSet( new HashSet<>() );
-    private final JsonFactory m_factory = new MappingJsonFactory();
+    private JsonFactory m_factory;
 
     /**
      * ctor
@@ -108,27 +108,8 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
     @IAgentActionName( name = "state/transition" )
     protected final synchronized void transition()
     {
-        Logger.trace( m_time.current() + " - " + m_id + " transition check" );
-        final StringWriter l_writer = new StringWriter();
-        JsonGenerator l_generator = null;
-        try
-        {
-            l_generator = m_factory.createGenerator( l_writer );
-            l_generator.writeStartObject();
-            l_generator.writeStringField( "type", "transition" );
-            l_generator.writeStringField( "element", m_id );
-            l_generator.writeObjectFieldStart( "state_before" );
-            writeState( l_generator );
-            l_generator.writeEndObject();
-            l_generator.writeArrayFieldStart( "input" );
-            for ( final IMessage l_message : m_input.values() )
-                l_message.write( l_generator );
-            l_generator.writeEndArray();
-        }
-        catch ( final Exception l_exception )
-        {
-            l_exception.printStackTrace();
-        }
+        Logger.trace( () -> m_time.current() + " - " + m_id + " transition check" );
+
         try
         {
             if ( updatestate() )
@@ -144,15 +125,23 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
             System.out.println( "RUNTIME EXCEPTION in " + m_id + ": " + l_ex.toString() );
             l_ex.printStackTrace();
         }
-        m_input.clear();
-        // m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
-        m_nextactivation = m_nextstatechange;
-        // System.out.println( m_time.current() + " - " + m_id + " output contains " + m_output.size() + " messages" );
-        // m_output.forEach( msg -> System.out.println( msg.type() + " to " + msg.recipient() + ": " + msg.content() ) );
-        if ( l_generator != null )
+
+        Logger.debug( () ->
+        {
+            String l_debugstring = "";
             try
             {
-                l_generator.writeObjectFieldStart( "state_after" );
+                if ( m_factory == null ) m_factory = new MappingJsonFactory();
+                final StringWriter l_writer = new StringWriter();
+                final JsonGenerator l_generator = m_factory.createGenerator( l_writer );
+                l_generator.writeStartObject();
+                l_generator.writeStringField( "type", "transition" );
+                l_generator.writeStringField( "element", m_id );
+                l_generator.writeArrayFieldStart( "input" );
+                for ( final IMessage l_message : m_input.values() )
+                    l_message.write( l_generator );
+                l_generator.writeEndArray();
+                l_generator.writeObjectFieldStart( "new_state" );
                 writeState( l_generator );
                 l_generator.writeEndObject();
                 l_generator.writeArrayFieldStart( "output" );
@@ -161,13 +150,20 @@ public abstract class IStatefulElement<N extends IElement<?>> extends IBaseEleme
                 l_generator.writeEndArray();
                 l_generator.close();
                 l_writer.close();
-                Logger.debug( l_writer.toString() );
+                l_debugstring = l_writer.toString();
             }
             catch ( final Exception l_exception )
             {
                 l_exception.printStackTrace();
             }
+            return l_debugstring;
+        } );
 
+        m_input.clear();
+        // m_nextactivation = m_output.isEmpty() ? m_nextstatechange : m_time.current();
+        m_nextactivation = m_nextstatechange;
+        // System.out.println( m_time.current() + " - " + m_id + " output contains " + m_output.size() + " messages" );
+        // m_output.forEach( msg -> System.out.println( msg.type() + " to " + msg.recipient() + ": " + msg.content() ) );
     }
 
     @IAgentActionFilter

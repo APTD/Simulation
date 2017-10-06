@@ -23,6 +23,9 @@
 package com.github.aptd.simulation.elements;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.github.aptd.simulation.common.CAgentTrigger;
 import com.github.aptd.simulation.core.messaging.EMessageType;
 import com.github.aptd.simulation.core.messaging.IMessage;
@@ -54,10 +57,13 @@ import org.lightjason.agentspeak.language.fuzzy.operator.IFuzzyBundle;
 import org.lightjason.agentspeak.language.instantiable.plan.IPlan;
 import org.lightjason.agentspeak.language.instantiable.rule.IRule;
 import org.lightjason.agentspeak.language.unify.IUnifier;
+import org.pmw.tinylog.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -300,6 +306,8 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
          */
         protected final ITime m_time;
 
+        private JsonFactory m_factory;
+
         /**
          * ctor
          *
@@ -317,9 +325,40 @@ public abstract class IBaseElement<N extends IElement<?>> extends IBaseAgent<N> 
         }
 
         @Override
+        @SuppressWarnings( "unchecked" )
         public final N generatesingle( final Object... p_data )
         {
-            return CHTTPServer.register( this.generate( p_data ) );
+            final Pair<N, Stream<String>> l_generate = this.generate( p_data );
+            Logger.debug( () ->
+            {
+                String l_logstring = "";
+                try
+                {
+                    if ( m_factory == null ) m_factory = new MappingJsonFactory();
+                    final StringWriter l_writer = new StringWriter();
+                    final JsonGenerator l_generator = m_factory.createGenerator( l_writer );
+                    l_generator.writeStartObject();
+                    l_generator.writeStringField( "type", "generation" );
+                    l_generator.writeStringField( "id", l_generate.getLeft().id() );
+                    if ( l_generate.getLeft() instanceof IStatefulElement<?> )
+                    {
+                        final IStatefulElement<N> l_element = (IStatefulElement<N>) l_generate.getLeft();
+                        l_generator.writeObjectFieldStart( "state" );
+                        l_element.writeState( l_generator );
+                        l_generator.writeEndObject();
+                    }
+                    l_generator.writeEndObject();
+                    l_writer.close();
+                    l_generator.close();
+                    l_logstring = l_writer.toString();
+                }
+                catch ( final IOException l_exception )
+                {
+                    l_exception.printStackTrace();
+                }
+                return l_logstring;
+            } );
+            return CHTTPServer.register( l_generate );
         }
 
         /**

@@ -48,7 +48,7 @@ public class CJumpTime extends IBaseTime
     private boolean m_active = true;
 
     private final List<IElement<?>> m_elements = Collections.synchronizedList( new ArrayList<>( ) );
-    private final JsonFactory m_factory = new MappingJsonFactory();
+    private JsonFactory m_factory;
 
     /**
      * ctor with system default time zone
@@ -74,21 +74,6 @@ public class CJumpTime extends IBaseTime
     @Override
     public ITime call() throws Exception
     {
-        final StringWriter l_writer = new StringWriter();
-        JsonGenerator l_generator = null;
-        try
-        {
-            l_generator = m_factory.createGenerator( l_writer );
-            l_generator.writeStartObject();
-            l_generator.writeStringField( "type", "simulationstep" );
-            l_generator.writeNumberField( "old_step", m_stepcount.longValue() );
-            l_generator.writeStringField( "old_time", m_currenttime.get().toString() );
-        }
-        catch ( final Exception l_exception )
-        {
-            l_exception.printStackTrace();
-        }
-
         final Instant l_nextactivation = m_elements
             .parallelStream()
             .map( IElement::nextactivation )
@@ -103,21 +88,31 @@ public class CJumpTime extends IBaseTime
         }
         else m_active = false;
         super.call();
-        if ( l_generator != null )
+
+        Logger.debug( () ->
+        {
+            String l_debugstring = "";
             try
             {
-                l_generator.writeNumberField( "new_step", m_stepcount.longValue() );
-                l_generator.writeStringField( "new_time", m_currenttime.get().toString() );
+                if ( m_factory == null ) m_factory = new MappingJsonFactory();
+                final StringWriter l_writer = new StringWriter();
+                final JsonGenerator l_generator = m_factory.createGenerator( l_writer );
+                l_generator.writeStartObject();
+                l_generator.writeStringField( "type", "simulationstep" );
+                l_generator.writeNumberField( "step", m_stepcount.longValue() );
+                l_generator.writeStringField( "time", m_currenttime.get().toString() );
                 l_generator.writeBooleanField( "active", m_active );
                 l_generator.writeEndObject();
                 l_generator.close();
                 l_writer.close();
-                Logger.debug( l_writer.toString() );
+                l_debugstring = l_writer.toString();
             }
             catch ( final Exception l_exception )
             {
                 l_exception.printStackTrace();
             }
+            return l_debugstring;
+        } );
 
         return this;
     }
