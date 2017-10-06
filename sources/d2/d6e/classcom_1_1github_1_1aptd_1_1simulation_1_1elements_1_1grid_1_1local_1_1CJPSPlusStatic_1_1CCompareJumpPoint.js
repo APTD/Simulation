@@ -1,0 +1,4 @@
+var classcom_1_1github_1_1aptd_1_1simulation_1_1elements_1_1grid_1_1local_1_1CJPSPlusStatic_1_1CCompareJumpPoint =
+[
+    [ "compare", "d2/d6e/classcom_1_1github_1_1aptd_1_1simulation_1_1elements_1_1grid_1_1local_1_1CJPSPlusStatic_1_1CCompareJumpPoint.htm#a010901b7168628fc0141b7d068691a72", null ]
+];
