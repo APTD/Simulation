@@ -179,7 +179,7 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
     @Override
     protected boolean updatestate()
     {
-        if ( m_input.size() > 1 ) throw new RuntimeException( m_id + " received multiple input messages at once, not possible" );
+        // if ( m_input.size() > 1 ) throw new RuntimeException( m_id + " received multiple input messages at once, not possible" );
         // this may have to be refined if further state logic is added
 
         if ( handleplatformmessages() || handledoormessage() ) return true;
@@ -236,7 +236,14 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
 
     private boolean handledoormessage()
     {
+        final List<IMessage> l_reject = m_input.get( EMessageType.DOOR_TO_PASSENGER_REJECT );
         final List<IMessage> l_yourturn = m_input.get( EMessageType.DOOR_TO_PASSENGER_YOURTURN );
+        if ( !l_yourturn.isEmpty() && !l_reject.isEmpty() )
+            throw new RuntimeException( m_id + " received both REJECT and YOURTURN in state " + m_state );
+        if ( !l_reject.isEmpty() )
+        {
+            m_state = EPassengerState.ON_PLATFORM_WAITING_FOR_TRAIN;
+        }
         if ( !l_yourturn.isEmpty() )
         {
             m_door = (IDoor<?>) l_yourturn.get( 0 ).sender();

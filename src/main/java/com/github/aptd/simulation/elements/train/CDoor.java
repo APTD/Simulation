@@ -172,10 +172,20 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
         final List<IMessage> l_finished = m_input.get( EMessageType.PASSENGER_TO_DOOR_FINISHED );
 
         // enqueuing passengers (if queues are empty, passenger will get immediate access with nextpassengerifpossible() at the end)
-        l_entryrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
-                       .forEachOrdered( msg -> m_entryqueue.add( (IPassenger<?>) msg.sender() ) );
-        l_exitrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
-                      .forEachOrdered( msg -> m_exitqueue.add( (IPassenger<?>) msg.sender() ) );
+        if ( m_state != EDoorState.CLOSED_LOCKED )
+        {
+            l_entryrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
+                           .forEachOrdered( msg -> m_entryqueue.add( (IPassenger<?>) msg.sender() ) );
+            l_exitrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
+                          .forEachOrdered( msg -> m_exitqueue.add( (IPassenger<?>) msg.sender() ) );
+        }
+        else
+        {
+            l_entryrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
+                           .forEachOrdered( msg -> output( new CMessage( this, msg.sender().id(), EMessageType.DOOR_TO_PASSENGER_REJECT ) ) );
+            l_exitrequests.stream().sorted( Comparator.comparing( msg -> msg.sender().id() ) )
+                          .forEachOrdered( msg -> output( new CMessage( this, msg.sender().id(), EMessageType.DOOR_TO_PASSENGER_REJECT ) ) );
+        }
 
         // locking or unlocking
         handletrainmessages();
