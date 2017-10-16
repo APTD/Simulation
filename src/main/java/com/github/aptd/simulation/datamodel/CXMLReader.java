@@ -127,7 +127,7 @@ public final class CXMLReader implements IDataModel
     @SuppressWarnings( "unchecked" )
     public final IExperiment get( final IFactory p_factory, final String p_datamodel,
                                   final long p_simulationsteps, final boolean p_parallel, final String p_timemodel,
-                                  final Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier,
+                                  final Supplier<RealDistribution> p_platformchangedurationdistributionsupplier,
                                   final int p_numberofpassengers, final double p_lightbarrierminfreetime, final double p_delayseconds
     )
     {
@@ -188,7 +188,7 @@ public final class CXMLReader implements IDataModel
                             l_actionsfrompackage, l_time )
                             .generatesingle( new UniformRealDistribution( 0.0, 1.0 ),
                                              l_time.current().toEpochMilli(), p_numberofpassengers, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ),
-                                             p_passengerspeedatstationdistributionsupplier.get()
+                                             p_platformchangedurationdistributionsupplier.get()
                                              )
             );
 

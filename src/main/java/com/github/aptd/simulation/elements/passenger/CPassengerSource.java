@@ -73,7 +73,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     private int m_passengers;
     private int m_passengersgenerated;
 
-    private RealDistribution m_distpassengerspeedatstation;
+    private RealDistribution m_distplatformchangeduration;
 
     /**
      * ctor
@@ -97,7 +97,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         final IGenerator<?> p_generator,
         final IExperiment p_experiment,
         final IStation<?> p_station,
-        final RealDistribution p_distpassengerspeedatstation
+        final RealDistribution p_distplatformchangeduration
     )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
@@ -107,7 +107,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
         m_generator = p_generator;
         m_experiment = p_experiment;
         m_station = p_station;
-        m_distpassengerspeedatstation = p_distpassengerspeedatstation;
+        m_distplatformchangeduration = p_distplatformchangeduration;
         m_passengersgenerated = 0;
         m_nextactivation = determinenextstatechange();
     }
@@ -154,7 +154,7 @@ public final class CPassengerSource extends IStatefulElement<IPassengerSource<?>
     {
         // @todo put passenger somewhere, initialize its state, etc.
         final IElement<?> l_passenger = m_generator.generatesingle( "passenger-" + m_station.id() + "-" + m_passengersgenerated,
-                                                                    itinerary(), m_distpassengerspeedatstation.sample() );
+                                                                    itinerary(), m_distplatformchangeduration.sample() );
         m_experiment.addAgent( l_passenger.id(), l_passenger );
         m_passengersgenerated++;
     }

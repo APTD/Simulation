@@ -134,11 +134,11 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
      * @param p_time time reference
      */
     private CPassenger( final IAgentConfiguration<IPassenger<?>> p_configuration, final String p_id, final ITime p_time,
-                        final Stream<CItineraryEntry> p_itinerary, final double p_speedatstation )
+                        final Stream<CItineraryEntry> p_itinerary, final double p_platformchangeduration )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
         m_itinerary = new ArrayList<>( p_itinerary.collect( Collectors.toList() ) );
-        m_speedatstation = p_speedatstation;
+        m_speedatstation = m_distancetonextplatform / p_platformchangeduration;
         m_nextstatechange = determinenextstatechange();
         m_nextactivation = m_nextstatechange;
         Logger.debug( "passenger " + m_id + " with speed " + m_speedatstation );

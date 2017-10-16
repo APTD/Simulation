@@ -85,9 +85,9 @@ public final class CMain
         l_clioptions.addOption( "scenariotype", true, "comma-separated list of scenario types (default: xml)" );
         l_clioptions.addOption( "scenario", true, "comma-separated list of scenario files" );
         l_clioptions.addOption( "timemodel", true, "jump for jumping time, step for stepping time (default: step)" );
-        l_clioptions.addOption( "passengerspeedseed", true, "seed for uniform random generator of passenger speeds (default: 1)" );
-        l_clioptions.addOption( "passengerspeedmin", true, "minimum value for uniform random generator of passenger speeds (default: 1.5)" );
-        l_clioptions.addOption( "passengerspeedmax", true, "maximum value for uniform random generator of passenger speeds (default: 1.5)" );
+        l_clioptions.addOption( "changetimeseed", true, "seed for uniform random generator of passenger platform change duration (default: 1)" );
+        l_clioptions.addOption( "changetimemin", true, "minimum value for uniform random generator of passenger platform chnge duration in seconds (default: 100)" );
+        l_clioptions.addOption( "changetimemax", true, "maximum value for uniform random generator of passenger platform change duration in seconds (default: 100)" );
         l_clioptions.addOption( "numberofpassengers", true, "number of passengers (default: 20)" );
         l_clioptions.addOption( "lightbarrierminfreetime", true, "minimum duration how long the light barrier has to be free before the door can close (default: 3)" );
         l_clioptions.addOption( "delayseconds", true, "primary delay of first train in seconds (default: 0)" );
@@ -132,8 +132,8 @@ public final class CMain
 
     private static void execute( final CommandLine p_cli )
     {
-        final double l_passengerspeedmin = Double.parseDouble( p_cli.getOptionValue( "passengerspeedmin", "1.5" ) );
-        final double l_passengerspeedmax = Double.parseDouble( p_cli.getOptionValue( "passengerspeedmax", "1.5" ) );
+        final double l_changetimemin = Double.parseDouble( p_cli.getOptionValue( "changetimemin", "100" ) );
+        final double l_changetimemax = Double.parseDouble( p_cli.getOptionValue( "changetimemax", "100" ) );
         final int l_numberofpassengers = Integer.parseUnsignedInt( p_cli.getOptionValue( "numberofpassengers", "20" ) );
         final double l_lightbarrierminfreetime = Double.parseDouble( p_cli.getOptionValue( "lightbarrierminfreetime", "3.0" ) );
         final double l_delayseconds = Double.parseDouble( p_cli.getOptionValue( "delayseconds", "0.0" ) );
@@ -161,10 +161,10 @@ public final class CMain
 
                 () ->
                 {
-                    if ( l_passengerspeedmax <= l_passengerspeedmin ) return new ConstantRealDistribution( l_passengerspeedmin );
+                    if ( l_changetimemax <= l_changetimemin ) return new ConstantRealDistribution( l_changetimemin );
                     final RandomGenerator l_randomgenerator = new JDKRandomGenerator();
-                    l_randomgenerator.setSeed( Long.parseLong( p_cli.getOptionValue( "passengerspeedseed", "1" ) ) );
-                    return new UniformRealDistribution( l_randomgenerator, l_passengerspeedmin, l_passengerspeedmax );
+                    l_randomgenerator.setSeed( Long.parseLong( p_cli.getOptionValue( "changetimeseed", "1" ) ) );
+                    return new UniformRealDistribution( l_randomgenerator, l_changetimemin, l_changetimemax );
                 },
 
                 l_numberofpassengers, l_lightbarrierminfreetime, l_delayseconds
