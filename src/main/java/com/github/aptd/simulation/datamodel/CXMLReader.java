@@ -127,7 +127,8 @@ public final class CXMLReader implements IDataModel
     @SuppressWarnings( "unchecked" )
     public final IExperiment get( final IFactory p_factory, final String p_datamodel,
                                   final long p_simulationsteps, final boolean p_parallel, final String p_timemodel,
-                                  final Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier
+                                  final Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier,
+                                  final int p_numberofpassengers, final double p_lightbarrierminfreetime, final double p_delayseconds
     )
     {
         try
@@ -140,7 +141,7 @@ public final class CXMLReader implements IDataModel
             // time definition
 
             final Instant l_starttime = ZonedDateTime.now( ZoneId.systemDefault() )
-                                                     .with( ChronoField.CLOCK_HOUR_OF_DAY, 9 )
+                                                     .with( ChronoField.CLOCK_HOUR_OF_DAY, 8 )
                                                      .with( ChronoField.MINUTE_OF_HOUR, 45 )
                                                      .with( ChronoField.SECOND_OF_MINUTE, 0 )
                                                      .with( ChronoField.NANO_OF_SECOND, 0 )
@@ -163,7 +164,8 @@ public final class CXMLReader implements IDataModel
             // macro (train-network) and microscopic model
             final Map<String, IPlatform<?>> l_platform = platform( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
             final Map<String, IStation<?>> l_station = station( l_model.getNetwork(), l_agentdefs, p_factory, l_time, l_platform );
-            final Pair<Map<String, ITrain<?>>, Map<String, IDoor<?>>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time );
+            final Pair<Map<String, ITrain<?>>, Map<String, IDoor<?>>> l_train = train( l_model.getNetwork(), l_agentdefs, p_factory, l_time,
+                                                                                       p_lightbarrierminfreetime );
 
             final Map<String, IElement<?>> l_agents = new HashMap<>();
             l_agents.putAll( l_platform );
@@ -184,8 +186,8 @@ public final class CXMLReader implements IDataModel
                     passengersourcegenerator(
                             p_factory, "+!activate <-\n    state/transition\n.",
                             l_actionsfrompackage, l_time )
-                            .generatesingle( new UniformRealDistribution( 0.0, 1800000.0 ),
-                                             l_time.current().toEpochMilli(), 20, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ),
+                            .generatesingle( new UniformRealDistribution( 0.0, 1.0 ),
+                                             l_time.current().toEpochMilli(), p_numberofpassengers, l_passengergenerator, l_experiment, l_agents.get( "toy-node-1" ),
                                              p_passengerspeedatstationdistributionsupplier.get()
                                              )
             );
@@ -356,7 +358,8 @@ public final class CXMLReader implements IDataModel
      * @return unmodifiable map with trains
      */
     private static Pair<Map<String, ITrain<?>>, Map<String, IDoor<?>>> train( final Network p_network, final Map<String, String> p_agents,
-                                                                              final IFactory p_factory, final ITime p_time )
+                                                                              final IFactory p_factory, final ITime p_time,
+                                                                              final double p_minfreetimetoclose )
     {
         final String l_dooragent = IStatefulElement.getDefaultAsl( "door" );
         final Map<String, IElement.IGenerator<ITrain<?>>> l_generators = new ConcurrentHashMap<>();
@@ -425,7 +428,8 @@ public final class CXMLReader implements IDataModel
                                                                                                    id -> new AtomicLong( 1L ) ).getAndIncrement(),
                                                           id -> l_doorgenerator.generatesingle( id, i.getLeft().getId(),
                                                                                                 v.getRight().getEntranceWidth().doubleValue()
-                                                                                                / v.getRight().getNumber().longValue() )
+                                                                                                / v.getRight().getNumber().longValue(),
+                                                                                                p_minfreetimetoclose )
                                                       )
                                                       )
                               )

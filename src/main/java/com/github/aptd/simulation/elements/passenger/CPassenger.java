@@ -116,7 +116,7 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
     /**
      * how long the passenger needs to leave a train when it's their turn (seconds)
      */
-    private double m_exitduration = 5.0;
+    private double m_exitduration = 1.0;
     /**
      * how long the passenger is already using the door (seconds) (continuous state variable for ENTERING_TRAIN and LEAVING_TRAIN)
      */
@@ -205,7 +205,7 @@ public final class CPassenger extends IStatefulElement<IPassenger<?>> implements
                     m_door = null;
                     if ( m_itindex + 1 >= m_itinerary.size() )
                     {
-                        System.out.println( m_id + " finished itinerary :-) at " + m_time.current() );
+                        Logger.info( m_id + " finished itinerary :-) at " + m_time.current() );
                         m_state = EPassengerState.IDLE_AT_STATION;
                     }
                     else

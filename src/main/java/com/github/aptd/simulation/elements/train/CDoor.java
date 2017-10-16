@@ -114,11 +114,13 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
      * @param p_time          time reference
      * @param p_train train id
      */
-    protected CDoor( final IAgentConfiguration<IDoor<?>> p_configuration, final String p_id, final ITime p_time, final String p_train, final double p_width )
+    protected CDoor( final IAgentConfiguration<IDoor<?>> p_configuration, final String p_id, final ITime p_time, final String p_train, final double p_width,
+                     final double p_minfreetimetoclose )
     {
         super( p_configuration, FUNCTOR, p_id, p_time );
         m_train = p_train;
         m_width = p_width;
+        m_minfreetimetoclose = p_minfreetimetoclose;
         m_nextstatechange = determinenextstatechange();
     }
 
@@ -472,7 +474,8 @@ public final class CDoor extends IStatefulElement<IDoor<?>> implements IDoor<IDo
                                (String) p_data[0],
                                m_time,
                                (String) p_data[1],
-                               (double) p_data[2] ),
+                               (double) p_data[2],
+                               (double) p_data[3] ),
                     Stream.of( FUNCTOR )
             );
         }

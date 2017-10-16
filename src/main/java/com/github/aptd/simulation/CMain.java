@@ -88,6 +88,9 @@ public final class CMain
         l_clioptions.addOption( "passengerspeedseed", true, "seed for uniform random generator of passenger speeds (default: 1)" );
         l_clioptions.addOption( "passengerspeedmin", true, "minimum value for uniform random generator of passenger speeds (default: 1.5)" );
         l_clioptions.addOption( "passengerspeedmax", true, "maximum value for uniform random generator of passenger speeds (default: 1.5)" );
+        l_clioptions.addOption( "numberofpassengers", true, "number of passengers (default: 20)" );
+        l_clioptions.addOption( "lightbarrierminfreetime", true, "minimum duration how long the light barrier has to be free before the door can close (default: 3)" );
+        l_clioptions.addOption( "delayseconds", true, "primary delay of first train in seconds (default: 0)" );
 
         final CommandLine l_cli;
         try
@@ -131,6 +134,9 @@ public final class CMain
     {
         final double l_passengerspeedmin = Double.parseDouble( p_cli.getOptionValue( "passengerspeedmin", "1.5" ) );
         final double l_passengerspeedmax = Double.parseDouble( p_cli.getOptionValue( "passengerspeedmax", "1.5" ) );
+        final int l_numberofpassengers = Integer.parseUnsignedInt( p_cli.getOptionValue( "numberofpassengers", "20" ) );
+        final double l_lightbarrierminfreetime = Double.parseDouble( p_cli.getOptionValue( "lightbarrierminfreetime", "3.0" ) );
+        final double l_delayseconds = Double.parseDouble( p_cli.getOptionValue( "delayseconds", "0.0" ) );
 
         // load configuration
         CConfiguration.INSTANCE.loadfile( p_cli.getOptionValue( "config", "" ) );
@@ -159,8 +165,9 @@ public final class CMain
                     final RandomGenerator l_randomgenerator = new JDKRandomGenerator();
                     l_randomgenerator.setSeed( Long.parseLong( p_cli.getOptionValue( "passengerspeedseed", "1" ) ) );
                     return new UniformRealDistribution( l_randomgenerator, l_passengerspeedmin, l_passengerspeedmax );
-                }
+                },
 
+                l_numberofpassengers, l_lightbarrierminfreetime, l_delayseconds
             ) )
             .forEach( i -> ERuntime.LOCAL.get().execute( i ) )
         ).start();

@@ -44,6 +44,7 @@ public interface IDataModel
      * @return experiment
      */
     IExperiment get( final IFactory p_factory, final String p_datamodel, final long p_simulationsteps, final boolean p_parallel, final String p_timemodel,
-                     Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier );
+                     final Supplier<RealDistribution> p_passengerspeedatstationdistributionsupplier,
+                     final int p_numberofpassengers, final double p_lightbarrierminfreetime, final double p_delayseconds );
 
 }

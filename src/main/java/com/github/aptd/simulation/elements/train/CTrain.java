@@ -39,6 +39,7 @@ import org.lightjason.agentspeak.configuration.IAgentConfiguration;
 import org.lightjason.agentspeak.language.CLiteral;
 import org.lightjason.agentspeak.language.CRawTerm;
 import org.lightjason.agentspeak.language.ILiteral;
+import org.pmw.tinylog.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -201,8 +202,6 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
         {
             case ARRIVED:
                 if ( !l_timedchange ) break;
-                System.out.println( m_id + " - departure at " + m_time.current().toString() + " which was planned for "
-                                    + m_timetable.get( m_ttindex ).m_publisheddeparture );
                 // proceed to next timetable entry
                 m_ttindex++;
                 m_positionontrack = 0.0;
@@ -214,8 +213,9 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 // @todo: react to "red signal" here
                 if ( !l_timedchange ) break;
                 m_state = ETrainState.ARRIVED;
-                System.out.println( m_id + " - arrival at " + m_time.current().toString() + " which was planned for "
-                                    + m_timetable.get( m_ttindex ).m_publishedarrival );
+                Logger.info( m_id + " - arrival at " + m_timetable.get( m_ttindex ).m_stationid + " at " + m_time.current().toString()
+                             + " which was planned for " + m_timetable.get( m_ttindex ).m_publishedarrival + "["
+                             + m_timetable.get( m_ttindex ).m_publishedarrival.until( m_time.current(), ChronoUnit.SECONDS ) + "]" );
                 m_doorsclosedlocked.forEach( d -> output( new CMessage( this, d.id(), EMessageType.TRAIN_TO_DOOR_UNLOCK,
                                                                         m_timetable.get( m_ttindex ).m_stationid,
                                                                         m_timetable.get( m_ttindex ).m_platformid ) ) );
@@ -234,9 +234,11 @@ public final class CTrain extends IStatefulElement<ITrain<?>> implements ITrain<
                 return true;
             case WAITING_TO_DRIVE:
                 if ( !m_doorsnotclosedlocked.isEmpty() ) break;
+                Logger.info( m_id + " - departure from " + m_timetable.get( m_ttindex - 1 ).m_stationid + " at " + m_time.current().toString()
+                             + " which was planned for " + m_timetable.get( m_ttindex - 1 ).m_publisheddeparture + " ["
+                             + m_timetable.get( m_ttindex - 1 ).m_publisheddeparture.until( m_time.current(), ChronoUnit.SECONDS ) + "]" );
                 output( new CMessage( this, m_timetable.get( m_ttindex - 1 ).m_platformid, EMessageType.TRAIN_TO_PLATFORM_DEPARTING ) );
                 m_state = ETrainState.DRIVING;
-                debugPrintState();
                 return true;
             default:
                 // making checkstyle happy
