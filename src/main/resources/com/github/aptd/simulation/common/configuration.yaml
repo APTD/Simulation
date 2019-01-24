@@ -2,7 +2,7 @@
 openbrowser : true
 
 
-# HTPP server binding for UI
+# HTTP server binding for UI
 httpserver:
     enable: true
     port: 8000
@@ -12,7 +12,7 @@ httpserver:
 # default elements
 default:
   datamodel: xml
-  iteration: 10
+  #iteration: 10
 
 # runtime configuration
 runtime:
@@ -25,3 +25,4 @@ runtime:
 units:
     cellsize_in_meter: 1.5
     time_in_minutes: 1.25
+
